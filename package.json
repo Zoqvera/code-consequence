@@ -11,6 +11,7 @@
     "db:migrate": "node scripts/migrate.mjs",
     "db:verify": "node scripts/verify-db.mjs",
     "ingest:collect": "node scripts/collect.mjs",
+    "enrich:recover": "node scripts/recover-enrichment.mjs",
     "enrich:classify": "node scripts/enrich.mjs"
   },
   "dependencies": {
