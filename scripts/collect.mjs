@@ -27,7 +27,7 @@ function cleanText(value = "") {
 function canonicalize(value, base) {
   try {
     const url = new URL(value, base);
-    if (!['http:', 'https:'].includes(url.protocol)) return null;
+    if (!["http:", "https:"].includes(url.protocol)) return null;
     url.hash = "";
     for (const key of [...url.searchParams.keys()]) {
       if (key.startsWith("utm_") || ["fbclid", "gclid"].includes(key)) url.searchParams.delete(key);
@@ -40,7 +40,7 @@ function canonicalize(value, base) {
 
 function relevanceScore(text) {
   const haystack = text.toLowerCase();
-  let score = 2; // Every configured page is already AI-specific and Tier A.
+  let score = 2;
   for (const term of impactTerms) {
     if (haystack.includes(term)) score += 1;
   }
@@ -69,9 +69,10 @@ let itemsInserted = 0;
 const errors = [];
 
 for (const feed of feeds) {
+  const enabled = feed.enabled !== false;
   const [feedRow] = await sql`
-    INSERT INTO source_feeds (slug, name, publisher, url, kind, source_type, reliability, language)
-    VALUES (${feed.slug}, ${feed.name}, ${feed.publisher}, ${feed.url}, ${feed.kind}, ${feed.sourceType}, ${feed.reliability}, ${feed.language})
+    INSERT INTO source_feeds (slug, name, publisher, url, kind, source_type, reliability, language, is_active)
+    VALUES (${feed.slug}, ${feed.name}, ${feed.publisher}, ${feed.url}, ${feed.kind}, ${feed.sourceType}, ${feed.reliability}, ${feed.language}, ${enabled})
     ON CONFLICT (slug) DO UPDATE SET
       name = EXCLUDED.name,
       publisher = EXCLUDED.publisher,
@@ -80,9 +81,12 @@ for (const feed of feeds) {
       source_type = EXCLUDED.source_type,
       reliability = EXCLUDED.reliability,
       language = EXCLUDED.language,
+      is_active = EXCLUDED.is_active,
       updated_at = now()
     RETURNING id
   `;
+
+  if (!enabled) continue;
 
   try {
     const response = await fetch(feed.url, {
