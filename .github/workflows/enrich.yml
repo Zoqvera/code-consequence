@@ -2,12 +2,6 @@ name: Enrich editorial queue
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "47 */6 * * *"
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/enrich.yml"
 
 permissions:
   contents: read
@@ -31,5 +25,7 @@ jobs:
         run: |
           test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
           test -n "$OPENAI_API_KEY" || (echo "OPENAI_API_KEY repository secret is missing" && exit 1)
+      - name: Restore transient API billing failures
+        run: npm run enrich:recover
       - name: Classify editorial batch
         run: npm run enrich:classify
