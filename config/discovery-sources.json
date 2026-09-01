@@ -27,7 +27,8 @@
     "kind": "HTML_INDEX",
     "sourceType": "PRIMARY",
     "reliability": "A",
-    "language": "en"
+    "language": "en",
+    "enabled": false
   },
   {
     "slug": "eu-ai-policy",
