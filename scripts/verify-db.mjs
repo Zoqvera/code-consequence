@@ -22,6 +22,9 @@ const expectedTables = [
   "initiative_sources",
   "initiative_topics",
   "article_initiatives",
+  "source_feeds",
+  "ingestion_runs",
+  "ingestion_items",
 ];
 
 const rows = await sql`
