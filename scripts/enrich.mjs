@@ -31,13 +31,9 @@ const classificationSchema = {
       type: "string",
       enum: ["NEWS", "ANALYSIS_SIGNAL", "INITIATIVE_SIGNAL", "POLICY_SIGNAL", "RESEARCH_SIGNAL", "BACKGROUND", "IRRELEVANT"],
     },
-    topics: {
-      type: "array",
-      items: { type: "string", enum: topicValues },
-      uniqueItems: true,
-    },
-    countries: { type: "array", items: { type: "string" }, uniqueItems: true },
-    organizations: { type: "array", items: { type: "string" }, uniqueItems: true },
+    topics: { type: "array", items: { type: "string", enum: topicValues } },
+    countries: { type: "array", items: { type: "string" } },
+    organizations: { type: "array", items: { type: "string" } },
     initiative_detected: { type: "boolean" },
     initiative_name: { type: ["string", "null"] },
     initiative_status: {
@@ -48,18 +44,13 @@ const classificationSchema = {
     response_summary: { type: ["string", "null"] },
     synopsis_en: { type: "string" },
     synopsis_pt_br: { type: "string" },
-    evidence_signals: {
-      type: "array",
-      items: { type: "string" },
-      maxItems: 5,
-    },
+    evidence_signals: { type: "array", items: { type: "string" } },
     risk_flags: {
       type: "array",
       items: {
         type: "string",
         enum: ["ANNOUNCEMENT_ONLY", "UNCLEAR_DATE", "UNCLEAR_ACTOR", "LIMITED_EVIDENCE", "MARKETING_LANGUAGE", "NONE"],
       },
-      uniqueItems: true,
     },
     suggested_action: { type: "string", enum: ["DISMISS", "REVIEW", "PRIORITIZE"] },
   },
@@ -88,6 +79,12 @@ function normalizeText(value = "") {
   return value.replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
 }
 
+function normalizePublishedAt(value) {
+  if (!value) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.valueOf()) ? null : date.toISOString();
+}
+
 function extractPage(html) {
   const $ = cheerio.load(html);
   $("script, style, noscript, svg, nav, footer, header, form, dialog").remove();
@@ -96,7 +93,7 @@ function extractPage(html) {
   const description = normalizeText(
     $("meta[name='description']").attr("content") || $("meta[property='og:description']").attr("content") || "",
   );
-  const publishedAt = normalizeText(
+  const rawPublishedAt = normalizeText(
     $("meta[property='article:published_time']").attr("content") ||
       $("meta[name='date']").attr("content") ||
       $("time[datetime]").first().attr("datetime") ||
@@ -117,9 +114,14 @@ function extractPage(html) {
     if (text.length >= 35) blocks.push(text);
   });
 
-  const deduped = [...new Set(blocks)];
-  const body = deduped.join("\n").slice(0, 16000);
-  return { pageTitle, description, publishedAt, body };
+  const body = [...new Set(blocks)].join("\n").slice(0, 16000);
+  return {
+    pageTitle,
+    description,
+    rawPublishedAt,
+    publishedAt: normalizePublishedAt(rawPublishedAt),
+    body,
+  };
 }
 
 function getOutputText(payload) {
@@ -139,7 +141,7 @@ async function classifyItem(item, page) {
     `Discovery title: ${item.title}`,
     `Canonical URL: ${item.canonical_url}`,
     page.pageTitle ? `Page title: ${page.pageTitle}` : "",
-    page.publishedAt ? `Published date shown by page: ${page.publishedAt}` : "",
+    page.rawPublishedAt ? `Published date shown by page: ${page.rawPublishedAt}` : "",
     page.description ? `Page description: ${page.description}` : "",
     "Source text:",
     page.body,
@@ -165,6 +167,7 @@ async function classifyItem(item, page) {
         "Set initiative_detected=true only for a concrete law, regulation, public programme, research project, civil-society action, toolkit, standard, governance process, or other identifiable response to a problem. Mere commentary is not an initiative.",
         "Countries and organizations must be explicitly supported by the supplied source. If uncertain, omit them from arrays rather than guessing.",
         "problem_summary, response_summary, evidence_signals and both synopses must be concise paraphrases, not quotations.",
+        "Keep evidence_signals to at most five short items.",
         "Use PRIORITIZE only for strong consequential relevance or a concrete response initiative; REVIEW for plausible but incomplete evidence; DISMISS for navigation pages, generic AI promotion, or non-substantive material.",
       ].join("\n"),
       input,
@@ -253,7 +256,7 @@ for (const item of items) {
           relevance_status = ${relevanceStatus},
           relevance_score = ${classification.editorial_priority},
           summary = ${classification.synopsis_en},
-          published_at = COALESCE(published_at, ${page.publishedAt || null}::timestamptz),
+          published_at = COALESCE(published_at, ${page.publishedAt}::timestamptz),
           classification = ${JSON.stringify(classification)}::jsonb,
           last_error = NULL,
           updated_at = now()
