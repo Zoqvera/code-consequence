@@ -1,0 +1,35 @@
+name: Enrich editorial queue
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "47 */6 * * *"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/enrich.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_MODEL: gpt-5.6-luna
+      ENRICH_BATCH_SIZE: 6
+      INGESTION_USER_AGENT: CodeAndConsequenceBot/0.1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Require secrets
+        run: |
+          test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
+          test -n "$OPENAI_API_KEY" || (echo "OPENAI_API_KEY repository secret is missing" && exit 1)
+      - name: Classify editorial batch
+        run: npm run enrich:classify
