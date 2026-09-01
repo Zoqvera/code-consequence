@@ -120,6 +120,59 @@ CREATE TABLE article_initiatives (
   PRIMARY KEY (article_id, initiative_id)
 );
 
+CREATE TABLE source_feeds (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  publisher TEXT NOT NULL,
+  url TEXT UNIQUE NOT NULL,
+  kind TEXT NOT NULL DEFAULT 'HTML_INDEX' CHECK (kind IN ('HTML_INDEX','RSS','ATOM','API')),
+  source_type source_type NOT NULL DEFAULT 'PRIMARY',
+  reliability reliability_level NOT NULL DEFAULT 'A',
+  language TEXT NOT NULL DEFAULT 'en',
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  poll_interval_minutes INTEGER NOT NULL DEFAULT 360 CHECK (poll_interval_minutes >= 60),
+  last_checked_at TIMESTAMPTZ,
+  last_success_at TIMESTAMPTZ,
+  metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE ingestion_runs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  started_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  completed_at TIMESTAMPTZ,
+  status TEXT NOT NULL DEFAULT 'RUNNING' CHECK (status IN ('RUNNING','SUCCESS','PARTIAL','FAILED')),
+  feeds_checked INTEGER NOT NULL DEFAULT 0,
+  items_discovered INTEGER NOT NULL DEFAULT 0,
+  items_inserted INTEGER NOT NULL DEFAULT 0,
+  errors JSONB NOT NULL DEFAULT '[]'::jsonb
+);
+
+CREATE TABLE ingestion_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  feed_id UUID REFERENCES source_feeds(id) ON DELETE CASCADE,
+  run_id UUID REFERENCES ingestion_runs(id) ON DELETE SET NULL,
+  canonical_url TEXT UNIQUE NOT NULL,
+  external_id TEXT,
+  title TEXT NOT NULL,
+  summary TEXT,
+  published_at TIMESTAMPTZ,
+  discovered_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  content_hash TEXT,
+  relevance_score INTEGER NOT NULL DEFAULT 0,
+  relevance_status TEXT NOT NULL DEFAULT 'PENDING' CHECK (relevance_status IN ('PENDING','RELEVANT','IRRELEVANT','REVIEW')),
+  processing_status TEXT NOT NULL DEFAULT 'NEW' CHECK (processing_status IN ('NEW','FETCHED','CLASSIFIED','DRAFTED','DISMISSED','ERROR')),
+  classification JSONB NOT NULL DEFAULT '{}'::jsonb,
+  raw_payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+  last_error TEXT,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE INDEX articles_published_idx ON articles (status, published_at DESC);
 CREATE INDEX initiatives_status_idx ON initiatives (status, updated_at DESC);
 CREATE INDEX sources_type_reliability_idx ON sources (source_type, reliability);
+CREATE INDEX source_feeds_active_idx ON source_feeds (is_active, last_checked_at);
+CREATE INDEX ingestion_items_queue_idx ON ingestion_items (processing_status, relevance_status, discovered_at DESC);
+CREATE INDEX ingestion_items_feed_idx ON ingestion_items (feed_id, discovered_at DESC);

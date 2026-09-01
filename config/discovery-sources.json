@@ -1,0 +1,42 @@
+[
+  {
+    "slug": "unesco-ai-latest",
+    "name": "UNESCO — Artificial Intelligence",
+    "publisher": "UNESCO",
+    "url": "https://www.unesco.org/en/tags/artificial-intelligence",
+    "kind": "HTML_INDEX",
+    "sourceType": "PRIMARY",
+    "reliability": "A",
+    "language": "en"
+  },
+  {
+    "slug": "unesco-ai-ethics-observatory",
+    "name": "UNESCO — Global AI Ethics and Governance Observatory",
+    "publisher": "UNESCO",
+    "url": "https://www.unesco.org/ethics-ai/en",
+    "kind": "HTML_INDEX",
+    "sourceType": "PRIMARY",
+    "reliability": "A",
+    "language": "en"
+  },
+  {
+    "slug": "oecd-ai-papers",
+    "name": "OECD — Artificial Intelligence Papers",
+    "publisher": "OECD",
+    "url": "https://www.oecd.org/en/publications/oecd-artificial-intelligence-papers_dee339a8-en.html",
+    "kind": "HTML_INDEX",
+    "sourceType": "PRIMARY",
+    "reliability": "A",
+    "language": "en"
+  },
+  {
+    "slug": "eu-ai-policy",
+    "name": "European Commission — Artificial Intelligence",
+    "publisher": "European Commission",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/artificial-intelligence",
+    "kind": "HTML_INDEX",
+    "sourceType": "PRIMARY",
+    "reliability": "A",
+    "language": "en"
+  }
+]
