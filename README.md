@@ -18,6 +18,7 @@ The public website is fully static. Neon credentials and ingestion credentials a
 - editorial homepage, article pages, topics and initiative tracker
 - source reliability tiers
 - Neon-ready PostgreSQL schema
+- database migration and verification scripts
 - mobile/desktop responsive editorial design
 - CI plus GitHub Pages deployment workflow
 
@@ -35,10 +36,19 @@ The production workflow builds the static export in `out/` and deploys it with G
 
 In GitHub repository settings, Pages must use **GitHub Actions** as the deployment source.
 
-## Database
-Create a dedicated Neon Postgres project for Code & Consequence, save its connection string as the repository secret `DATABASE_URL`, and apply `db/schema.sql`.
+## Neon database
+The dedicated Neon project is **Code & Consequence**. Save its connection string in the GitHub repository secret `DATABASE_URL`; never commit the connection string to the repository.
 
-The browser must never receive `DATABASE_URL`. Database reads and writes happen in GitHub Actions during ingestion and static-site generation.
+After the secret exists, run **Actions → Initialize Neon database → Run workflow**. The workflow executes:
+
+```bash
+npm run db:migrate
+npm run db:verify
+```
+
+`db:migrate` applies `db/schema.sql`; `db:verify` confirms that all expected editorial tables exist.
+
+The browser never receives `DATABASE_URL`. Database reads and writes happen in GitHub Actions during ingestion and static-site generation.
 
 The current UI uses verified seed content in `lib/content.ts` until the Neon ingestion pipeline is connected.
 
