@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getArticle } from "@/lib/content";
-import { isLocale } from "@/lib/i18n";
+import { articles, getArticle } from "@/lib/content";
+import { isLocale, locales } from "@/lib/i18n";
+
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return articles.flatMap((article) => locales.map((locale) => ({ locale, slug: article.slug })));
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const { locale, slug } = await params;
