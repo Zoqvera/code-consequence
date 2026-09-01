@@ -30,7 +30,8 @@ jobs:
         run: npm run build
         env:
           NEXT_PUBLIC_BASE_PATH: /code-consequence
-      - uses: actions/upload-pages-artifact@v3
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: ./out
 
