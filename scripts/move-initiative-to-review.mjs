@@ -69,11 +69,26 @@ const plan = {
   initiativeId: row.id,
   currentStatus: row.publication_status,
   targetStatus: "REVIEW",
+  editorialText: {
+    titleEn: row.title_en,
+    summaryEn: row.summary_en,
+    titlePt: row.title_pt,
+    summaryPt: row.summary_pt,
+  },
+  organization: row.organization_name,
+  region: {
+    en: preparation.region_en || row.region || null,
+    ptBr: preparation.region_pt_br || row.region || null,
+  },
   blockers,
   checks,
   translationStates: {
     titlePt: preparation.portuguese_title_state || null,
     summaryPt: preparation.portuguese_summary_state || null,
+  },
+  evidence: {
+    organization: preparation.organization_evidence_url || null,
+    region: preparation.region_evidence_url || null,
   },
 };
 
