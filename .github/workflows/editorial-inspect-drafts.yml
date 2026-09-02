@@ -1,0 +1,25 @@
+name: Inspect initiative drafts
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Require database secret
+        run: test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
+      - name: Inspect remaining draft copy
+        run: node scripts/inspect-initiative-drafts.mjs
