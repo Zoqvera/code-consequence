@@ -68,8 +68,7 @@ function compatible(left, right) {
 
   const leftOrganizations = left.classification?.organizations || [];
   const rightOrganizations = right.classification?.organizations || [];
-  const orgCompatible = intersects(leftOrganizations, rightOrganizations);
-  if (!orgCompatible) return false;
+  if (!intersects(leftOrganizations, rightOrganizations)) return false;
 
   if (left.normalizedTitle === right.normalizedTitle) return true;
   return jaccard(left.titleTokens, right.titleTokens) >= 0.86;
@@ -139,8 +138,6 @@ const clusters = [];
 for (const members of groups.values()) {
   members.sort((a, b) => b.relevance_score - a.relevance_score);
   const primary = members[0];
-  const clusterSeed = `${primary.type}:${primary.normalizedTitle}:${normalize(primary.classification?.organizations?.[0] || "")}`;
-  const clusterId = createHash("sha256").update(clusterSeed).digest("hex").slice(0, 16);
   const sourceUrls = [...new Set(members.map((item) => item.canonical_url))];
   const publishers = [...new Set(members.map((item) => item.publisher).filter(Boolean))];
   const organizations = [...new Set(members.flatMap((item) => item.classification?.organizations || []))];
@@ -150,8 +147,14 @@ for (const members of groups.values()) {
   const evidenceSignals = [...new Set(members.flatMap((item) => item.classification?.evidence_signals || []))].slice(0, 12);
   const hasReviewItem = members.some((item) => item.relevance_status === "REVIEW");
 
+  // Member IDs make the identifier unique even when two same-named initiatives
+  // are kept separate because their jurisdictions or actors do not overlap.
+  const memberKey = members.map((item) => item.id).sort().join(",");
+  const clusterSeed = `${primary.type}:${primary.normalizedTitle}:${memberKey}`;
+  const clusterId = createHash("sha256").update(clusterSeed).digest("hex").slice(0, 16);
+
   const shared = {
-    version: 1,
+    version: 2,
     cluster_id: clusterId,
     candidate_type: primary.type,
     canonical_title: primary.candidateTitle,
@@ -200,9 +203,15 @@ for (const members of groups.values()) {
 
 clusters.sort((a, b) => b.priority - a.priority || b.members - a.members);
 
+const uniqueClusterIds = new Set(clusters.map((cluster) => cluster.clusterId));
+if (uniqueClusterIds.size !== clusters.length) {
+  throw new Error(`Cluster ID collision detected: ${clusters.length} clusters, ${uniqueClusterIds.size} unique IDs`);
+}
+
 console.log(JSON.stringify({
   inputItems: items.length,
   candidateClusters: clusters.length,
+  uniqueClusterIds: uniqueClusterIds.size,
   duplicateItemsCollapsed: items.length - clusters.length,
   multiSourceClusters: clusters.filter((cluster) => cluster.verification === "MULTI_SOURCE").length,
   needsReview: clusters.filter((cluster) => cluster.reviewState === "NEEDS_REVIEW").length,
