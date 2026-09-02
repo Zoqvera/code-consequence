@@ -56,8 +56,9 @@ for (const row of rows) {
       title: candidate.canonical_title,
       priority: candidate.highest_priority,
       reviewState: candidate.review_state,
-      verificationStatus: candidate.verification_status,
-      sourceCount: candidate.source_urls?.length || 1,
+      verificationStatus: candidate.verification_status || "SINGLE_DOCUMENT",
+      sourceCount: candidate.canonical_source_urls?.length || candidate.source_urls?.length || 1,
+      publisherCount: candidate.distinct_publisher_count || new Set(candidate.publishers || []).size,
       publishers: candidate.publishers || [],
       organizations: candidate.organizations || [],
       countries: candidate.countries || [],
@@ -76,7 +77,7 @@ const candidates = [...clusters.values()].sort((a, b) => b.priority - a.priority
 function verificationLane(candidate) {
   if (candidate.reviewState === "NEEDS_REVIEW") return "MANUAL_REVIEW";
   if (candidate.riskFlags.length) return "RISK_REVIEW";
-  if (candidate.verificationStatus === "SINGLE_SOURCE") return "SECOND_SOURCE_REQUIRED";
+  if (candidate.verificationStatus !== "MULTI_PUBLISHER") return "INDEPENDENT_SOURCE_REQUIRED";
   return "VERIFIED_CANDIDATE";
 }
 
@@ -88,7 +89,7 @@ const counts = candidates.reduce(
     acc[candidate.lane] = (acc[candidate.lane] || 0) + 1;
     return acc;
   },
-  { total: 0, VERIFIED_CANDIDATE: 0, SECOND_SOURCE_REQUIRED: 0, RISK_REVIEW: 0, MANUAL_REVIEW: 0 },
+  { total: 0, VERIFIED_CANDIDATE: 0, INDEPENDENT_SOURCE_REQUIRED: 0, RISK_REVIEW: 0, MANUAL_REVIEW: 0 },
 );
 
 const generatedAt = new Date().toISOString();
@@ -110,20 +111,22 @@ const lines = [
   "## Queue summary",
   "",
   `- Candidate clusters: ${counts.total}`,
-  `- Verified candidates: ${counts.VERIFIED_CANDIDATE}`,
-  `- Need a second source: ${counts.SECOND_SOURCE_REQUIRED}`,
+  `- Independently verified candidates: ${counts.VERIFIED_CANDIDATE}`,
+  `- Need an independent source: ${counts.INDEPENDENT_SOURCE_REQUIRED}`,
   `- Need risk review: ${counts.RISK_REVIEW}`,
   `- Need manual review: ${counts.MANUAL_REVIEW}`,
   "",
+  "Verification is conservative: multiple URLs from the same publisher do not count as independent verification.",
+  "",
   "## Priority queue",
   "",
-  "| Priority | Lane | Candidate | Sources | Publisher(s) | Risks |",
-  "| ---: | --- | --- | ---: | --- | --- |",
+  "| Priority | Lane | Candidate | Documents | Publishers | Risks |",
+  "| ---: | --- | --- | ---: | ---: | --- |",
 ];
 
 for (const candidate of candidates) {
   lines.push(
-    `| ${candidate.priority} | ${candidate.lane} | ${escapeCell(candidate.title)} | ${candidate.sourceCount} | ${escapeCell(candidate.publishers.join(", "))} | ${escapeCell(candidate.riskFlags.join(", ") || "—")} |`,
+    `| ${candidate.priority} | ${candidate.lane} | ${escapeCell(candidate.title)} | ${candidate.sourceCount} | ${candidate.publisherCount} | ${escapeCell(candidate.riskFlags.join(", ") || "—")} |`,
   );
 }
 
@@ -134,6 +137,8 @@ for (const candidate of candidates) {
   lines.push("");
   lines.push(`- Lane: ${candidate.lane}`);
   lines.push(`- Verification: ${candidate.verificationStatus}`);
+  lines.push(`- Distinct documents: ${candidate.sourceCount}`);
+  lines.push(`- Distinct publishers: ${candidate.publisherCount}`);
   lines.push(`- Topics: ${candidate.topics.join(", ") || "—"}`);
   lines.push(`- Organizations: ${candidate.organizations.join(", ") || "—"}`);
   lines.push(`- Countries/regions mentioned: ${candidate.countries.join(", ") || "—"}`);
@@ -152,4 +157,4 @@ await Promise.all([
   writeFile(`${outputDir}/editorial-review.md`, `${lines.join("\n")}\n`, "utf8"),
 ]);
 
-console.log(JSON.stringify({ outputDir, generatedAt, counts, top10: candidates.slice(0, 10).map(({ clusterId, title, priority, lane, sourceCount, riskFlags }) => ({ clusterId, title, priority, lane, sourceCount, riskFlags })) }, null, 2));
+console.log(JSON.stringify({ outputDir, generatedAt, counts, top10: candidates.slice(0, 10).map(({ clusterId, title, priority, lane, verificationStatus, sourceCount, publisherCount, riskFlags }) => ({ clusterId, title, priority, lane, verificationStatus, sourceCount, publisherCount, riskFlags })) }, null, 2));
