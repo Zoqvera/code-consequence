@@ -7,6 +7,10 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/database.yml"
+      - "scripts/migrate.mjs"
+      - "scripts/verify-db.mjs"
+      - "db/schema.sql"
+      - "db/migrations/**"
 
 permissions:
   contents: read
