@@ -2,10 +2,6 @@ name: Generate editorial review report
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/editorial-report.yml"
 
 permissions:
   contents: read
