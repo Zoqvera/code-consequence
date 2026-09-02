@@ -1,0 +1,68 @@
+name: Run continuous editorial queue once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/_run-continuous-editorial-once.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: continuous-editorial-queue
+  cancel-in-progress: false
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_MODEL: gpt-5.6-luna
+      ENRICH_BATCH_SIZE: 12
+      EDITORIAL_RESEARCH_MODEL: gpt-5.6-luna
+      EDITORIAL_RESEARCH_BATCH_SIZE: 4
+      EDITORIAL_RESEARCH_RETRY_HOLD_DAYS: 7
+      EDITORIAL_ADVANCE_BATCH_SIZE: 10
+      INGESTION_USER_AGENT: CodeAndConsequenceBot/0.1
+      EDITORIAL_QUEUE_REPORT_PATH: artifacts/editorial-queue/review-queue.json
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Require repository secrets
+        run: |
+          test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
+          test -n "$OPENAI_API_KEY" || (echo "OPENAI_API_KEY repository secret is missing" && exit 1)
+      - name: Ensure database schema
+        run: npm run db:migrate
+      - name: Restore retryable enrichment records
+        run: |
+          npm run enrich:recover
+          npm run enrich:recover-sources
+      - name: Classify the next source batch
+        run: npm run enrich:classify
+      - name: Refresh editorial candidate clusters
+        run: npm run editorial:prepare
+      - name: Research and verify initiative candidates
+        run: npm run editorial:research
+      - name: Validate researched promotion plan
+        run: AUTO_PROMOTE_APPLY=0 npm run editorial:auto-promote
+      - name: Promote verified research into reviewed drafts
+        run: AUTO_PROMOTE_APPLY=1 npm run editorial:auto-promote
+      - name: Validate automatic DRAFT to REVIEW gate
+        run: EDITORIAL_ADVANCE_APPLY=0 npm run editorial:auto-advance
+      - name: Move eligible reviewed drafts to REVIEW
+        run: EDITORIAL_ADVANCE_APPLY=1 npm run editorial:auto-advance
+      - name: Build human approval queue report
+        run: npm run editorial:queue-report
+      - name: Upload approval queue artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-human-approval-queue
+          path: artifacts/editorial-queue
+          if-no-files-found: error
+          retention-days: 14
