@@ -41,6 +41,7 @@ const rows = await sql`
 if (!rows.length) throw new Error(`Initiative not found: ${slug}`);
 const row = rows[0];
 const preparation = row.metadata?.editorial_preparation || {};
+const copyReview = row.metadata?.editorial_copy_review || {};
 
 function filled(value) {
   return Boolean(String(value || "").trim());
@@ -58,6 +59,8 @@ const checks = {
   primarySourcePresent: row.primary_source_count > 0,
   corroborationPresent: row.high_reliability_source_count >= 2,
   verificationTimestampPresent: Boolean(row.last_verified_at),
+  editorialCopyReviewed: copyReview.review_state === "EDITORIAL_REVIEWED",
+  publicationStillRequiresHumanReview: copyReview.human_review_required_for_publication === true,
 };
 
 const blockers = Object.entries(checks)
@@ -85,6 +88,14 @@ const plan = {
   translationStates: {
     titlePt: preparation.portuguese_title_state || null,
     summaryPt: preparation.portuguese_summary_state || null,
+    summaryEn: preparation.english_summary_state || null,
+  },
+  copyReview: {
+    state: copyReview.review_state || null,
+    reviewerType: copyReview.reviewer_type || null,
+    reviewedAt: copyReview.reviewed_at || null,
+    evidenceUrls: copyReview.evidence_urls || [],
+    humanReviewRequiredForPublication: copyReview.human_review_required_for_publication ?? null,
   },
   evidence: {
     organization: preparation.organization_evidence_url || null,
@@ -105,7 +116,8 @@ const transition = {
   from: "DRAFT",
   to: "REVIEW",
   transitioned_at: new Date().toISOString(),
-  gate_version: 1,
+  gate_version: 2,
+  editorial_copy_reviewed: true,
   human_review_still_required_for_publication: true,
 };
 
