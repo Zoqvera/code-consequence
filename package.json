@@ -22,6 +22,7 @@
     "editorial:prepare-drafts": "node scripts/prepare-initiative-drafts.mjs",
     "editorial:apply-reviewed": "node scripts/apply-reviewed-initiative.mjs",
     "editorial:to-review": "node scripts/move-initiative-to-review.mjs",
+    "editorial:publish": "node scripts/publish-reviewed-initiative.mjs",
     "content:export": "node scripts/export-neon-content.mjs"
   },
   "dependencies": {
