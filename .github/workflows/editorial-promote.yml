@@ -1,5 +1,6 @@
 name: Promote verified initiative drafts
 
+# Push trigger is temporary and runs dry-run only; manual dispatch is required for writes.
 on:
   workflow_dispatch:
     inputs:
