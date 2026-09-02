@@ -6,6 +6,7 @@ if (!connectionString) throw new Error("DATABASE_URL is required");
 
 const sql = neon(connectionString);
 const apply = process.env.PROMOTE_APPLY === "1";
+const now = new Date();
 
 const topicSlugByCode = {
   POWER_DEMOCRACY: "power-democracy",
@@ -33,6 +34,14 @@ function stableSuffix(value) {
 
 function cleanRiskFlags(flags = []) {
   return flags.filter((flag) => flag && flag !== "NONE");
+}
+
+function safePublishedAt(value) {
+  if (!value) return { value: null, rejectedFutureDate: null };
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return { value: null, rejectedFutureDate: String(value) };
+  if (date.getTime() > now.getTime()) return { value: null, rejectedFutureDate: date.toISOString() };
+  return { value: date.toISOString(), rejectedFutureDate: null };
 }
 
 const rows = await sql`
@@ -104,6 +113,7 @@ for (const row of grouped.values()) {
   const operationalStatus = ["ANNOUNCED", "ACTIVE", "COMPLETED", "PAUSED", "CANCELLED"].includes(classification.initiative_status)
     ? classification.initiative_status
     : "ANNOUNCED";
+  const publishedAt = safePublishedAt(row.published_at);
 
   plan.push({
     clusterId: candidate.cluster_id,
@@ -125,7 +135,8 @@ for (const row of grouped.values()) {
       publisher: row.publisher,
       sourceType: row.source_type,
       reliability: row.reliability,
-      publishedAt: row.published_at,
+      publishedAt: publishedAt.value,
+      rejectedFutureDate: publishedAt.rejectedFutureDate,
     },
     verificationSources: verification.evidence_sources || [],
     verifiedAt: verification.reviewed_at || new Date().toISOString(),
@@ -135,13 +146,18 @@ for (const row of grouped.values()) {
 }
 
 plan.sort((a, b) => b.priority - a.priority || a.canonicalTitle.localeCompare(b.canonicalTitle));
+const missingTopicLinks = [...new Set(plan.flatMap((item) => item.missingTopicSlugs))];
+const futureSourceDatesRejected = plan
+  .filter((item) => item.collectedSource.rejectedFutureDate)
+  .map((item) => ({ title: item.canonicalTitle, rejectedDate: item.collectedSource.rejectedFutureDate }));
 
 if (!apply) {
   console.log(JSON.stringify({
     mode: "DRY_RUN",
     eligibleDrafts: plan.length,
     existingDrafts: plan.filter((item) => item.existingInitiative).length,
-    missingTopicLinks: [...new Set(plan.flatMap((item) => item.missingTopicSlugs))],
+    missingTopicLinks,
+    futureSourceDatesRejected,
     plan: plan.map(({ summaryEn, problemEn, goalsEn, ...item }) => ({
       ...item,
       hasEnglishSummary: Boolean(summaryEn),
@@ -150,6 +166,10 @@ if (!apply) {
     })),
   }, null, 2));
   process.exit(0);
+}
+
+if (missingTopicLinks.length) {
+  throw new Error(`Promotion blocked: missing editorial topics: ${missingTopicLinks.join(", ")}`);
 }
 
 const promoted = [];
@@ -178,6 +198,7 @@ for (const item of plan) {
     organizations: item.organizations,
     countries: item.countries,
     verification_sources: item.verificationSources,
+    rejected_future_source_date: item.collectedSource.rejectedFutureDate,
     promoted_at: new Date().toISOString(),
   };
 
@@ -212,7 +233,7 @@ for (const item of plan) {
       goals = EXCLUDED.goals
   `;
 
-  const sourceRows = await sql`
+  const collectedSourceRows = await sql`
     INSERT INTO sources (
       url, title, publisher, source_type, reliability, published_at, metadata
     ) VALUES (
@@ -222,18 +243,52 @@ for (const item of plan) {
       ${item.collectedSource.sourceType}::source_type,
       ${item.collectedSource.reliability}::reliability_level,
       ${item.collectedSource.publishedAt}::timestamptz,
-      ${JSON.stringify({ ingestion_item_id: item.ingestionItemId, role: "collected_primary_record" })}::jsonb
+      ${JSON.stringify({
+        ingestion_item_id: item.ingestionItemId,
+        role: "collected_primary_record",
+        rejected_future_published_at: item.collectedSource.rejectedFutureDate,
+      })}::jsonb
     )
     ON CONFLICT (url) DO UPDATE SET retrieved_at = now()
     RETURNING id
   `;
-  const sourceId = sourceRows[0].id;
 
   await sql`
     INSERT INTO initiative_sources (initiative_id, source_id)
-    VALUES (${initiativeId}, ${sourceId})
+    VALUES (${initiativeId}, ${collectedSourceRows[0].id})
     ON CONFLICT DO NOTHING
   `;
+
+  for (const source of item.verificationSources) {
+    if (!source?.url) continue;
+    const sourceType = ["PRIMARY", "SCIENTIFIC", "JOURNALISTIC", "INSTITUTIONAL", "DISCOVERY"].includes(source.source_type)
+      ? source.source_type
+      : "INSTITUTIONAL";
+    const reliability = ["A", "B", "C", "D"].includes(source.reliability) ? source.reliability : "B";
+    const sourceRows = await sql`
+      INSERT INTO sources (
+        url, title, publisher, source_type, reliability, metadata
+      ) VALUES (
+        ${source.url},
+        ${`Verification record — ${source.publisher || "source"}`},
+        ${source.publisher || null},
+        ${sourceType}::source_type,
+        ${reliability}::reliability_level,
+        ${JSON.stringify({
+          role: source.role || "independent_verification",
+          provisional_title: true,
+          editorial_cluster_id: item.clusterId,
+        })}::jsonb
+      )
+      ON CONFLICT (url) DO UPDATE SET retrieved_at = now()
+      RETURNING id
+    `;
+    await sql`
+      INSERT INTO initiative_sources (initiative_id, source_id)
+      VALUES (${initiativeId}, ${sourceRows[0].id})
+      ON CONFLICT DO NOTHING
+    `;
+  }
 
   for (const topicSlug of item.topicSlugs) {
     const topicId = topicIdBySlug.get(topicSlug);
@@ -254,5 +309,6 @@ console.log(JSON.stringify({
   createdDrafts: promoted.filter((item) => item.action === "CREATED_DRAFT").length,
   skippedExisting: promoted.filter((item) => item.action === "SKIPPED_EXISTING").length,
   skippedMissingSummary: promoted.filter((item) => item.action === "SKIPPED_MISSING_SUMMARY").length,
+  futureSourceDatesRejected,
   promoted,
 }, null, 2));
