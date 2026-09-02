@@ -25,7 +25,8 @@ async function applySqlSource(label, source) {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
 
-      // The base schema and additive migrations are intentionally re-runnable.
+      // Fresh-schema creation and additive migrations are intentionally
+      // re-runnable. Other errors must remain visible.
       if (/already exists|duplicate column/i.test(message)) {
         console.log(`skip ${label}: ${message}`);
         continue;
@@ -38,9 +39,6 @@ async function applySqlSource(label, source) {
   console.log(`Applied ${statements.length} statements from ${label}.`);
 }
 
-const schemaUrl = new URL("../db/schema.sql", import.meta.url);
-await applySqlSource("db/schema.sql", await readFile(schemaUrl, "utf8"));
-
 const migrationsUrl = new URL("../db/migrations/", import.meta.url);
 let migrationFiles = [];
 try {
@@ -49,6 +47,19 @@ try {
     .sort();
 } catch (error) {
   if (error?.code !== "ENOENT") throw error;
+}
+
+const existingCoreTables = await sql`
+  SELECT to_regclass('public.initiatives') AS initiatives,
+         to_regclass('public.ingestion_items') AS ingestion_items
+`;
+const hasBaseSchema = Boolean(existingCoreTables[0]?.initiatives && existingCoreTables[0]?.ingestion_items);
+
+if (!hasBaseSchema) {
+  const schemaUrl = new URL("../db/schema.sql", import.meta.url);
+  await applySqlSource("db/schema.sql", await readFile(schemaUrl, "utf8"));
+} else {
+  console.log("Base schema already exists; applying versioned migrations only.");
 }
 
 for (const migrationFile of migrationFiles) {
