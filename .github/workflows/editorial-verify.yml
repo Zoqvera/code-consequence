@@ -1,12 +1,7 @@
 name: Apply editorial verifications
 
-# Temporary push trigger used only to validate the URL-anchored review mechanism.
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/editorial-verify.yml"
 
 permissions:
   contents: read
