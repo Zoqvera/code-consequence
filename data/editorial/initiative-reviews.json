@@ -1,0 +1,17 @@
+{
+  "thailand-ai-readiness-assessment-unesco-ram": {
+    "titleEn": "Thailand AI Readiness Assessment (UNESCO RAM)",
+    "summaryEn": "UNESCO's Readiness Assessment Methodology was applied in Thailand through a multi-stakeholder process involving more than 30 institutions across government, academia, the private sector and civil society. The assessment examines five dimensions of the country's AI governance ecosystem, identifies gaps in policy coherence, institutional coordination and capacity development, and provides recommendations intended to support more ethical and sustainable AI adoption.",
+    "titlePt": "Avaliação de Prontidão para IA da Tailândia (RAM da UNESCO)",
+    "summaryPt": "A Metodologia de Avaliação de Prontidão da UNESCO foi aplicada na Tailândia por meio de um processo multissetorial que envolveu mais de 30 instituições do governo, da academia, do setor privado e da sociedade civil. A avaliação examina cinco dimensões do ecossistema de governança de IA do país, identifica lacunas de coerência de políticas, coordenação institucional e desenvolvimento de capacidades e apresenta recomendações voltadas a uma adoção de IA mais ética e sustentável.",
+    "organization": "UNESCO",
+    "regionEn": "Thailand",
+    "regionPt": "Tailândia",
+    "evidenceUrls": [
+      "https://www.unesco.org/en/articles/thailand-artificial-intelligence-readiness-assessment-report",
+      "https://www.unesco.org/en/articles/unescos-ai-readiness-assessment-boost-ethical-governance-ai-thailand-host-country-2025-global-forum",
+      "https://www.etda.or.th/th/pr-news/ai_etda_unesco_EN.aspx"
+    ],
+    "reviewNotes": "Removed language that conflated the Thailand RAM assessment with separate governance-network announcements made around UNESCO's 2025 Bangkok forum. Copy now describes only the documented RAM process, findings and policy-recommendation function."
+  }
+}
