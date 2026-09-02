@@ -1,12 +1,7 @@
 name: Initialize Neon database
 
-# Temporary push trigger used only to apply the canonical topic seed migration.
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "db/migrations/**"
 
 permissions:
   contents: read
