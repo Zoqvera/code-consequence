@@ -1,9 +1,10 @@
 {
-  "version": 1,
+  "version": 2,
   "reviewed_at": "2026-09-02T00:47:00Z",
   "records": [
     {
-      "cluster_id": "c07d83f7dc8e4a29",
+      "previous_cluster_id": "c07d83f7dc8e4a29",
+      "match_url": "https://digital-strategy.ec.europa.eu/en/policies/enforcement-ai-act",
       "canonical_title": "EU AI Act enforcement framework",
       "decision": "VERIFIED_STANDALONE",
       "verification_level": "INDEPENDENT_CONFIRMED",
@@ -26,7 +27,8 @@
       ]
     },
     {
-      "cluster_id": "8fe1661c9e9a0c86",
+      "previous_cluster_id": "8fe1661c9e9a0c86",
+      "match_url": "https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence",
       "canonical_title": "European approach to artificial intelligence",
       "decision": "UMBRELLA_NOT_STANDALONE",
       "verification_level": "NOT_APPLICABLE",
@@ -42,7 +44,8 @@
       ]
     },
     {
-      "cluster_id": "eb9f7f4dbcfc0722",
+      "previous_cluster_id": "eb9f7f4dbcfc0722",
+      "match_url": "https://digital-strategy.ec.europa.eu/sk/policies/artificial-intelligence",
       "canonical_title": "European Union AI policy framework",
       "decision": "UMBRELLA_NOT_STANDALONE",
       "verification_level": "NOT_APPLICABLE",
@@ -65,7 +68,8 @@
       ]
     },
     {
-      "cluster_id": "491f681d4a7609ef",
+      "previous_cluster_id": "491f681d4a7609ef",
+      "match_url": "https://digital-strategy.ec.europa.eu/en/policies/ai-office",
       "canonical_title": "European AI Office",
       "decision": "VERIFIED_STANDALONE",
       "verification_level": "INDEPENDENT_CONFIRMED",
@@ -88,7 +92,8 @@
       ]
     },
     {
-      "cluster_id": "a9d01b5260f08671",
+      "previous_cluster_id": "a9d01b5260f08671",
+      "match_url": "https://www.unesco.org/en/artificial-intelligence/recommendation-ethics",
       "canonical_title": "UNESCO Recommendation on the Ethics of Artificial Intelligence",
       "decision": "VERIFIED_STANDALONE",
       "verification_level": "INDEPENDENT_CONFIRMED",
@@ -111,7 +116,8 @@
       ]
     },
     {
-      "cluster_id": "f70da88f473f721c",
+      "previous_cluster_id": "f70da88f473f721c",
+      "match_url": "https://www.unesco.org/ethics-ai/en/coalition-linguistic-diversity-artificial-intelligence",
       "canonical_title": "Coalition for Linguistic Diversity in Artificial Intelligence",
       "decision": "VERIFIED_STANDALONE",
       "verification_level": "INDEPENDENT_CONFIRMED",
@@ -134,7 +140,8 @@
       ]
     },
     {
-      "cluster_id": "70e683382bddf846",
+      "previous_cluster_id": "70e683382bddf846",
+      "match_url": "https://digital-strategy.ec.europa.eu/en/policies/ai-factories",
       "canonical_title": "EU AI Factories and AI Gigafactories",
       "decision": "SPLIT_REQUIRED",
       "verification_level": "INDEPENDENT_CONFIRMED",
@@ -161,7 +168,8 @@
       ]
     },
     {
-      "cluster_id": "b5578e2d623da006",
+      "previous_cluster_id": "b5578e2d623da006",
+      "match_url": "https://digital-strategy.ec.europa.eu/en/policies/apply-ai",
       "canonical_title": "Apply AI Strategy",
       "decision": "VERIFIED_STANDALONE",
       "verification_level": "INDEPENDENT_CONFIRMED",
@@ -184,7 +192,8 @@
       ]
     },
     {
-      "cluster_id": "c19065a1da1e5a74",
+      "previous_cluster_id": "c19065a1da1e5a74",
+      "match_url": "https://digital-strategy.ec.europa.eu/sl/policies/artificial-intelligence",
       "canonical_title": "European Union Artificial Intelligence Act",
       "decision": "VERIFIED_STANDALONE",
       "verification_level": "INDEPENDENT_CONFIRMED",
