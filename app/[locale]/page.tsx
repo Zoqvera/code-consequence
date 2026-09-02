@@ -5,6 +5,7 @@ import { articles, topics } from "@/lib/content";
 import { getUpcomingEvents, type AiEvent } from "@/lib/events";
 import { initiatives } from "@/lib/initiatives";
 import { dictionary, isLocale, type Locale } from "@/lib/i18n";
+import styles from "./home.module.css";
 
 function formatEventDate(date: string, locale: Locale) {
   const value = new Date(`${date}T12:00:00Z`);
@@ -76,12 +77,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </div>
       </section>
 
-      <section className="section shell home-events">
-        <div className="section-heading home-events-heading">
+      <section className={`section shell ${styles.events}`}>
+        <div className={`section-heading ${styles.heading}`}>
           <p className="eyebrow">03 / {pt ? "Agenda global" : "Global calendar"}</p>
           <div>
             <h2>{pt ? "Próximos eventos de IA" : "Upcoming AI events"}</h2>
-            <p className="home-events-intro">
+            <p className={styles.intro}>
               {pt
                 ? "Eventos verificados a partir de fontes oficiais e revisados automaticamente pela nossa rotina de monitoramento."
                 : "Events verified from official sources and automatically reviewed by our monitoring workflow."}
@@ -90,16 +91,16 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </div>
 
         {upcomingEvents.length > 0 ? (
-          <div className="home-event-list">
+          <div className={styles.list}>
             {upcomingEvents.map((event) => {
               const date = formatEventDate(event.startDate, locale);
               return (
-                <article className="home-event-row" key={event.externalKey}>
-                  <div className="home-event-date" aria-label={event.startDate}>
+                <article className={styles.row} key={event.externalKey}>
+                  <div className={styles.date} aria-label={event.startDate}>
                     <strong>{date.day}</strong>
                     <span>{date.month}</span>
                   </div>
-                  <div className="home-event-main">
+                  <div className={styles.main}>
                     <p className="card-meta">
                       <span>{formatEventFormat(event.format, locale)}</span>
                       <span>{event.organizer}</span>
@@ -108,8 +109,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                     <h3><Link href={`/${locale}/events/${event.externalKey}`}>{event.title[locale]}</Link></h3>
                     <p>{event.summary[locale]}</p>
                   </div>
-                  <div className="home-event-side">
-                    <div className="home-event-countdown">
+                  <div className={styles.side}>
+                    <div className={styles.countdown}>
                       <EventCountdown date={event.startDate} startsAt={event.startsAt} locale={locale} />
                     </div>
                     <Link className="text-link" href={`/${locale}/events/${event.externalKey}`}>
@@ -121,10 +122,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             })}
           </div>
         ) : (
-          <p className="home-events-empty">{pt ? "Nenhum evento futuro verificado no momento." : "No verified upcoming events at the moment."}</p>
+          <p className={styles.empty}>{pt ? "Nenhum evento futuro verificado no momento." : "No verified upcoming events at the moment."}</p>
         )}
 
-        <div className="home-events-footer">
+        <div className={styles.footer}>
           <Link className="button" href={`/${locale}/events`}>
             {pt ? "Ver agenda completa" : "View full calendar"} →
           </Link>
