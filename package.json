@@ -16,7 +16,8 @@
     "enrich:classify": "node scripts/enrich.mjs",
     "editorial:prepare": "node scripts/prepare-editorial.mjs",
     "editorial:verify": "node scripts/apply-editorial-verifications.mjs",
-    "editorial:report": "node scripts/editorial-report.mjs"
+    "editorial:report": "node scripts/editorial-report.mjs",
+    "editorial:promote": "node scripts/promote-verified-initiatives.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
