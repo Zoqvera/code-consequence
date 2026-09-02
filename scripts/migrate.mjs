@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { neon } from "@neondatabase/serverless";
 
 const connectionString = process.env.DATABASE_URL;
@@ -8,31 +8,52 @@ if (!connectionString) {
 }
 
 const sql = neon(connectionString);
-const source = await readFile(new URL("../db/schema.sql", import.meta.url), "utf8");
 
-// The schema currently contains only simple DDL statements, so semicolon
-// splitting is sufficient. Keep function/procedure bodies out of this file
-// unless this migration runner is upgraded to a full SQL parser.
-const statements = source
-  .split(";")
-  .map((statement) => statement.trim())
-  .filter(Boolean);
+async function applySqlSource(label, source) {
+  // The schema and migration files currently contain only simple DDL
+  // statements, so semicolon splitting is sufficient. Keep function or
+  // procedure bodies out of these files unless this runner is upgraded to a
+  // full SQL parser.
+  const statements = source
+    .split(";")
+    .map((statement) => statement.trim())
+    .filter(Boolean);
 
-for (const statement of statements) {
-  try {
-    await sql.query(statement);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
+  for (const statement of statements) {
+    try {
+      await sql.query(statement);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
 
-    // Initial schema creation should be re-runnable. PostgreSQL reports these
-    // cases when an enum/table/index already exists.
-    if (/already exists/i.test(message)) {
-      console.log(`skip: ${message}`);
-      continue;
+      // The base schema and additive migrations are intentionally re-runnable.
+      if (/already exists|duplicate column/i.test(message)) {
+        console.log(`skip ${label}: ${message}`);
+        continue;
+      }
+
+      throw error;
     }
-
-    throw error;
   }
+
+  console.log(`Applied ${statements.length} statements from ${label}.`);
 }
 
-console.log(`Applied ${statements.length} schema statements.`);
+const schemaUrl = new URL("../db/schema.sql", import.meta.url);
+await applySqlSource("db/schema.sql", await readFile(schemaUrl, "utf8"));
+
+const migrationsUrl = new URL("../db/migrations/", import.meta.url);
+let migrationFiles = [];
+try {
+  migrationFiles = (await readdir(migrationsUrl))
+    .filter((name) => name.endsWith(".sql"))
+    .sort();
+} catch (error) {
+  if (error?.code !== "ENOENT") throw error;
+}
+
+for (const migrationFile of migrationFiles) {
+  const migrationUrl = new URL(migrationFile, migrationsUrl);
+  await applySqlSource(`db/migrations/${migrationFile}`, await readFile(migrationUrl, "utf8"));
+}
+
+console.log(`Database migration complete. ${migrationFiles.length} migration file(s) checked.`);
