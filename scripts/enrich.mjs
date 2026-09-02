@@ -1,5 +1,5 @@
-import * as cheerio from "cheerio";
 import { neon } from "@neondatabase/serverless";
+import { fetchSource } from "./source-extractor.mjs";
 
 const connectionString = process.env.DATABASE_URL;
 const apiKey = process.env.OPENAI_API_KEY;
@@ -10,6 +10,7 @@ if (!apiKey) throw new Error("OPENAI_API_KEY is required");
 const sql = neon(connectionString);
 const model = process.env.OPENAI_MODEL || "gpt-5.6-luna";
 const batchSize = Math.max(1, Math.min(Number(process.env.ENRICH_BATCH_SIZE || 6), 20));
+const userAgent = process.env.INGESTION_USER_AGENT || "CodeAndConsequenceBot/0.1";
 
 const topicValues = [
   "POWER_DEMOCRACY",
@@ -75,16 +76,6 @@ const classificationSchema = {
   ],
 };
 
-function normalizeText(value = "") {
-  return value.replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
-}
-
-function normalizePublishedAt(value) {
-  if (!value) return null;
-  const date = new Date(value);
-  return Number.isNaN(date.valueOf()) ? null : date.toISOString();
-}
-
 function normalizeEditorialPriority(classification) {
   const parsed = Number(classification.editorial_priority);
   const bounded = Number.isFinite(parsed) ? Math.max(0, Math.min(100, Math.round(parsed))) : 0;
@@ -96,45 +87,6 @@ function normalizeEditorialPriority(classification) {
     return Math.max(70, bounded);
   }
   return Math.max(30, Math.min(69, bounded));
-}
-
-function extractPage(html) {
-  const $ = cheerio.load(html);
-  $("script, style, noscript, svg, nav, footer, header, form, dialog").remove();
-
-  const pageTitle = normalizeText($("meta[property='og:title']").attr("content") || $("h1").first().text() || $("title").text());
-  const description = normalizeText(
-    $("meta[name='description']").attr("content") || $("meta[property='og:description']").attr("content") || "",
-  );
-  const rawPublishedAt = normalizeText(
-    $("meta[property='article:published_time']").attr("content") ||
-      $("meta[name='date']").attr("content") ||
-      $("time[datetime]").first().attr("datetime") ||
-      "",
-  );
-
-  const root = $("article").first().length
-    ? $("article").first()
-    : $("main").first().length
-      ? $("main").first()
-      : $("[role='main']").first().length
-        ? $("[role='main']").first()
-        : $("body");
-
-  const blocks = [];
-  root.find("h1, h2, h3, p, li, blockquote").each((_, element) => {
-    const text = normalizeText($(element).text());
-    if (text.length >= 35) blocks.push(text);
-  });
-
-  const body = [...new Set(blocks)].join("\n").slice(0, 16000);
-  return {
-    pageTitle,
-    description,
-    rawPublishedAt,
-    publishedAt: normalizePublishedAt(rawPublishedAt),
-    body,
-  };
 }
 
 function getOutputText(payload) {
@@ -153,6 +105,7 @@ async function classifyItem(item, page) {
     `Source publisher: ${item.publisher}`,
     `Discovery title: ${item.title}`,
     `Canonical URL: ${item.canonical_url}`,
+    `Source format: ${page.sourceFormat}`,
     page.pageTitle ? `Page title: ${page.pageTitle}` : "",
     page.rawPublishedAt ? `Published date shown by page: ${page.rawPublishedAt}` : "",
     page.description ? `Page description: ${page.description}` : "",
@@ -178,9 +131,10 @@ async function classifyItem(item, page) {
         "Analyze ONLY the supplied source material. Do not use outside knowledge and do not fill gaps by inference.",
         "A page is relevant when AI substantively intersects with power, democracy, work, economy, rights, society, governance, regulation, infrastructure, energy, water, climate, minerals, public institutions, education, or another consequential social/environmental domain.",
         "Set initiative_detected=true only for a concrete law, regulation, public programme, research project, civil-society action, toolkit, standard, governance process, or other identifiable response to a problem. Mere commentary is not an initiative.",
-        "Countries and organizations must be explicitly supported by the supplied source. If uncertain, omit them from arrays rather than guessing.",
+        "Countries and organizations must be explicitly supported by the supplied source. A country merely mentioned as an example, comparison, venue, or destination must not be treated as the initiative's jurisdiction unless the source explicitly establishes that relationship.",
         "problem_summary, response_summary, evidence_signals and both synopses must be concise paraphrases, not quotations.",
         "Keep evidence_signals to at most five short items.",
+        "If the extracted source is short or incomplete, use LIMITED_EVIDENCE and prefer REVIEW over PRIORITIZE unless the evidence is still unambiguous.",
         "editorial_priority uses a 0-to-100 scale where 100 is the highest editorial priority and 0 is the lowest. Required bands: DISMISS=0-29, REVIEW=30-69, PRIORITIZE=70-100.",
         "Use PRIORITIZE only for strong consequential relevance or a concrete response initiative; REVIEW for plausible but incomplete evidence; DISMISS for navigation pages, generic AI promotion, or non-substantive material.",
       ].join("\n"),
@@ -216,6 +170,7 @@ async function classifyItem(item, page) {
     output_tokens: payload.usage?.output_tokens ?? null,
     total_tokens: payload.usage?.total_tokens ?? null,
     fetched_chars: page.body.length,
+    source_format: page.sourceFormat,
     priority_original: originalPriority,
     priority_adjusted: originalPriority !== classification.editorial_priority,
     classified_at: new Date().toISOString(),
@@ -243,21 +198,8 @@ const results = [];
 
 for (const item of items) {
   try {
-    const response = await fetch(item.canonical_url, {
-      headers: {
-        "user-agent": process.env.INGESTION_USER_AGENT || "CodeAndConsequenceBot/0.1",
-        accept: "text/html,application/xhtml+xml",
-      },
-      signal: AbortSignal.timeout(30000),
-    });
-
-    if (!response.ok) throw new Error(`Source HTTP ${response.status}`);
-    const contentType = response.headers.get("content-type") || "";
-    if (!contentType.includes("text/html")) throw new Error(`Unsupported content type: ${contentType || "unknown"}`);
-
-    const html = await response.text();
-    const page = extractPage(html);
-    if (page.body.length < 300) throw new Error("Insufficient extractable source text");
+    const page = await fetchSource(item.canonical_url, userAgent);
+    if (page.body.length < 180) throw new Error("Insufficient extractable source text");
 
     await sql`
       UPDATE ingestion_items
@@ -289,6 +231,7 @@ for (const item of items) {
       priorityAdjusted: classification._meta.priority_adjusted,
       kind: classification.content_kind,
       initiative: classification.initiative_detected,
+      sourceFormat: page.sourceFormat,
       usage: {
         inputTokens: classification._meta.input_tokens,
         outputTokens: classification._meta.output_tokens,
@@ -313,6 +256,7 @@ const summary = results.reduce(
     else if (result.status === "REVIEW") acc.review += 1;
     else if (result.status === "IRRELEVANT") acc.irrelevant += 1;
     else if (result.status === "ERROR") acc.errors += 1;
+    if (result.sourceFormat === "PDF") acc.pdfs += 1;
     if (result.usage) {
       acc.inputTokens += result.usage.inputTokens || 0;
       acc.outputTokens += result.usage.outputTokens || 0;
@@ -320,7 +264,7 @@ const summary = results.reduce(
     }
     return acc;
   },
-  { processed: 0, relevant: 0, review: 0, irrelevant: 0, errors: 0, inputTokens: 0, outputTokens: 0, totalTokens: 0 },
+  { processed: 0, relevant: 0, review: 0, irrelevant: 0, errors: 0, pdfs: 0, inputTokens: 0, outputTokens: 0, totalTokens: 0 },
 );
 
 console.log(JSON.stringify({ model, batchSize, summary, results }, null, 2));
