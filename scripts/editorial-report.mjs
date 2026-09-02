@@ -79,7 +79,7 @@ const candidates = [...clusters.values()].sort((a, b) => b.priority - a.priority
 
 function verificationLane(candidate) {
   const manual = candidate.editorialVerification;
-  if (manual?.decision === "UMBRELLA_NOT_STANDALONE") return "NOT_STANDALONE";
+  if (["UMBRELLA_NOT_STANDALONE", "NOT_STANDALONE"].includes(manual?.decision)) return "NOT_STANDALONE";
   if (manual?.decision === "SPLIT_REQUIRED") return "SPLIT_REQUIRED";
   if (manual?.decision === "HOLD") return "MANUAL_REVIEW";
   if (candidate.reviewState === "NEEDS_REVIEW") return "MANUAL_REVIEW";
@@ -128,7 +128,7 @@ const lines = [
   `- Need an independent source: ${counts.INDEPENDENT_SOURCE_REQUIRED}`,
   `- Need risk review: ${counts.RISK_REVIEW}`,
   `- Need manual review: ${counts.MANUAL_REVIEW}`,
-  `- Umbrella/background records not suitable as standalone initiatives: ${counts.NOT_STANDALONE}`,
+  `- Background, umbrella or event records not suitable as standalone initiatives: ${counts.NOT_STANDALONE}`,
   `- Records that must be split into distinct initiatives: ${counts.SPLIT_REQUIRED}`,
   "",
   "Verification is conservative: multiple URLs from the same publisher do not count as independent verification. Manual verification records can promote, reclassify or split a candidate.",
