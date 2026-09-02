@@ -30,6 +30,21 @@ function normalize(value = "") {
     .trim();
 }
 
+function canonicalizeUrl(value = "") {
+  try {
+    const url = new URL(value);
+    url.hash = "";
+    for (const key of [...url.searchParams.keys()]) {
+      if (/^(utm_|fbclid$|gclid$|mc_)/i.test(key)) url.searchParams.delete(key);
+    }
+    url.pathname = url.pathname.replace(/\/{2,}/g, "/").replace(/\/$/, "") || "/";
+    const search = url.searchParams.toString();
+    return `${url.protocol}//${url.host}${url.pathname}${search ? `?${search}` : ""}`;
+  } catch {
+    return String(value).trim().replace(/\/$/, "");
+  }
+}
+
 function tokens(value) {
   return new Set(normalize(value).split(" ").filter((token) => token.length > 1 && !stopWords.has(token)));
 }
@@ -68,10 +83,17 @@ function compatible(left, right) {
 
   const leftOrganizations = left.classification?.organizations || [];
   const rightOrganizations = right.classification?.organizations || [];
-  if (!intersects(leftOrganizations, rightOrganizations)) return false;
+  const orgCompatible = intersects(leftOrganizations, rightOrganizations);
+  if (!orgCompatible) return false;
 
   if (left.normalizedTitle === right.normalizedTitle) return true;
   return jaccard(left.titleTokens, right.titleTokens) >= 0.86;
+}
+
+function verificationStatus(sourceUrls, publishers) {
+  if (sourceUrls.length <= 1) return "SINGLE_DOCUMENT";
+  if (publishers.length <= 1) return "MULTI_DOCUMENT_SAME_PUBLISHER";
+  return "MULTI_PUBLISHER";
 }
 
 const items = await sql`
@@ -138,20 +160,19 @@ const clusters = [];
 for (const members of groups.values()) {
   members.sort((a, b) => b.relevance_score - a.relevance_score);
   const primary = members[0];
-  const sourceUrls = [...new Set(members.map((item) => item.canonical_url))];
-  const publishers = [...new Set(members.map((item) => item.publisher).filter(Boolean))];
-  const organizations = [...new Set(members.flatMap((item) => item.classification?.organizations || []))];
   const countries = [...new Set(members.flatMap((item) => item.classification?.countries || []))];
+  const jurisdictionSeed = countries.map(normalize).sort().join(",");
+  const clusterSeed = `${primary.type}:${primary.normalizedTitle}:${normalize(primary.classification?.organizations?.[0] || "")}:${jurisdictionSeed}`;
+  const clusterId = createHash("sha256").update(clusterSeed).digest("hex").slice(0, 16);
+  const sourceUrls = [...new Set(members.map((item) => canonicalizeUrl(item.canonical_url)).filter(Boolean))];
+  const publishers = [...new Set(members.map((item) => item.publisher).filter(Boolean))];
+  const normalizedPublishers = [...new Set(publishers.map(normalize).filter(Boolean))];
+  const organizations = [...new Set(members.flatMap((item) => item.classification?.organizations || []))];
   const topics = [...new Set(members.flatMap((item) => item.classification?.topics || []))];
   const riskFlags = [...new Set(members.flatMap((item) => item.classification?.risk_flags || []).filter((flag) => flag !== "NONE"))];
   const evidenceSignals = [...new Set(members.flatMap((item) => item.classification?.evidence_signals || []))].slice(0, 12);
   const hasReviewItem = members.some((item) => item.relevance_status === "REVIEW");
-
-  // Member IDs make the identifier unique even when two same-named initiatives
-  // are kept separate because their jurisdictions or actors do not overlap.
-  const memberKey = members.map((item) => item.id).sort().join(",");
-  const clusterSeed = `${primary.type}:${primary.normalizedTitle}:${memberKey}`;
-  const clusterId = createHash("sha256").update(clusterSeed).digest("hex").slice(0, 16);
+  const verification = verificationStatus(sourceUrls, normalizedPublishers);
 
   const shared = {
     version: 2,
@@ -161,7 +182,9 @@ for (const members of groups.values()) {
     primary_item_id: primary.id,
     highest_priority: primary.relevance_score,
     review_state: hasReviewItem ? "NEEDS_REVIEW" : "READY_FOR_REVIEW",
-    verification_status: sourceUrls.length >= 2 ? "MULTI_SOURCE" : "SINGLE_SOURCE",
+    verification_status: verification,
+    canonical_source_urls: sourceUrls,
+    distinct_publisher_count: normalizedPublishers.length,
     duplicate_group_size: members.length,
     member_item_ids: members.map((item) => item.id),
     source_urls: sourceUrls,
@@ -191,7 +214,7 @@ for (const members of groups.values()) {
     title: primary.candidateTitle,
     priority: primary.relevance_score,
     reviewState: shared.review_state,
-    verification: shared.verification_status,
+    verification,
     members: members.length,
     publishers,
     organizations,
@@ -202,18 +225,18 @@ for (const members of groups.values()) {
 }
 
 clusters.sort((a, b) => b.priority - a.priority || b.members - a.members);
-
-const uniqueClusterIds = new Set(clusters.map((cluster) => cluster.clusterId));
-if (uniqueClusterIds.size !== clusters.length) {
-  throw new Error(`Cluster ID collision detected: ${clusters.length} clusters, ${uniqueClusterIds.size} unique IDs`);
+const uniqueClusterIds = new Set(clusters.map((cluster) => cluster.clusterId)).size;
+if (uniqueClusterIds !== clusters.length) {
+  throw new Error(`Editorial cluster ID collision: ${clusters.length} clusters but ${uniqueClusterIds} unique IDs`);
 }
 
 console.log(JSON.stringify({
   inputItems: items.length,
   candidateClusters: clusters.length,
-  uniqueClusterIds: uniqueClusterIds.size,
+  uniqueClusterIds,
   duplicateItemsCollapsed: items.length - clusters.length,
-  multiSourceClusters: clusters.filter((cluster) => cluster.verification === "MULTI_SOURCE").length,
+  independentlyVerifiedClusters: clusters.filter((cluster) => cluster.verification === "MULTI_PUBLISHER").length,
+  samePublisherMultiDocumentClusters: clusters.filter((cluster) => cluster.verification === "MULTI_DOCUMENT_SAME_PUBLISHER").length,
   needsReview: clusters.filter((cluster) => cluster.reviewState === "NEEDS_REVIEW").length,
   byType: clusters.reduce((acc, cluster) => {
     acc[cluster.type] = (acc[cluster.type] || 0) + 1;
