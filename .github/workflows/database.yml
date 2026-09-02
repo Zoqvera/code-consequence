@@ -6,7 +6,7 @@ on:
   push:
     branches: [main]
     paths:
-      - ".github/workflows/database.yml"
+      - "db/migrations/**"
 
 permissions:
   contents: read
