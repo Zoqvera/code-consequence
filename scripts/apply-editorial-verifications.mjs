@@ -15,6 +15,7 @@ if (!Array.isArray(payload.records) || !payload.records.length) {
 const validDecisions = new Set([
   "VERIFIED_STANDALONE",
   "UMBRELLA_NOT_STANDALONE",
+  "NOT_STANDALONE",
   "SPLIT_REQUIRED",
   "HOLD",
 ]);
