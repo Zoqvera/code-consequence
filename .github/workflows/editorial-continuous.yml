@@ -39,11 +39,10 @@ jobs:
           test -n "$OPENAI_API_KEY" || (echo "OPENAI_API_KEY repository secret is missing" && exit 1)
       - name: Ensure database schema
         run: npm run db:migrate
-      - name: Restore retryable enrichment records
-        run: |
-          npm run enrich:recover
-          npm run enrich:recover-sources
+      - name: Restore retryable API billing failures
+        run: npm run enrich:recover
       - name: Classify the next source batch
+        continue-on-error: true
         run: npm run enrich:classify
       - name: Refresh editorial candidate clusters
         run: npm run editorial:prepare
