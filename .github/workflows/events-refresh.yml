@@ -1,0 +1,45 @@
+name: Refresh AI events
+
+on:
+  schedule:
+    - cron: "17 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: ai-events-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+
+      - name: Apply database migrations
+        run: npm run db:migrate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Discover and verify upcoming AI events
+        id: collect
+        run: npm run events:collect
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
+          INGESTION_USER_AGENT: CodeAndConsequenceBot/0.1
+          EVENTS_FORCE_RUN: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
+
+      - name: Rebuild GitHub Pages with refreshed events
+        if: steps.collect.outputs.collected == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
