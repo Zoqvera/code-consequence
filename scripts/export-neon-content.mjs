@@ -147,6 +147,7 @@ const initiativeRows = await sql`
     i.slug,
     i.status::text AS status,
     i.region,
+    i.metadata,
     o.name AS organization,
     it.locale,
     it.title,
@@ -214,8 +215,23 @@ for (const [initiativeId, group] of initiativeGroups) {
   const topics = initiativeTopics.get(initiativeId) || {};
   const source = initiativeSources.get(initiativeId);
   const organization = String(group.base.organization || "").trim();
-  const region = String(group.base.region || "").trim();
-  const complete = Boolean(en && pt && topics.en && topics["pt-BR"] && source && organization && region);
+  const preparation = group.base.metadata?.editorial_preparation || {};
+  const regionEn = String(preparation.region_en || group.base.region || "").trim();
+  const regionPt = String(preparation.region_pt_br || group.base.region || "").trim();
+  const organizationReviewed = Boolean(preparation.organization_evidence_url);
+  const regionReviewed = Boolean(preparation.region_evidence_url);
+  const complete = Boolean(
+    en &&
+      pt &&
+      topics.en &&
+      topics["pt-BR"] &&
+      source &&
+      organization &&
+      regionEn &&
+      regionPt &&
+      organizationReviewed &&
+      regionReviewed,
+  );
 
   if (!complete) {
     skippedInitiatives.push(group.base.slug);
@@ -225,7 +241,7 @@ for (const [initiativeId, group] of initiativeGroups) {
   initiatives.push({
     slug: group.base.slug,
     organization,
-    region: { en: region, "pt-BR": region },
+    region: { en: regionEn, "pt-BR": regionPt },
     status: initiativeStatusMap[group.base.status] || "Announced",
     topic: { en: topics.en, "pt-BR": topics["pt-BR"] },
     title: { en: en.title, "pt-BR": pt.title },
@@ -237,7 +253,7 @@ for (const [initiativeId, group] of initiativeGroups) {
 const snapshot = {
   generatedAt: new Date().toISOString(),
   publicationRule:
-    "Only complete bilingual records explicitly marked PUBLISHED in Neon are exported; published initiatives also require reviewed organization, region, topic and source fields.",
+    "Only complete bilingual records explicitly marked PUBLISHED in Neon are exported; published initiatives also require evidence-backed organization, localized region, topic and source fields.",
   articles,
   initiatives,
 };
