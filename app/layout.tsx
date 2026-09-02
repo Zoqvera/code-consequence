@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import "./ux.css";
+import "./mobile-overflow.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 const sourceSerif = Source_Serif_4({ subsets: ["latin"], variable: "--font-serif", display: "swap" });
