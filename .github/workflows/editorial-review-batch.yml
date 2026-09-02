@@ -1,0 +1,97 @@
+name: Review remaining initiative batch
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  review-batch:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Require database secret
+        run: test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
+      - name: Validate all reviewed copy records
+        shell: bash
+        run: |
+          set -euo pipefail
+          slugs=(
+            european-union-artificial-intelligence-act
+            declaration-of-santo-domingo-and-regional-roadmap-for-ethical-artificial
+            common-european-language-data-space-lds
+            apply-ai-strategy
+            unesco-recommendation-on-the-ethics-of-artificial-intelligence
+            coalition-for-linguistic-diversity-in-artificial-intelligence
+            european-ai-office
+            eu-ai-act-enforcement-framework
+          )
+          for slug in "${slugs[@]}"; do
+            echo "Validating reviewed copy: $slug"
+            EDITORIAL_REVIEW_SLUG="$slug" EDITORIAL_COPY_APPLY=0 npm run editorial:apply-reviewed
+          done
+      - name: Apply all source-reviewed copy records sequentially
+        shell: bash
+        run: |
+          set -euo pipefail
+          slugs=(
+            european-union-artificial-intelligence-act
+            declaration-of-santo-domingo-and-regional-roadmap-for-ethical-artificial
+            common-european-language-data-space-lds
+            apply-ai-strategy
+            unesco-recommendation-on-the-ethics-of-artificial-intelligence
+            coalition-for-linguistic-diversity-in-artificial-intelligence
+            european-ai-office
+            eu-ai-act-enforcement-framework
+          )
+          for slug in "${slugs[@]}"; do
+            echo "Applying reviewed copy: $slug"
+            EDITORIAL_REVIEW_SLUG="$slug" EDITORIAL_COPY_APPLY=1 npm run editorial:apply-reviewed
+          done
+      - name: Validate every DRAFT to REVIEW gate after copy review
+        shell: bash
+        run: |
+          set -euo pipefail
+          slugs=(
+            european-union-artificial-intelligence-act
+            declaration-of-santo-domingo-and-regional-roadmap-for-ethical-artificial
+            common-european-language-data-space-lds
+            apply-ai-strategy
+            unesco-recommendation-on-the-ethics-of-artificial-intelligence
+            coalition-for-linguistic-diversity-in-artificial-intelligence
+            european-ai-office
+            eu-ai-act-enforcement-framework
+          )
+          for slug in "${slugs[@]}"; do
+            echo "Validating REVIEW gate: $slug"
+            EDITORIAL_REVIEW_SLUG="$slug" EDITORIAL_REVIEW_APPLY=0 npm run editorial:to-review
+          done
+      - name: Move each validated initiative to REVIEW sequentially
+        shell: bash
+        run: |
+          set -euo pipefail
+          slugs=(
+            european-union-artificial-intelligence-act
+            declaration-of-santo-domingo-and-regional-roadmap-for-ethical-artificial
+            common-european-language-data-space-lds
+            apply-ai-strategy
+            unesco-recommendation-on-the-ethics-of-artificial-intelligence
+            coalition-for-linguistic-diversity-in-artificial-intelligence
+            european-ai-office
+            eu-ai-act-enforcement-framework
+          )
+          for slug in "${slugs[@]}"; do
+            echo "Transitioning to REVIEW: $slug"
+            EDITORIAL_REVIEW_SLUG="$slug" EDITORIAL_REVIEW_APPLY=1 npm run editorial:to-review
+          done
+      - name: Verify editorial state and publication barrier
+        run: node scripts/verify-editorial-review-batch.mjs
