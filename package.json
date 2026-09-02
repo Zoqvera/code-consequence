@@ -12,6 +12,7 @@
     "db:verify": "node scripts/verify-db.mjs",
     "ingest:collect": "node scripts/collect.mjs",
     "enrich:recover": "node scripts/recover-enrichment.mjs",
+    "enrich:recover-sources": "node scripts/recover-source-errors.mjs",
     "enrich:classify": "node scripts/enrich.mjs",
     "editorial:prepare": "node scripts/prepare-editorial.mjs"
   },
@@ -19,6 +20,7 @@
     "@neondatabase/serverless": "^1.1.0",
     "cheerio": "^1.1.2",
     "next": "16.3.3",
+    "pdf-parse": "^2.4.5",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
