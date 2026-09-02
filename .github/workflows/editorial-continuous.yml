@@ -52,6 +52,8 @@ jobs:
         run: AUTO_PROMOTE_APPLY=0 npm run editorial:auto-promote
       - name: Promote verified research into reviewed drafts
         run: AUTO_PROMOTE_APPLY=1 npm run editorial:auto-promote
+      - name: Remediate automated REVIEW items without independent publishers
+        run: EDITORIAL_CORROBORATION_APPLY=1 node scripts/enforce-independent-corroboration.mjs
       - name: Validate automatic DRAFT to REVIEW gate
         run: EDITORIAL_ADVANCE_APPLY=0 npm run editorial:auto-advance
       - name: Move eligible reviewed drafts to REVIEW
