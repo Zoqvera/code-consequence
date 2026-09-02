@@ -30,6 +30,10 @@ jobs:
         run: npm run content:export
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      - name: Export upcoming AI events from Neon
+        run: npm run events:export
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: Build static site
         run: npm run build
         env:

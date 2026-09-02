@@ -1,0 +1,37 @@
+[
+  {
+    "name": "ITU AI for Good — AI events calendar",
+    "url": "https://aiforgood.itu.int/ai-events-calendar/",
+    "scope": "Upcoming AI for Good webinars, workshops, summits, challenges and hybrid sessions."
+  },
+  {
+    "name": "UNESCO — Artificial Intelligence",
+    "url": "https://www.unesco.org/en/tags/artificial-intelligence?hub=66941",
+    "scope": "Upcoming UNESCO events in which artificial intelligence is a substantive topic."
+  },
+  {
+    "name": "OECD.AI — Events",
+    "url": "https://oecd.ai/en/wips-events",
+    "scope": "Upcoming OECD events about AI, work, innovation, productivity, skills and governance."
+  },
+  {
+    "name": "NeurIPS — Conference dates",
+    "url": "https://neurips.cc/Conferences/2026/Dates",
+    "scope": "Official NeurIPS meeting dates and participation information."
+  },
+  {
+    "name": "AAAI — Annual conference",
+    "url": "https://aaai.org/conference/aaai/aaai-27/",
+    "scope": "Official AAAI conference dates, venue and attendance information."
+  },
+  {
+    "name": "ACM FAccT",
+    "url": "https://facctconference.org/2027/cfp.html",
+    "scope": "Official ACM FAccT conference dates and participation information for responsible, safe and accountable computing."
+  },
+  {
+    "name": "ICML — Future meetings",
+    "url": "https://icml.cc/Conferences/FutureMeetings",
+    "scope": "Official ICML future meeting announcements when dates and participation details are available."
+  }
+]

@@ -11,7 +11,7 @@ export function otherLocale(locale: Locale): Locale {
 
 export const dictionary = {
   en: {
-    nav: { home: "Home", initiatives: "Initiatives", topics: "Topics", about: "About" },
+    nav: { home: "Home", initiatives: "Initiatives", events: "Events", topics: "Topics", about: "About" },
     heroEyebrow: "Independent AI observatory",
     heroTitle: "Technology has consequences.",
     heroBody: "We track how artificial intelligence reshapes power, public life and the planet — and document the real initiatives responding to those changes.",
@@ -25,7 +25,7 @@ export const dictionary = {
     language: "PT",
   },
   "pt-BR": {
-    nav: { home: "Início", initiatives: "Iniciativas", topics: "Temas", about: "Sobre" },
+    nav: { home: "Início", initiatives: "Iniciativas", events: "Eventos", topics: "Temas", about: "Sobre" },
     heroEyebrow: "Observatório independente de IA",
     heroTitle: "Tecnologia tem consequências.",
     heroBody: "Acompanhamos como a inteligência artificial transforma poder, vida pública e planeta — e documentamos iniciativas reais que respondem a essas mudanças.",

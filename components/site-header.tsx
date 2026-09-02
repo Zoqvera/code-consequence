@@ -12,6 +12,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
       <nav className="main-nav" aria-label="Main navigation">
         <Link href={`/${locale}`}>{d.nav.home}</Link>
         <Link href={`/${locale}/initiatives`}>{d.nav.initiatives}</Link>
+        <Link href={`/${locale}/events`}>{d.nav.events}</Link>
         <Link href={`/${locale}/topics`}>{d.nav.topics}</Link>
         <Link href={`/${locale}/about`}>{d.nav.about}</Link>
       </nav>
