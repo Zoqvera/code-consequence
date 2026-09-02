@@ -47,13 +47,17 @@ function filled(value) {
 }
 
 const audits = rows.map((row) => {
+  const preparation = row.metadata?.editorial_preparation || {};
+  const organizationEvidence = preparation.organization_evidence_url;
+  const regionEvidence = preparation.region_evidence_url;
+
   const checks = {
     englishTitle: filled(row.title_en),
     englishSummary: filled(row.summary_en),
     portugueseTitle: filled(row.title_pt),
     portugueseSummary: filled(row.summary_pt),
-    organizationReviewed: Boolean(row.organization_id && row.organization_name),
-    regionReviewed: filled(row.region),
+    organizationReviewed: Boolean(row.organization_id && row.organization_name && organizationEvidence),
+    regionReviewed: Boolean(filled(row.region) && regionEvidence && preparation.region_en && preparation.region_pt_br),
     topicsLinked: row.topic_count > 0,
     primarySourcePresent: row.primary_source_count > 0,
     corroborationPresent: row.high_reliability_source_count >= 2,
@@ -73,12 +77,17 @@ const audits = rows.map((row) => {
     titlePt: row.title_pt,
     organization: row.organization_name,
     region: row.region,
+    regionPt: preparation.region_pt_br || null,
     countryCode: row.country_code,
     topicCount: row.topic_count,
     sourceCount: row.source_count,
     primarySourceCount: row.primary_source_count,
     highReliabilitySourceCount: row.high_reliability_source_count,
     lastVerifiedAt: row.last_verified_at,
+    translationStates: {
+      titlePt: preparation.portuguese_title_state || null,
+      summaryPt: preparation.portuguese_summary_state || null,
+    },
     checks,
     blockers,
     readyForReview: blockers.length === 0,
@@ -86,6 +95,8 @@ const audits = rows.map((row) => {
       sourceMatchUrl: row.metadata?.source_match_url || null,
       editorialClusterId: row.metadata?.editorial_cluster_id || null,
       rejectedFutureSourceDate: row.metadata?.rejected_future_source_date || null,
+      organizationEvidence: organizationEvidence || null,
+      regionEvidence: regionEvidence || null,
     },
   };
 });
