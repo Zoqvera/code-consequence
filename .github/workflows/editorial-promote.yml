@@ -1,6 +1,6 @@
 name: Promote verified initiative drafts
 
-# Temporary push trigger applies the already validated batch as internal DRAFT records only.
+# Push trigger is temporary and runs dry-run only for idempotency verification.
 on:
   workflow_dispatch:
     inputs:
@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      PROMOTE_APPLY: ${{ github.event_name == 'push' && '1' || (inputs.apply && '1' || '0') }}
+      PROMOTE_APPLY: ${{ inputs.apply && '1' || '0' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
