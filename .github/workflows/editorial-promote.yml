@@ -1,6 +1,5 @@
 name: Promote verified initiative drafts
 
-# Push trigger is temporary and runs dry-run only for idempotency verification.
 on:
   workflow_dispatch:
     inputs:
@@ -9,10 +8,6 @@ on:
         required: true
         type: boolean
         default: false
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/editorial-promote.yml"
 
 permissions:
   contents: read
