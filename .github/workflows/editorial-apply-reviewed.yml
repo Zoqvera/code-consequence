@@ -1,0 +1,37 @@
+name: Apply reviewed initiative copy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: Exact initiative slug with a committed source-verified review
+        required: true
+        type: string
+      apply:
+        description: Apply the committed reviewed copy
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  apply-reviewed-copy:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      EDITORIAL_REVIEW_SLUG: ${{ github.event_name == 'push' && 'thailand-ai-readiness-assessment-unesco-ram' || inputs.slug }}
+      EDITORIAL_COPY_APPLY: ${{ github.event_name == 'push' && '1' || (inputs.apply && '1' || '0') }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Require database secret
+        run: test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
+      - name: Apply source-verified editorial copy
+        run: npm run editorial:apply-reviewed
