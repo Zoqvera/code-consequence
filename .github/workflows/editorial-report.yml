@@ -1,0 +1,34 @@
+name: Generate editorial review report
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/editorial-report.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      EDITORIAL_REPORT_DIR: artifacts/editorial-review
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Require database secret
+        run: test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
+      - name: Generate editorial review files
+        run: npm run editorial:report
+      - name: Upload editorial review artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-review
+          path: artifacts/editorial-review
+          if-no-files-found: error
