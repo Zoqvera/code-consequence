@@ -76,8 +76,10 @@ CREATE TABLE initiatives (
   country_code CHAR(2) REFERENCES countries(code),
   region TEXT,
   status initiative_status NOT NULL DEFAULT 'ANNOUNCED',
+  publication_status publication_status NOT NULL DEFAULT 'DRAFT',
   started_on DATE,
   ended_on DATE,
+  last_verified_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -172,6 +174,7 @@ CREATE TABLE ingestion_items (
 
 CREATE INDEX articles_published_idx ON articles (status, published_at DESC);
 CREATE INDEX initiatives_status_idx ON initiatives (status, updated_at DESC);
+CREATE INDEX initiatives_publication_idx ON initiatives (publication_status, updated_at DESC);
 CREATE INDEX sources_type_reliability_idx ON sources (source_type, reliability);
 CREATE INDEX source_feeds_active_idx ON source_feeds (is_active, last_checked_at);
 CREATE INDEX ingestion_items_queue_idx ON ingestion_items (processing_status, relevance_status, discovered_at DESC);
