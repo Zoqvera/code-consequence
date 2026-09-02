@@ -132,3 +132,7 @@ export function getUpcomingEvents(referenceDate = new Date()) {
   const today = referenceDate.toISOString().slice(0, 10);
   return events.filter((event) => (event.endDate || event.startDate) >= today);
 }
+
+export function getEvent(externalKey: string) {
+  return events.find((event) => event.externalKey === externalKey);
+}
