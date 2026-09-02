@@ -85,6 +85,19 @@ function normalizePublishedAt(value) {
   return Number.isNaN(date.valueOf()) ? null : date.toISOString();
 }
 
+function normalizeEditorialPriority(classification) {
+  const parsed = Number(classification.editorial_priority);
+  const bounded = Number.isFinite(parsed) ? Math.max(0, Math.min(100, Math.round(parsed))) : 0;
+
+  if (!classification.is_ai_related || classification.suggested_action === "DISMISS") {
+    return Math.min(29, bounded);
+  }
+  if (classification.suggested_action === "PRIORITIZE") {
+    return Math.max(70, bounded);
+  }
+  return Math.max(30, Math.min(69, bounded));
+}
+
 function extractPage(html) {
   const $ = cheerio.load(html);
   $("script, style, noscript, svg, nav, footer, header, form, dialog").remove();
@@ -168,6 +181,7 @@ async function classifyItem(item, page) {
         "Countries and organizations must be explicitly supported by the supplied source. If uncertain, omit them from arrays rather than guessing.",
         "problem_summary, response_summary, evidence_signals and both synopses must be concise paraphrases, not quotations.",
         "Keep evidence_signals to at most five short items.",
+        "editorial_priority uses a 0-to-100 scale where 100 is the highest editorial priority and 0 is the lowest. Required bands: DISMISS=0-29, REVIEW=30-69, PRIORITIZE=70-100.",
         "Use PRIORITIZE only for strong consequential relevance or a concrete response initiative; REVIEW for plausible but incomplete evidence; DISMISS for navigation pages, generic AI promotion, or non-substantive material.",
       ].join("\n"),
       input,
@@ -192,6 +206,8 @@ async function classifyItem(item, page) {
   const text = getOutputText(payload);
   if (!text) throw new Error("OpenAI response did not contain structured output text");
   const classification = JSON.parse(text);
+  const originalPriority = classification.editorial_priority;
+  classification.editorial_priority = normalizeEditorialPriority(classification);
 
   classification._meta = {
     model: payload.model || model,
@@ -200,6 +216,8 @@ async function classifyItem(item, page) {
     output_tokens: payload.usage?.output_tokens ?? null,
     total_tokens: payload.usage?.total_tokens ?? null,
     fetched_chars: page.body.length,
+    priority_original: originalPriority,
+    priority_adjusted: originalPriority !== classification.editorial_priority,
     classified_at: new Date().toISOString(),
   };
 
@@ -268,8 +286,14 @@ for (const item of items) {
       title: item.title,
       status: relevanceStatus,
       priority: classification.editorial_priority,
+      priorityAdjusted: classification._meta.priority_adjusted,
       kind: classification.content_kind,
       initiative: classification.initiative_detected,
+      usage: {
+        inputTokens: classification._meta.input_tokens,
+        outputTokens: classification._meta.output_tokens,
+        totalTokens: classification._meta.total_tokens,
+      },
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
@@ -289,9 +313,14 @@ const summary = results.reduce(
     else if (result.status === "REVIEW") acc.review += 1;
     else if (result.status === "IRRELEVANT") acc.irrelevant += 1;
     else if (result.status === "ERROR") acc.errors += 1;
+    if (result.usage) {
+      acc.inputTokens += result.usage.inputTokens || 0;
+      acc.outputTokens += result.usage.outputTokens || 0;
+      acc.totalTokens += result.usage.totalTokens || 0;
+    }
     return acc;
   },
-  { processed: 0, relevant: 0, review: 0, irrelevant: 0, errors: 0 },
+  { processed: 0, relevant: 0, review: 0, irrelevant: 0, errors: 0, inputTokens: 0, outputTokens: 0, totalTokens: 0 },
 );
 
 console.log(JSON.stringify({ model, batchSize, summary, results }, null, 2));
