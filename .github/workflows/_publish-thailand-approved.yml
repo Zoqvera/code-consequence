@@ -1,0 +1,70 @@
+name: Publish approved Thailand initiative
+
+on:
+  push:
+    paths:
+      - '.github/workflows/_publish-thailand-approved.yml'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publication-gate:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      EDITORIAL_PUBLISH_SLUG: thailand-ai-readiness-assessment-unesco-ram
+      EDITORIAL_HUMAN_REVIEWER: Flávio
+      EDITORIAL_APPROVAL_PHRASE: I APPROVE PUBLICATION
+      EDITORIAL_PUBLISH_APPLY: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Require database secret
+        run: test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
+      - name: Publish approved reviewed initiative
+        run: npm run editorial:publish
+
+  build:
+    needs: publication-gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/configure-pages@v5
+      - run: npm install
+      - run: npm run typecheck
+      - run: npm run lint
+      - name: Export published content from Neon
+        run: npm run content:export
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      - name: Build static site
+        run: npm run build
+        env:
+          NEXT_PUBLIC_BASE_PATH: /code-consequence
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./out
+
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
