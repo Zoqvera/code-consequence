@@ -18,7 +18,7 @@ export default async function InitiativesPage({ params }: { params: Promise<{ lo
           : "Real projects, policies and mechanisms created to respond to the social, political and environmental impacts of AI. Every published record has editorial review and verified sources."}
       </p>
       <p className="tracker-count">
-        {initiatives.length} {pt ? "registros publicados" : "published records"}
+        {initiatives.length} {pt ? "registros publicados" : "published records"} · <Link className="text-link" href={`/${locale}/radar`}>{pt ? "Explorar no Global Radar" : "Explore in Global Radar"} →</Link>
       </p>
 
       <div className="initiative-list light">
