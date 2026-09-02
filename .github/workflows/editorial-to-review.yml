@@ -1,0 +1,35 @@
+name: Move initiative to editorial review
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: Exact initiative slug to move from DRAFT to REVIEW
+        required: true
+        type: string
+      apply:
+        description: Apply the transition after readiness checks
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  review-gate:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      EDITORIAL_REVIEW_SLUG: ${{ inputs.slug }}
+      EDITORIAL_REVIEW_APPLY: ${{ inputs.apply && '1' || '0' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Require database secret
+        run: test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
+      - name: Validate or move one initiative to REVIEW
+        run: npm run editorial:to-review
