@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { articles, initiatives, topics } from "@/lib/content";
+import { articles, topics } from "@/lib/content";
+import { initiatives } from "@/lib/initiatives";
 import { dictionary, isLocale } from "@/lib/i18n";
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
@@ -36,9 +37,13 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <div className="initiative-list">
             {initiatives.map((initiative, index) => (
               <article className="initiative-row" key={initiative.slug}>
-                <span className="index">0{index + 1}</span>
-                <div><p className="card-meta">{initiative.organization} · {initiative.region[locale]}</p><h3>{initiative.title[locale]}</h3><p>{initiative.summary[locale]}</p></div>
-                <a className="text-link" href={initiative.source.url} target="_blank" rel="noreferrer">{d.explore} ↗</a>
+                <span className="index">{String(index + 1).padStart(2, "0")}</span>
+                <div>
+                  <p className="card-meta">{initiative.organization} · {initiative.region[locale]}</p>
+                  <h3><Link href={`/${locale}/initiatives/${initiative.slug}`}>{initiative.title[locale]}</Link></h3>
+                  <p>{initiative.summary[locale]}</p>
+                </div>
+                <Link className="text-link" href={`/${locale}/initiatives/${initiative.slug}`}>{d.explore} →</Link>
               </article>
             ))}
           </div>
