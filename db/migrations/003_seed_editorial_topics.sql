@@ -1,3 +1,4 @@
+-- Canonical bilingual editorial taxonomy for Code & Consequence.
 INSERT INTO topics (slug) VALUES ('power-democracy') ON CONFLICT (slug) DO NOTHING;
 INSERT INTO topics (slug) VALUES ('work-economy') ON CONFLICT (slug) DO NOTHING;
 INSERT INTO topics (slug) VALUES ('rights-society') ON CONFLICT (slug) DO NOTHING;
