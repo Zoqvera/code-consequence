@@ -1,0 +1,210 @@
+{
+  "version": 1,
+  "reviewed_at": "2026-09-02T00:47:00Z",
+  "records": [
+    {
+      "cluster_id": "c07d83f7dc8e4a29",
+      "canonical_title": "EU AI Act enforcement framework",
+      "decision": "VERIFIED_STANDALONE",
+      "verification_level": "INDEPENDENT_CONFIRMED",
+      "editorial_notes": "The enforcement framework is a concrete governance mechanism rather than a generic policy landing page. European Parliament research independently confirms the hybrid enforcement model shared between Member States and the Commission, while the consolidated AI Act establishes the AI Office and Union-level governance structure.",
+      "evidence_sources": [
+        {
+          "publisher": "European Parliament Research Service",
+          "url": "https://www.europarl.europa.eu/thinktank/en/academic/EPRS_ATA(2026)785670",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Independent institutional confirmation of the enforcement architecture"
+        },
+        {
+          "publisher": "EUR-Lex",
+          "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Authoritative legal basis"
+        }
+      ]
+    },
+    {
+      "cluster_id": "8fe1661c9e9a0c86",
+      "canonical_title": "European approach to artificial intelligence",
+      "decision": "UMBRELLA_NOT_STANDALONE",
+      "verification_level": "NOT_APPLICABLE",
+      "editorial_notes": "This is an umbrella policy page spanning the AI Act, AI Continent Action Plan, AI Office, Apply AI Strategy, computing infrastructure and other measures. Publishing it as a standalone initiative would duplicate concrete initiatives already present in the queue.",
+      "evidence_sources": [
+        {
+          "publisher": "European Parliament Research Service",
+          "url": "https://www.europarl.europa.eu/thinktank/en/academic/EPRS_BRI(2025)775923",
+          "source_type": "INSTITUTIONAL",
+          "reliability": "A",
+          "role": "Independent mapping of the component programmes in the wider EU AI policy approach"
+        }
+      ]
+    },
+    {
+      "cluster_id": "eb9f7f4dbcfc0722",
+      "canonical_title": "European Union AI policy framework",
+      "decision": "UMBRELLA_NOT_STANDALONE",
+      "verification_level": "NOT_APPLICABLE",
+      "editorial_notes": "The collected page bundles several separate EU instruments and programmes. It should be retained as background evidence for a future dossier, not promoted into the initiatives catalogue as one entity.",
+      "evidence_sources": [
+        {
+          "publisher": "EUR-Lex",
+          "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52025DC0165",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Shows the AI Continent Action Plan as a distinct policy instrument within the broader framework"
+        },
+        {
+          "publisher": "EUR-Lex",
+          "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52025DC0723",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Shows the Apply AI Strategy as a separate policy instrument"
+        }
+      ]
+    },
+    {
+      "cluster_id": "491f681d4a7609ef",
+      "canonical_title": "European AI Office",
+      "decision": "VERIFIED_STANDALONE",
+      "verification_level": "INDEPENDENT_CONFIRMED",
+      "editorial_notes": "The AI Office is a concrete EU governance body with functions established in the AI Act. European Parliament research independently describes its enforcement role and the wider EU-level governance structure.",
+      "evidence_sources": [
+        {
+          "publisher": "EUR-Lex",
+          "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Article 64 legal basis for the AI Office"
+        },
+        {
+          "publisher": "European Parliament Research Service",
+          "url": "https://www.europarl.europa.eu/thinktank/en/academic/EPRS_ATA(2026)785670",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Independent institutional description of the Office's enforcement role"
+        }
+      ]
+    },
+    {
+      "cluster_id": "a9d01b5260f08671",
+      "canonical_title": "UNESCO Recommendation on the Ethics of Artificial Intelligence",
+      "decision": "VERIFIED_STANDALONE",
+      "verification_level": "INDEPENDENT_CONFIRMED",
+      "editorial_notes": "The previous automated multi-source status was invalid because it counted the same UNESCO page twice. Independent confirmation now comes from a United Nations document and OECD materials, both of which identify the 2021 UNESCO Recommendation as an international AI governance standard.",
+      "evidence_sources": [
+        {
+          "publisher": "United Nations Digital Library",
+          "url": "https://digitallibrary.un.org/record/3997249/files/A_77_614-EN.pdf",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Independent UN confirmation of unanimous adoption by 193 UNESCO Member States"
+        },
+        {
+          "publisher": "OECD AI Policy Observatory",
+          "url": "https://oecd.ai/en/dashboards/international/the-united-nations-educational-scientific-and-cultural-organization",
+          "source_type": "INSTITUTIONAL",
+          "reliability": "A",
+          "role": "Independent institutional description of the Recommendation and its scope"
+        }
+      ]
+    },
+    {
+      "cluster_id": "f70da88f473f721c",
+      "canonical_title": "Coalition for Linguistic Diversity in Artificial Intelligence",
+      "decision": "VERIFIED_STANDALONE",
+      "verification_level": "INDEPENDENT_CONFIRMED",
+      "editorial_notes": "The coalition is a concrete multi-stakeholder initiative co-coordinated by UNESCO and Iceland. Icelandic government and ecosystem records independently document the cooperation that established the international platform for linguistic and cultural diversity in AI.",
+      "evidence_sources": [
+        {
+          "publisher": "Government of Iceland",
+          "url": "https://www.stjornarradid.is/lisalib/getfile.aspx?itemid=e30de195-79d3-11ef-b888-005056bcde1f",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Government-backed blueprint and precursor for the international cooperation platform"
+        },
+        {
+          "publisher": "Almannarómur",
+          "url": "https://almannaromur.is/nytt/almannaromur-leidir-samstarf-islands-og-unesco",
+          "source_type": "INSTITUTIONAL",
+          "reliability": "B",
+          "role": "Independent stakeholder confirmation of the Iceland–UNESCO agreement to establish the international platform"
+        }
+      ]
+    },
+    {
+      "cluster_id": "70e683382bddf846",
+      "canonical_title": "EU AI Factories and AI Gigafactories",
+      "decision": "SPLIT_REQUIRED",
+      "verification_level": "INDEPENDENT_CONFIRMED",
+      "editorial_notes": "The candidate conflates two related but distinct initiatives. AI Factories are an existing network, while AI Gigafactories are a separate large-scale programme with a 2026 procurement call. They should become separate records.",
+      "split_targets": [
+        "EU AI Factories",
+        "EU AI Gigafactories"
+      ],
+      "evidence_sources": [
+        {
+          "publisher": "EuroHPC Joint Undertaking",
+          "url": "https://www.eurohpc-ju.europa.eu/ai-factories_en",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Confirms the active AI Factories network"
+        },
+        {
+          "publisher": "EuroHPC Joint Undertaking",
+          "url": "https://www.eurohpc-ju.europa.eu/eurohpc-joint-undertaking-launches-ai-gigafactories-call-2026-07-30_en",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Confirms the separate AI Gigafactories programme and July 2026 call"
+        }
+      ]
+    },
+    {
+      "cluster_id": "b5578e2d623da006",
+      "canonical_title": "Apply AI Strategy",
+      "decision": "VERIFIED_STANDALONE",
+      "verification_level": "INDEPENDENT_CONFIRMED",
+      "editorial_notes": "Apply AI is a distinct Commission strategy adopted on 8 October 2025. The European Parliament Legislative Observatory records it separately as COM(2025)0723 and Parliament materials subsequently reference its sectoral flagships.",
+      "evidence_sources": [
+        {
+          "publisher": "European Parliament Legislative Observatory",
+          "url": "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=COM(2025)0723",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Independent EU institutional confirmation of the strategy and adoption date"
+        },
+        {
+          "publisher": "EUR-Lex",
+          "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52025DC0723",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Authoritative strategy document"
+        }
+      ]
+    },
+    {
+      "cluster_id": "c19065a1da1e5a74",
+      "canonical_title": "European Union Artificial Intelligence Act",
+      "decision": "VERIFIED_STANDALONE",
+      "verification_level": "INDEPENDENT_CONFIRMED",
+      "editorial_notes": "The AI Act is a standalone legal instrument and should be represented distinctly from implementation pages and broader strategy pages.",
+      "evidence_sources": [
+        {
+          "publisher": "EUR-Lex",
+          "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Authoritative consolidated regulation"
+        },
+        {
+          "publisher": "European Parliament",
+          "url": "https://www.europarl.europa.eu/topics/en/article/20230601STO93804/eu-ai",
+          "source_type": "INSTITUTIONAL",
+          "reliability": "A",
+          "role": "Independent EU institutional explanation of the law and implementation timeline"
+        }
+      ]
+    }
+  ]
+}
