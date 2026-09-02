@@ -1,7 +1,12 @@
 name: Initialize Neon database
 
+# Temporary push trigger used only to validate the additive editorial-state migration.
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/database.yml"
 
 permissions:
   contents: read
@@ -19,7 +24,7 @@ jobs:
       - run: npm install
       - name: Require DATABASE_URL
         run: test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
-      - name: Apply schema
+      - name: Apply schema and migrations
         run: npm run db:migrate
       - name: Verify schema
         run: npm run db:verify
