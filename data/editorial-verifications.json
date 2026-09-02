@@ -214,6 +214,75 @@
           "role": "Independent EU institutional explanation of the law and implementation timeline"
         }
       ]
+    },
+    {
+      "match_url": "https://www.unesco.org/en/artificial-intelligence/business-council/",
+      "canonical_title": "UNESCO Business Council for Ethics of AI",
+      "decision": "VERIFIED_STANDALONE",
+      "verification_level": "INDEPENDENT_CONFIRMED",
+      "editorial_notes": "The Council is a durable collaborative network rather than a one-off announcement. UNESCO records its October 2023 launch and ongoing operation, while Salesforce independently confirms its membership and commitment to the Council. The collected marketing-language flag should remain visible for copy review even though the entity itself is verified.",
+      "evidence_sources": [
+        {
+          "publisher": "Salesforce",
+          "url": "https://www.salesforce.com/company/human-rights/?bc=OTH",
+          "source_type": "INSTITUTIONAL",
+          "reliability": "B",
+          "role": "Independent member confirmation of the Council and commitment to UNESCO's AI ethics framework"
+        },
+        {
+          "publisher": "UNESCO",
+          "url": "https://www.unesco.org/en/articles/statement-unesco-business-council-ethics-ai-ai-company-data-initiative",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Evidence of continued Council activity in May 2026"
+        }
+      ]
+    },
+    {
+      "match_url": "https://www.unesco.org/en/articles/education-age-ai-ministerial-statement-be-adopted-unescos-digital-learning-week",
+      "canonical_title": "UNESCO Digital Learning Week 2026 and ministerial statement on education in the age of AI",
+      "decision": "NOT_STANDALONE",
+      "verification_level": "NOT_APPLICABLE",
+      "editorial_notes": "This record describes a time-bounded event scheduled for 8–11 September 2026 and a ministerial statement expected at that event. It is suitable for news/event coverage, but not as a durable entity in the initiatives catalogue.",
+      "evidence_sources": [
+        {
+          "publisher": "UNESCO",
+          "url": "https://www.unesco.org/en/weeks/digital-learning?hub=81942",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Official event page confirming dates, format and event scope"
+        }
+      ]
+    },
+    {
+      "match_url": "https://www.unesco.org/en/articles/ai-readiness-assessment-methodology-thailand",
+      "canonical_title": "Thailand AI Readiness Assessment (UNESCO RAM)",
+      "decision": "VERIFIED_STANDALONE",
+      "verification_level": "INDEPENDENT_CONFIRMED",
+      "editorial_notes": "Thailand's implementation of UNESCO's Readiness Assessment Methodology is a concrete national assessment process, not merely a generic RAM description. Thailand's Electronic Transactions Development Agency and NSTDA independently document national adoption and use of the RAM framework, and UNESCO subsequently published the Thailand assessment report.",
+      "evidence_sources": [
+        {
+          "publisher": "Electronic Transactions Development Agency of Thailand",
+          "url": "https://www.etda.or.th/th/pr-news/ai_etda_unesco_EN.aspx",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Thai government agency confirmation of adoption and implementation of UNESCO RAM"
+        },
+        {
+          "publisher": "National Science and Technology Development Agency of Thailand",
+          "url": "https://www.nstda.or.th/home/news_post/3rd-unesco-gfeai-2025-20250625/",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Independent Thai public research agency confirmation that Thailand conducted the RAM assessment"
+        },
+        {
+          "publisher": "UNESCO",
+          "url": "https://www.unesco.org/en/articles/thailand-artificial-intelligence-readiness-assessment-report?hub=84636",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Published country assessment report"
+        }
+      ]
     }
   ]
 }
