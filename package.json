@@ -14,7 +14,8 @@
     "enrich:recover": "node scripts/recover-enrichment.mjs",
     "enrich:recover-sources": "node scripts/recover-source-errors.mjs",
     "enrich:classify": "node scripts/enrich.mjs",
-    "editorial:prepare": "node scripts/prepare-editorial.mjs"
+    "editorial:prepare": "node scripts/prepare-editorial.mjs",
+    "editorial:report": "node scripts/editorial-report.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
