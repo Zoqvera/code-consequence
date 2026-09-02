@@ -1,0 +1,48 @@
+/* Mobile overflow containment.
+   Keep layout intrinsically within the viewport instead of masking oversized grid items. */
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@supports (overflow: clip) {
+  html,
+  body {
+    overflow-x: clip;
+  }
+}
+
+.hero,
+.hero > * {
+  min-width: 0;
+}
+
+.hero h1,
+.hero-copy {
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 760px) {
+  .hero h1 {
+    font-size: clamp(2.8rem, 13vw, 4.2rem);
+    line-height: .92;
+    letter-spacing: -.035em;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .hero-copy {
+    overflow-wrap: break-word;
+  }
+}
+
+@media (max-width: 430px) {
+  .hero h1 {
+    font-size: clamp(2.7rem, 12.5vw, 3.55rem);
+    line-height: .94;
+    letter-spacing: -.03em;
+  }
+}
