@@ -1,16 +1,7 @@
 name: Initialize Neon database
 
-# Temporary push trigger used only to validate the additive editorial-state migration.
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/database.yml"
-      - "scripts/migrate.mjs"
-      - "scripts/verify-db.mjs"
-      - "db/schema.sql"
-      - "db/migrations/**"
 
 permissions:
   contents: read
