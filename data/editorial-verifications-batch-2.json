@@ -1,0 +1,75 @@
+{
+  "version": 2,
+  "reviewed_at": "2026-09-02T01:02:00Z",
+  "records": [
+    {
+      "match_url": "https://www.unesco.org/en/articles/caribbean-voices-shape-future-ethical-ai-regional-summit",
+      "canonical_title": "Declaration of Santo Domingo and Regional Roadmap for Ethical Artificial Intelligence 2026–2027",
+      "decision": "VERIFIED_STANDALONE",
+      "verification_level": "INDEPENDENT_CONFIRMED",
+      "editorial_notes": "The Declaration of Santo Domingo and the regional Roadmap for Ethical Artificial Intelligence 2026–2027 are concrete regional governance instruments adopted through the June 2026 ministerial process. CAF independently lists both instruments in the summit programme, and the Government of Aruba confirms that participating governments validated the roadmap and subsequently aligned national planning with it. The record should be described as a regional soft-law/governance framework, not as binding legislation.",
+      "evidence_sources": [
+        {
+          "publisher": "CAF — Development Bank of Latin America and the Caribbean",
+          "url": "https://www.caf.com/es/actualidad/eventos/tercera-cumbre-ministerial-de-la-etica-de-la-inteligencia-artificial/",
+          "source_type": "INSTITUTIONAL",
+          "reliability": "A",
+          "role": "Independent regional institutional confirmation of the Declaration of Santo Domingo and the 2026–2027 roadmap"
+        },
+        {
+          "publisher": "Government of Aruba",
+          "url": "https://www.gobierno.aw/en/the-ministry-of-kingdom-relations-education-youth-innovation-and-sport-launches-process-to-develop",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Independent government confirmation that regional authorities validated the 2026–2027 roadmap"
+        }
+      ]
+    },
+    {
+      "match_url": "https://digital-strategy.ec.europa.eu/en/policies/language-technologies",
+      "canonical_title": "Common European Language Data Space (LDS)",
+      "decision": "VERIFIED_STANDALONE",
+      "verification_level": "INDEPENDENT_CONFIRMED",
+      "editorial_notes": "The Common European Language Data Space is a distinct implementation project under the EU data strategy, not merely a generic language-technology policy page. Independent consortium partners DFKI and the Athena Research Center document the project, its January 2023 launch, its service-contract structure and its objective of deploying a federated marketplace and governance framework for multilingual and multimodal language data.",
+      "evidence_sources": [
+        {
+          "publisher": "German Research Center for Artificial Intelligence (DFKI)",
+          "url": "https://www.dfki.de/en/web/research/projects-and-publications/project/lds-slt",
+          "source_type": "INSTITUTIONAL",
+          "reliability": "A",
+          "role": "Independent consortium-partner project record confirming scope, funding authority and project duration"
+        },
+        {
+          "publisher": "Athena Research Center",
+          "url": "https://www.athenarc.gr/en/ilsp/projects/lds-en",
+          "source_type": "INSTITUTIONAL",
+          "reliability": "A",
+          "role": "Independent consortium-partner confirmation of the LDS architecture, governance work and active project status"
+        }
+      ]
+    },
+    {
+      "match_url": "https://www.unesco.org/en/articles/ai-good-global-summit-highlights-resilient-ai-through-energy-efficient-innovation",
+      "canonical_title": "Resilient AI Challenge",
+      "decision": "VERIFIED_STANDALONE",
+      "verification_level": "INDEPENDENT_CONFIRMED",
+      "editorial_notes": "The Resilient AI Challenge is a concrete international competition focused on reducing the energy and computing requirements of AI models through model compression. UCL independently documents the challenge, its launch at the India AI Impact Summit, its organisers and its technical purpose. The existing UNCLEAR_DATE and MARKETING_LANGUAGE flags should remain active for editorial copy review; verification of the entity does not clear those risks.",
+      "evidence_sources": [
+        {
+          "publisher": "University College London",
+          "url": "https://www.ucl.ac.uk/engineering/news/2026/jul/ucl-sustainable-ai-research-inspires-global-challenge-develop-greener-ai-models",
+          "source_type": "INSTITUTIONAL",
+          "reliability": "A",
+          "role": "Independent academic confirmation of the challenge, organisers, launch context and model-compression objective"
+        },
+        {
+          "publisher": "UNESCO Green Digital Transformation",
+          "url": "https://www.unesco.org/en/green-digital-transformation",
+          "source_type": "PRIMARY",
+          "reliability": "A",
+          "role": "Primary description of the challenge and its sustainability objective"
+        }
+      ]
+    }
+  ]
+}
