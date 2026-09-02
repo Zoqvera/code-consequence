@@ -1,0 +1,28 @@
+name: Enrichment usage report
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/enrichment-report.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      REPORT_SINCE: 2026-09-02T00:10:00Z
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Require database secret
+        run: test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
+      - name: Report enrichment usage
+        run: node scripts/report-enrichment.mjs
