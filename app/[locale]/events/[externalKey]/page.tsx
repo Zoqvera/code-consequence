@@ -133,6 +133,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ lo
 
   const pt = locale === "pt-BR";
   const participationUrl = event.registrationUrl || event.eventUrl;
+  const participationLabel = event.registrationUrl
+    ? (pt ? "Fazer inscrição ↗" : "Register ↗")
+    : (pt ? "Ver como participar ↗" : "See how to participate ↗");
   const preciseStart = formatStartTime(event.startsAt, locale);
   const jsonLd = JSON.stringify(structuredData(event, locale)).replace(/</g, "\\u003c");
 
@@ -163,7 +166,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ lo
           <p>{event.participation[locale]}</p>
         </div>
         <div className={styles.detailActions}>
-          <a className={styles.primary} href={participationUrl} target="_blank" rel="noreferrer">{pt ? "Participar / registrar ↗" : "Participate / register ↗"}</a>
+          <a className={styles.primary} href={participationUrl} target="_blank" rel="noreferrer">{participationLabel}</a>
           <a className={styles.secondary} href={calendarHref(event, locale)} download={`${event.externalKey}.ics`}>{pt ? "Adicionar ao calendário ↓" : "Add to calendar ↓"}</a>
           {event.registrationUrl && event.registrationUrl !== event.eventUrl ? <a className={styles.secondary} href={event.eventUrl} target="_blank" rel="noreferrer">{pt ? "Página oficial ↗" : "Official page ↗"}</a> : null}
         </div>
