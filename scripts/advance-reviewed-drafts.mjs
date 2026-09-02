@@ -27,7 +27,10 @@ const rows = await sql`
     pt.summary AS summary_pt,
     COUNT(DISTINCT it.topic_id)::int AS topic_count,
     COUNT(DISTINCT ins.source_id) FILTER (WHERE s.source_type = 'PRIMARY')::int AS primary_source_count,
-    COUNT(DISTINCT ins.source_id) FILTER (WHERE s.reliability IN ('A','B'))::int AS high_reliability_source_count
+    COUNT(DISTINCT ins.source_id) FILTER (WHERE s.reliability IN ('A','B'))::int AS high_reliability_source_count,
+    COUNT(DISTINCT lower(trim(s.publisher))) FILTER (
+      WHERE s.reliability IN ('A','B') AND NULLIF(trim(s.publisher), '') IS NOT NULL
+    )::int AS distinct_reliable_publisher_count
   FROM initiatives i
   LEFT JOIN organizations o ON o.id = i.organization_id
   LEFT JOIN initiative_translations en ON en.initiative_id = i.id AND en.locale = 'en'
@@ -58,6 +61,7 @@ for (const row of rows) {
     topicsLinked: row.topic_count > 0,
     primarySourcePresent: row.primary_source_count > 0,
     corroborationPresent: row.high_reliability_source_count >= 2,
+    independentPublisherCorroboration: row.distinct_reliable_publisher_count >= 2,
     verificationTimestampPresent: Boolean(row.last_verified_at),
     editorialCopyReviewed: copyReview.review_state === "EDITORIAL_REVIEWED",
     publicationStillRequiresHumanReview: copyReview.human_review_required_for_publication === true,
@@ -79,6 +83,7 @@ if (!apply) {
       sources: {
         primary: row.primary_source_count,
         highReliability: row.high_reliability_source_count,
+        distinctReliablePublishers: row.distinct_reliable_publisher_count,
       },
     })),
   }, null, 2));
@@ -96,9 +101,10 @@ for (const { row, checks, blockers } of plans) {
     from: "DRAFT",
     to: "REVIEW",
     transitioned_at: new Date().toISOString(),
-    gate_version: 3,
+    gate_version: 4,
     transition_mode: "AUTOMATED_EVIDENCE_PIPELINE",
     editorial_copy_reviewed: true,
+    independent_publisher_corroboration: true,
     human_review_still_required_for_publication: true,
   };
 
