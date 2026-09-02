@@ -46,11 +46,11 @@ const initiativeColumns = await sql`
   FROM information_schema.columns
   WHERE table_schema = 'public'
     AND table_name = 'initiatives'
-    AND column_name IN ('publication_status', 'last_verified_at')
+    AND column_name IN ('publication_status', 'last_verified_at', 'metadata')
 `;
 
 const initiativeColumnNames = new Set(initiativeColumns.map((row) => row.column_name));
-const missingInitiativeColumns = ["publication_status", "last_verified_at"].filter(
+const missingInitiativeColumns = ["publication_status", "last_verified_at", "metadata"].filter(
   (column) => !initiativeColumnNames.has(column),
 );
 
@@ -65,6 +65,11 @@ if (publicationColumn?.is_nullable !== "NO" || !String(publicationColumn?.column
   throw new Error("Database verification failed. initiatives.publication_status must be NOT NULL with DRAFT default.");
 }
 
+const metadataColumn = initiativeColumns.find((row) => row.column_name === "metadata");
+if (metadataColumn?.is_nullable !== "NO" || !String(metadataColumn?.column_default || "").includes("jsonb")) {
+  throw new Error("Database verification failed. initiatives.metadata must be NOT NULL with an empty JSONB default.");
+}
+
 console.log(
-  `Database verified: ${expectedTables.length} expected tables and initiative editorial state columns found.`,
+  `Database verified: ${expectedTables.length} expected tables and initiative editorial/provenance columns found.`,
 );
