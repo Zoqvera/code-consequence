@@ -1,0 +1,88 @@
+name: Publish reviewed initiative
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: Exact initiative slug currently in REVIEW
+        required: true
+        type: string
+      reviewer:
+        description: Name of the human editor approving publication
+        required: true
+        type: string
+      approval_phrase:
+        description: Type exactly I APPROVE PUBLICATION
+        required: true
+        type: string
+      apply:
+        description: Publish after all checks pass
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publication-gate:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      EDITORIAL_PUBLISH_SLUG: ${{ inputs.slug }}
+      EDITORIAL_HUMAN_REVIEWER: ${{ inputs.reviewer }}
+      EDITORIAL_APPROVAL_PHRASE: ${{ inputs.approval_phrase }}
+      EDITORIAL_PUBLISH_APPLY: ${{ inputs.apply && '1' || '0' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Require database secret
+        run: test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
+      - name: Validate or publish one reviewed initiative
+        run: npm run editorial:publish
+
+  build:
+    if: ${{ inputs.apply }}
+    needs: publication-gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/configure-pages@v5
+      - run: npm install
+      - run: npm run typecheck
+      - run: npm run lint
+      - name: Export published content from Neon
+        run: npm run content:export
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      - name: Build static site
+        run: npm run build
+        env:
+          NEXT_PUBLIC_BASE_PATH: /code-consequence
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./out
+
+  deploy:
+    if: ${{ inputs.apply }}
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
