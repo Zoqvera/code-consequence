@@ -17,7 +17,8 @@
     "editorial:prepare": "node scripts/prepare-editorial.mjs",
     "editorial:verify": "node scripts/apply-editorial-verifications.mjs",
     "editorial:report": "node scripts/editorial-report.mjs",
-    "editorial:promote": "node scripts/promote-verified-initiatives.mjs"
+    "editorial:promote": "node scripts/promote-verified-initiatives.mjs",
+    "content:export": "node scripts/export-neon-content.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
