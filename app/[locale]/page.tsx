@@ -1,13 +1,39 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { EventCountdown } from "@/components/event-countdown";
 import { articles, topics } from "@/lib/content";
+import { getUpcomingEvents, type AiEvent } from "@/lib/events";
 import { initiatives } from "@/lib/initiatives";
-import { dictionary, isLocale } from "@/lib/i18n";
+import { dictionary, isLocale, type Locale } from "@/lib/i18n";
+
+function formatEventDate(date: string, locale: Locale) {
+  const value = new Date(`${date}T12:00:00Z`);
+  return {
+    day: new Intl.DateTimeFormat(locale, { day: "2-digit", timeZone: "UTC" }).format(value),
+    month: new Intl.DateTimeFormat(locale, { month: "short", timeZone: "UTC" }).format(value).replace(".", ""),
+  };
+}
+
+function formatEventFormat(format: AiEvent["format"], locale: Locale) {
+  if (locale === "en") return format;
+  if (format === "Hybrid") return "Híbrido";
+  if (format === "In person") return "Presencial";
+  return "Online";
+}
+
+function eventLocation(event: AiEvent, locale: Locale) {
+  if (event.format === "Online") return "Online";
+  const location = [event.city, event.country].filter(Boolean).join(" · ");
+  return location || (locale === "pt-BR" ? "Local a confirmar" : "Location to confirm");
+}
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const d = dictionary[locale];
+  const pt = locale === "pt-BR";
+  const upcomingEvents = getUpcomingEvents().slice(0, 3);
+
   return (
     <>
       <section className="hero shell">
@@ -50,8 +76,64 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </div>
       </section>
 
+      <section className="section shell home-events">
+        <div className="section-heading home-events-heading">
+          <p className="eyebrow">03 / {pt ? "Agenda global" : "Global calendar"}</p>
+          <div>
+            <h2>{pt ? "Próximos eventos de IA" : "Upcoming AI events"}</h2>
+            <p className="home-events-intro">
+              {pt
+                ? "Eventos verificados a partir de fontes oficiais e revisados automaticamente pela nossa rotina de monitoramento."
+                : "Events verified from official sources and automatically reviewed by our monitoring workflow."}
+            </p>
+          </div>
+        </div>
+
+        {upcomingEvents.length > 0 ? (
+          <div className="home-event-list">
+            {upcomingEvents.map((event) => {
+              const date = formatEventDate(event.startDate, locale);
+              return (
+                <article className="home-event-row" key={event.externalKey}>
+                  <div className="home-event-date" aria-label={event.startDate}>
+                    <strong>{date.day}</strong>
+                    <span>{date.month}</span>
+                  </div>
+                  <div className="home-event-main">
+                    <p className="card-meta">
+                      <span>{formatEventFormat(event.format, locale)}</span>
+                      <span>{event.organizer}</span>
+                      <span>{eventLocation(event, locale)}</span>
+                    </p>
+                    <h3><Link href={`/${locale}/events/${event.externalKey}`}>{event.title[locale]}</Link></h3>
+                    <p>{event.summary[locale]}</p>
+                  </div>
+                  <div className="home-event-side">
+                    <div className="home-event-countdown">
+                      <EventCountdown date={event.startDate} startsAt={event.startsAt} locale={locale} />
+                    </div>
+                    <Link className="text-link" href={`/${locale}/events/${event.externalKey}`}>
+                      {pt ? "Ver evento" : "View event"} →
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="home-events-empty">{pt ? "Nenhum evento futuro verificado no momento." : "No verified upcoming events at the moment."}</p>
+        )}
+
+        <div className="home-events-footer">
+          <Link className="button" href={`/${locale}/events`}>
+            {pt ? "Ver agenda completa" : "View full calendar"} →
+          </Link>
+          <p>{pt ? "A agenda é atualizada aproximadamente a cada dois dias." : "The calendar is refreshed approximately every two days."}</p>
+        </div>
+      </section>
+
       <section className="section shell">
-        <div className="section-heading"><p className="eyebrow">03 / Taxonomy</p><h2>{d.topics}</h2></div>
+        <div className="section-heading"><p className="eyebrow">04 / Taxonomy</p><h2>{d.topics}</h2></div>
         <div className="topic-grid">{topics.map((topic, i) => <Link key={topic.slug} href={`/${locale}/topics#${topic.slug}`}><span>0{i + 1}</span>{topic[locale]}</Link>)}</div>
       </section>
     </>
