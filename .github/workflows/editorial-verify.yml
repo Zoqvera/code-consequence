@@ -1,0 +1,39 @@
+name: Apply editorial verifications
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/editorial-verify.yml"
+
+permissions:
+  contents: read
+
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  EDITORIAL_REPORT_DIR: artifacts/editorial-review
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Require database secret
+        run: test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
+      - name: Refresh editorial clusters
+        run: npm run editorial:prepare
+      - name: Apply researched verification decisions
+        run: npm run editorial:verify
+      - name: Generate refreshed editorial report
+        run: npm run editorial:report
+      - name: Upload editorial review artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-review-verified
+          path: artifacts/editorial-review
+          if-no-files-found: error
