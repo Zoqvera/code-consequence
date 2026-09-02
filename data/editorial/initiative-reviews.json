@@ -13,5 +13,125 @@
       "https://www.etda.or.th/th/pr-news/ai_etda_unesco_EN.aspx"
     ],
     "reviewNotes": "Removed language that conflated the Thailand RAM assessment with separate governance-network announcements made around UNESCO's 2025 Bangkok forum. Copy now describes only the documented RAM process, findings and policy-recommendation function."
+  },
+  "european-union-artificial-intelligence-act": {
+    "titleEn": "European Union Artificial Intelligence Act (AI Act)",
+    "summaryEn": "Regulation (EU) 2024/1689 establishes harmonised, risk-based rules for artificial intelligence systems and general-purpose AI in the European Union. It prohibits specified unacceptable practices, sets obligations for regulated and high-risk uses, introduces transparency requirements and creates a governance and enforcement framework. The Regulation applies progressively: major enforcement powers became applicable on 2 August 2026, while some high-risk-system requirements take effect later under the consolidated timetable.",
+    "titlePt": "Regulamento de Inteligência Artificial da União Europeia (AI Act)",
+    "summaryPt": "O Regulamento (UE) 2024/1689 estabelece regras harmonizadas e baseadas em risco para sistemas de inteligência artificial e IA de propósito geral na União Europeia. A norma proíbe práticas consideradas inaceitáveis, define obrigações para usos regulados e de alto risco, cria requisitos de transparência e estabelece uma estrutura de governança e fiscalização. A aplicação ocorre de forma progressiva: os principais poderes de fiscalização passaram a valer em 2 de agosto de 2026, enquanto alguns requisitos para sistemas de alto risco entram em vigor em datas posteriores segundo o cronograma consolidado.",
+    "organization": "European Union",
+    "regionEn": "European Union",
+    "regionPt": "União Europeia",
+    "evidenceUrls": [
+      "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+      "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727",
+      "https://www.europarl.europa.eu/topics/en/article/20230601STO93804/eu-ai"
+    ],
+    "reviewNotes": "Narrowed the record to the AI Act itself. Removed material about the broader EU industrial and innovation policy package that belongs to separate initiatives such as the AI Continent Action Plan and Apply AI Strategy; updated the application timeline to the consolidated 2026 text."
+  },
+  "declaration-of-santo-domingo-and-regional-roadmap-for-ethical-artificial": {
+    "titleEn": "Declaration of Santo Domingo and Regional Roadmap for Ethical Artificial Intelligence 2026–2027",
+    "summaryEn": "At the 3rd Ministerial and High-Level Authorities Summit on the Ethics of Artificial Intelligence in the Dominican Republic on 25–26 June 2026, participants adopted the Declaration of Santo Domingo and endorsed a regional Roadmap for 2026–2027. The summit, co-organized by the Government of the Dominican Republic, UNESCO and CAF, positioned the two instruments as a framework for regional cooperation and collaborative action on human-centered and ethical AI governance in Latin America and the Caribbean.",
+    "titlePt": "Declaração de Santo Domingo e Roteiro Regional para Inteligência Artificial Ética 2026–2027",
+    "summaryPt": "Na 3ª Cúpula Ministerial e de Altas Autoridades sobre a Ética da Inteligência Artificial, realizada na República Dominicana em 25 e 26 de junho de 2026, os participantes adotaram a Declaração de Santo Domingo e aprovaram um Roteiro Regional para 2026–2027. A cúpula, coorganizada pelo Governo da República Dominicana, pela UNESCO e pelo CAF, apresentou os dois instrumentos como referência para cooperação regional e ações conjuntas em favor de uma governança de IA ética e centrada nas pessoas na América Latina e no Caribe.",
+    "organization": "UNESCO",
+    "regionEn": "Latin America and the Caribbean",
+    "regionPt": "América Latina e Caribe",
+    "evidenceUrls": [
+      "https://www.unesco.org/en/articles/caribbean-voices-shape-future-ethical-ai-regional-summit",
+      "https://www.caf.com/es/actualidad/eventos/tercera-cumbre-ministerial-de-la-etica-de-la-inteligencia-artificial/",
+      "https://www.gobierno.aw/en/the-ministry-of-kingdom-relations-education-youth-innovation-and-sport-launches-process-to-develop"
+    ],
+    "reviewNotes": "Clarified that the Declaration and Roadmap were adopted/endosed at the June 2026 summit and that the summit had three co-organizers. Avoids presenting UNESCO as the sole institutional owner of the regional instruments."
+  },
+  "common-european-language-data-space-lds": {
+    "titleEn": "Common European Language Data Space (LDS)",
+    "summaryEn": "The European Language Data Space is an EU-supported platform and organizational ecosystem for collecting, sharing, reusing and, where applicable, monetising multilingual and multimodal language data, language models and related resources. It is designed to provide a secure and legally compliant marketplace in which data holders retain control over their assets, while increasing the availability of high-quality language resources for multilingual language technologies and language-centric AI in Europe.",
+    "titlePt": "Espaço Europeu Comum de Dados Linguísticos (LDS)",
+    "summaryPt": "O European Language Data Space é uma plataforma e um ecossistema organizacional apoiados pela União Europeia para coletar, compartilhar, reutilizar e, quando aplicável, monetizar dados linguísticos multilíngues e multimodais, modelos de linguagem e recursos relacionados. A iniciativa busca oferecer um mercado seguro e compatível com as normas da UE, mantendo os detentores no controle de seus ativos e ampliando a disponibilidade de recursos linguísticos de alta qualidade para tecnologias multilíngues e aplicações de IA centradas em linguagem na Europa.",
+    "organization": "European Commission",
+    "regionEn": "European Union",
+    "regionPt": "União Europeia",
+    "evidenceUrls": [
+      "https://language-data-space.ec.europa.eu/index_en",
+      "https://digital-strategy.ec.europa.eu/en/policies/language-technologies",
+      "https://digital-strategy.ec.europa.eu/en/news/commission-welcomes-new-initiative-support-european-cultural-and-linguistic-diversity-artificial"
+    ],
+    "reviewNotes": "Replaced a broad description of the EU language-technology ecosystem with a record specific to the Language Data Space: its platform, marketplace, governance model, language-data scope and relationship to language-centric AI."
+  },
+  "apply-ai-strategy": {
+    "titleEn": "Apply AI Strategy",
+    "summaryEn": "The European Commission's Apply AI Strategy is the EU's cross-sector strategy for accelerating artificial-intelligence adoption and innovation, particularly among small and medium-sized enterprises and across strategic industries and the public sector. It combines sector-specific flagships with support infrastructure and workforce measures, promotes an 'AI first' approach that considers both benefits and risks, and establishes coordination through the Apply AI Alliance and an AI Observatory.",
+    "titlePt": "Estratégia Apply AI",
+    "summaryPt": "A Apply AI Strategy da Comissão Europeia é a estratégia transversal da União Europeia para acelerar a adoção e a inovação em inteligência artificial, especialmente entre pequenas e médias empresas, setores estratégicos e o setor público. Ela combina iniciativas setoriais com infraestrutura de apoio e medidas de qualificação profissional, promove uma abordagem 'AI first' que considera benefícios e riscos e estabelece mecanismos de coordenação por meio da Apply AI Alliance e de um Observatório de IA.",
+    "organization": "European Commission",
+    "regionEn": "European Union",
+    "regionPt": "União Europeia",
+    "evidenceUrls": [
+      "https://digital-strategy.ec.europa.eu/en/policies/apply-ai",
+      "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52025DC0723",
+      "https://oeil.europarl.europa.eu/oeil/en/procedure-file?reference=COM(2025)0723"
+    ],
+    "reviewNotes": "Kept the strategy distinct from the AI Act and preserved the official Apply AI brand in Portuguese. The revised copy focuses on its sectoral adoption, support and governance mechanisms rather than adjacent EU initiatives."
+  },
+  "unesco-recommendation-on-the-ethics-of-artificial-intelligence": {
+    "titleEn": "UNESCO Recommendation on the Ethics of Artificial Intelligence",
+    "summaryEn": "Adopted by UNESCO's 193 Member States in November 2021, the Recommendation on the Ethics of Artificial Intelligence is a global normative framework for the ethical development and use of AI. It places human rights and human dignity at its core and sets principles and policy-action areas covering issues such as transparency, fairness, human oversight, data governance, gender, education, health, environmental sustainability and international cooperation. UNESCO supports implementation through tools including the Readiness Assessment Methodology and Ethical Impact Assessment.",
+    "titlePt": "Recomendação da UNESCO sobre a Ética da Inteligência Artificial",
+    "summaryPt": "Adotada pelos 193 Estados-membros da UNESCO em novembro de 2021, a Recomendação sobre a Ética da Inteligência Artificial é um marco normativo global para o desenvolvimento e o uso éticos da IA. O documento coloca os direitos humanos e a dignidade humana no centro e estabelece princípios e áreas de ação pública que abrangem transparência, equidade, supervisão humana, governança de dados, gênero, educação, saúde, sustentabilidade ambiental e cooperação internacional. A UNESCO apoia sua implementação por meio de instrumentos como a Metodologia de Avaliação de Prontidão e a Avaliação de Impacto Ético.",
+    "organization": "UNESCO",
+    "regionEn": "Global",
+    "regionPt": "Global",
+    "evidenceUrls": [
+      "https://www.unesco.org/en/artificial-intelligence/recommendation-ethics",
+      "https://digitallibrary.un.org/record/3997249/files/A_77_614-EN.pdf",
+      "https://oecd.ai/en/dashboards/international/the-united-nations-educational-scientific-and-cultural-organization"
+    ],
+    "reviewNotes": "Expanded the record beyond a generic list of values to distinguish the Recommendation as a normative framework with concrete policy-action areas and implementation tools."
+  },
+  "coalition-for-linguistic-diversity-in-artificial-intelligence": {
+    "titleEn": "Coalition for Linguistic Diversity in Artificial Intelligence",
+    "summaryEn": "The Coalition for Linguistic Diversity in Artificial Intelligence is a multi-stakeholder initiative co-coordinated by UNESCO and the Government of Iceland to improve the representation of Indigenous and under-represented languages in AI. Its planned work includes documenting community experiences, developing guidance for sourcing and licensing language data, building a shared repository of multilingual datasets and collection methods, and developing benchmarks for evaluating how well AI systems support linguistic diversity.",
+    "titlePt": "Coalizão para a Diversidade Linguística na Inteligência Artificial",
+    "summaryPt": "A Coalizão para a Diversidade Linguística na Inteligência Artificial é uma iniciativa multissetorial coordenada conjuntamente pela UNESCO e pelo Governo da Islândia para ampliar a representação de línguas indígenas e sub-representadas em sistemas de IA. O trabalho previsto inclui documentar experiências de comunidades, elaborar orientações para obtenção e licenciamento de dados linguísticos, construir um repositório compartilhado de conjuntos de dados multilíngues e métodos de coleta e desenvolver parâmetros para avaliar o suporte dos sistemas de IA à diversidade linguística.",
+    "organization": "UNESCO",
+    "regionEn": "Global",
+    "regionPt": "Global",
+    "evidenceUrls": [
+      "https://www.unesco.org/ethics-ai/en/coalition-linguistic-diversity-artificial-intelligence",
+      "https://www.stjornarradid.is/lisalib/getfile.aspx?itemid=e30de195-79d3-11ef-b888-005056bcde1f",
+      "https://almannaromur.is/nytt/almannaromur-leidir-samstarf-islands-og-unesco"
+    ],
+    "reviewNotes": "Removed the Icelandic dataset example from the core description because it is background evidence rather than a deliverable of the coalition. The copy now matches the coalition's stated planned work."
+  },
+  "european-ai-office": {
+    "titleEn": "European AI Office",
+    "summaryEn": "The European AI Office is a unit established within the European Commission to support the implementation and enforcement of the AI Act and to promote a coherent European approach to trustworthy AI. It has a central enforcement role for general-purpose AI models, including powers to request information and model access, conduct or commission evaluations, require corrective measures and support Commission sanctions, while also coordinating with Member State authorities and EU-level advisory bodies.",
+    "titlePt": "Serviço Europeu de IA (European AI Office)",
+    "summaryPt": "O European AI Office é uma unidade criada dentro da Comissão Europeia para apoiar a implementação e a fiscalização do AI Act e promover uma abordagem europeia coerente para uma IA confiável. O órgão exerce papel central na fiscalização de modelos de IA de propósito geral, podendo solicitar informações e acesso a modelos, realizar ou encomendar avaliações, exigir medidas corretivas e apoiar a aplicação de sanções pela Comissão, além de coordenar-se com autoridades dos Estados-membros e órgãos consultivos da UE.",
+    "organization": "European Commission",
+    "regionEn": "European Union",
+    "regionPt": "União Europeia",
+    "evidenceUrls": [
+      "https://digital-strategy.ec.europa.eu/en/policies/ai-office",
+      "https://digital-strategy.ec.europa.eu/en/library/commission-decision-establishing-european-ai-office",
+      "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727"
+    ],
+    "reviewNotes": "Anchored the record to the Commission decision establishing the Office and its current AI Act role. Deliberately excluded the future-dated 16 September 2026 event previously encountered during source discovery."
+  },
+  "eu-ai-act-enforcement-framework": {
+    "titleEn": "EU AI Act Enforcement Framework",
+    "summaryEn": "Enforcement of the EU AI Act is shared among the European Commission's AI Office, the European Data Protection Supervisor and national competent authorities designated by Member States. The AI Office has investigative and sanctioning functions for areas within its remit, including requests for information, model access and evaluations, corrective measures and inspections in specified cases. The framework also provides complaint and whistleblower channels, and serious infringements can attract penalties of up to €35 million or 7% of worldwide annual turnover. Key enforcement powers became applicable on 2 August 2026.",
+    "titlePt": "Quadro de Fiscalização do AI Act da União Europeia",
+    "summaryPt": "A fiscalização do AI Act da União Europeia é compartilhada entre o European AI Office da Comissão Europeia, o Supervisor Europeu para a Proteção de Dados e as autoridades nacionais competentes designadas pelos Estados-membros. Nas áreas sob sua competência, o AI Office dispõe de funções investigativas e sancionatórias, incluindo pedidos de informação, acesso e avaliação de modelos, medidas corretivas e inspeções em casos previstos. O sistema também oferece canais de reclamação e denúncia, e infrações graves podem resultar em multas de até €35 milhões ou 7% do faturamento anual mundial. Os principais poderes de fiscalização passaram a valer em 2 de agosto de 2026.",
+    "organization": "European Commission",
+    "regionEn": "European Union",
+    "regionPt": "União Europeia",
+    "evidenceUrls": [
+      "https://digital-strategy.ec.europa.eu/en/policies/enforcement-ai-act",
+      "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727",
+      "https://www.europarl.europa.eu/thinktank/en/academic/EPRS_ATA(2026)785670"
+    ],
+    "reviewNotes": "Made the division of enforcement responsibility explicit and separated the enforcement framework from the AI Office as an institution. Penalty and 2 August 2026 enforcement claims are tied directly to the Commission's current enforcement page and the consolidated regulation."
   }
 }
