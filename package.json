@@ -20,6 +20,7 @@
     "editorial:promote": "node scripts/promote-verified-initiatives.mjs",
     "editorial:audit-drafts": "node scripts/audit-initiative-drafts.mjs",
     "editorial:prepare-drafts": "node scripts/prepare-initiative-drafts.mjs",
+    "editorial:apply-reviewed": "node scripts/apply-reviewed-initiative.mjs",
     "editorial:to-review": "node scripts/move-initiative-to-review.mjs",
     "content:export": "node scripts/export-neon-content.mjs"
   },
