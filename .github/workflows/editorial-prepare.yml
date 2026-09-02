@@ -2,10 +2,6 @@ name: Prepare editorial candidates
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/editorial-prepare.yml"
 
 permissions:
   contents: read
