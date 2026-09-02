@@ -27,7 +27,9 @@
     "editorial:auto-promote": "node scripts/promote-researched-initiatives.mjs",
     "editorial:auto-advance": "node scripts/advance-reviewed-drafts.mjs",
     "editorial:queue-report": "node scripts/review-queue-report.mjs",
-    "content:export": "node scripts/export-neon-content.mjs"
+    "content:export": "node scripts/export-neon-content.mjs",
+    "events:collect": "node scripts/collect-events.mjs",
+    "events:export": "node scripts/export-events.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
