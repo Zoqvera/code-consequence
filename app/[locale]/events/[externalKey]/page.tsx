@@ -48,7 +48,7 @@ function locationLabel(event: AiEvent, locale: Locale) {
 }
 
 function compactDate(date: string) {
-  return date.replaceAll("-", "");
+  return date.replace(/-/g, "");
 }
 
 function nextDate(date: string) {
@@ -120,7 +120,7 @@ function structuredData(event: AiEvent, locale: Locale) {
       "@type": "Offer",
       url: event.registrationUrl || event.eventUrl,
       availability: "https://schema.org/InStock",
-      ...(event.isFree === true ? { price: "0", priceCurrency: "USD" } : {}),
+      ...(event.isFree === true ? { price: "0" } : {}),
     },
   };
 }
