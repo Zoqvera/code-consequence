@@ -1,3 +1,4 @@
+import generatedSnapshot from "../data/generated-content.json";
 import type { Locale } from "./i18n";
 
 type LocalizedText = Record<Locale, string>;
@@ -17,7 +18,7 @@ export type Initiative = {
   slug: string;
   organization: string;
   region: LocalizedText;
-  status: "Active" | "Completed" | "Announced";
+  status: "Active" | "Completed" | "Announced" | "Paused" | "Cancelled";
   topic: LocalizedText;
   title: LocalizedText;
   summary: LocalizedText;
@@ -33,7 +34,7 @@ export const topics = [
   { slug: "science-technology", en: "Science & Technology", "pt-BR": "Ciência & Tecnologia" },
 ] as const;
 
-export const articles: Article[] = [
+const seedArticles: Article[] = [
   {
     slug: "environmental-footprint-is-a-policy-question",
     type: "Analysis",
@@ -57,7 +58,13 @@ export const articles: Article[] = [
         "pt-BR": "O toolkit da UNESCO sobre IA, meio ambiente e ecossistemas relaciona explicitamente a governança de IA ao uso de energia e água, à extração de minerais raros e ao lixo eletrônico. Esse enquadramento importa porque transforma impacto ambiental de uma preocupação corporativa voluntária em um problema de política pública.",
       },
     ],
-    sources: [{ name: "UNESCO — AI for Environment and Ecosystems Toolkit", url: "https://www.unesco.org/ethics-ai/en/node/288", tier: "A" }],
+    sources: [
+      {
+        name: "UNESCO — AI for Environment and Ecosystems Toolkit",
+        url: "https://www.unesco.org/ethics-ai/en/node/288",
+        tier: "A",
+      },
+    ],
   },
   {
     slug: "ai-government-governance-gap",
@@ -78,7 +85,13 @@ export const articles: Article[] = [
         "pt-BR": "A IA está se tornando infraestrutura rotineira nas administrações públicas, mas a capacidade de governança não se desenvolve na mesma velocidade em todos os lugares. Isso cria uma lacuna crítica: a implantação pode escalar mais rapidamente que mecanismos de transparência, reparação e avaliação baseada em evidências.",
       },
     ],
-    sources: [{ name: "OECD — Digital Government Outlook 2026", url: "https://www.oecd.org/en/publications/2026/06/digital-government-outlook_4585678e/full-report/adopting-and-governing-ai-in-government_7ef312a9.html", tier: "A" }],
+    sources: [
+      {
+        name: "OECD — Digital Government Outlook 2026",
+        url: "https://www.oecd.org/en/publications/2026/06/digital-government-outlook_4585678e/full-report/adopting-and-governing-ai-in-government_7ef312a9.html",
+        tier: "A",
+      },
+    ],
   },
   {
     slug: "global-ai-governance-multilateral-phase",
@@ -99,18 +112,27 @@ export const articles: Article[] = [
         "pt-BR": "A primeira sessão do Diálogo Global da ONU sobre Governança de IA ocorreu em Genebra em julho de 2026. Sua importância é institucional: a governança de IA passa a ser tratada cada vez mais como uma questão multilateral recorrente, e não como uma sequência de debates nacionais isolados.",
       },
     ],
-    sources: [{ name: "UNESCO — Global Dialogue on AI Governance", url: "https://www.unesco.org/en/articles/global-dialogue-ai-governance-geneva-6-7-july", tier: "A" }],
+    sources: [
+      {
+        name: "UNESCO — Global Dialogue on AI Governance",
+        url: "https://www.unesco.org/en/articles/global-dialogue-ai-governance-geneva-6-7-july",
+        tier: "A",
+      },
+    ],
   },
 ];
 
-export const initiatives: Initiative[] = [
+const seedInitiatives: Initiative[] = [
   {
     slug: "unesco-ai-environment-toolkit",
     organization: "UNESCO",
     region: { en: "Global", "pt-BR": "Global" },
     status: "Active",
     topic: { en: "Infrastructure & Planet", "pt-BR": "Infraestrutura & Planeta" },
-    title: { en: "AI for Environment and Ecosystems Toolkit", "pt-BR": "Toolkit de IA para Meio Ambiente e Ecossistemas" },
+    title: {
+      en: "AI for Environment and Ecosystems Toolkit",
+      "pt-BR": "Toolkit de IA para Meio Ambiente e Ecossistemas",
+    },
     summary: {
       en: "A policy toolkit linking AI governance to planetary boundaries and practical public-sector action.",
       "pt-BR": "Um toolkit de políticas que relaciona governança de IA a limites planetários e ações práticas do setor público.",
@@ -123,12 +145,19 @@ export const initiatives: Initiative[] = [
     region: { en: "Global", "pt-BR": "Global" },
     status: "Active",
     topic: { en: "Governance & Regulation", "pt-BR": "Governança & Regulação" },
-    title: { en: "UN Global Dialogue on AI Governance", "pt-BR": "Diálogo Global da ONU sobre Governança de IA" },
+    title: {
+      en: "UN Global Dialogue on AI Governance",
+      "pt-BR": "Diálogo Global da ONU sobre Governança de IA",
+    },
     summary: {
       en: "A UN platform for governments, civil society, academia and industry to discuss international AI governance.",
       "pt-BR": "Uma plataforma da ONU para governos, sociedade civil, academia e indústria discutirem governança internacional de IA.",
     },
-    source: { name: "UNESCO", url: "https://www.unesco.org/en/articles/global-dialogue-ai-governance-geneva-6-7-july", tier: "A" },
+    source: {
+      name: "UNESCO",
+      url: "https://www.unesco.org/en/articles/global-dialogue-ai-governance-geneva-6-7-july",
+      tier: "A",
+    },
   },
   {
     slug: "unesco-ai-environment-subgroup",
@@ -136,7 +165,10 @@ export const initiatives: Initiative[] = [
     region: { en: "Global", "pt-BR": "Global" },
     status: "Active",
     topic: { en: "Rights & Society", "pt-BR": "Direitos & Sociedade" },
-    title: { en: "AI, Environment and Ecosystems subgroup", "pt-BR": "Subgrupo de IA, Meio Ambiente e Ecossistemas" },
+    title: {
+      en: "AI, Environment and Ecosystems subgroup",
+      "pt-BR": "Subgrupo de IA, Meio Ambiente e Ecossistemas",
+    },
     summary: {
       en: "A civil-society and expert subgroup working on shared approaches to AI's environmental risks and environmental uses.",
       "pt-BR": "Um subgrupo de sociedade civil e especialistas voltado a abordagens compartilhadas para riscos ambientais da IA e seus usos ambientais.",
@@ -144,6 +176,19 @@ export const initiatives: Initiative[] = [
     source: { name: "UNESCO", url: "https://www.unesco.org/ethics-ai/en/node/337", tier: "A" },
   },
 ];
+
+function mergeBySlug<T extends { slug: string }>(primary: T[], fallback: T[]) {
+  const seen = new Set(primary.map((item) => item.slug));
+  return [...primary, ...fallback.filter((item) => !seen.has(item.slug))];
+}
+
+const generatedArticles = generatedSnapshot.articles as unknown as Article[];
+const generatedInitiatives = generatedSnapshot.initiatives as unknown as Initiative[];
+
+// Neon is authoritative for records that have passed publication review.
+// Static seeds remain as a transitional fallback until they are migrated into Neon.
+export const articles: Article[] = mergeBySlug(generatedArticles, seedArticles);
+export const initiatives: Initiative[] = mergeBySlug(generatedInitiatives, seedInitiatives);
 
 export function getArticle(slug: string) {
   return articles.find((article) => article.slug === slug);
