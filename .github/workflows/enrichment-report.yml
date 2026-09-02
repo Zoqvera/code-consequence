@@ -2,10 +2,6 @@ name: Enrichment usage report
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/enrichment-report.yml"
 
 permissions:
   contents: read
