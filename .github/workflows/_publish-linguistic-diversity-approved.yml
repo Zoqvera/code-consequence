@@ -1,0 +1,29 @@
+name: Publish approved Linguistic Diversity Coalition initiative
+
+on:
+  push:
+    paths:
+      - '.github/workflows/_publish-linguistic-diversity-approved.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  publication-gate:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      EDITORIAL_PUBLISH_SLUG: coalition-for-linguistic-diversity-in-artificial-intelligence
+      EDITORIAL_HUMAN_REVIEWER: Flávio
+      EDITORIAL_APPROVAL_PHRASE: I APPROVE PUBLICATION
+      EDITORIAL_PUBLISH_APPLY: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Require database secret
+        run: test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
+      - name: Publish approved reviewed initiative
+        run: npm run editorial:publish
