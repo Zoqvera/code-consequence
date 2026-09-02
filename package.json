@@ -23,6 +23,10 @@
     "editorial:apply-reviewed": "node scripts/apply-reviewed-initiative.mjs",
     "editorial:to-review": "node scripts/move-initiative-to-review.mjs",
     "editorial:publish": "node scripts/publish-reviewed-initiative.mjs",
+    "editorial:research": "node scripts/research-editorial-candidates.mjs",
+    "editorial:auto-promote": "node scripts/promote-researched-initiatives.mjs",
+    "editorial:auto-advance": "node scripts/advance-reviewed-drafts.mjs",
+    "editorial:queue-report": "node scripts/review-queue-report.mjs",
     "content:export": "node scripts/export-neon-content.mjs"
   },
   "dependencies": {
