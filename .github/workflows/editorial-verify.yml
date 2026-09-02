@@ -1,6 +1,6 @@
 name: Apply editorial verifications
 
-# Temporary push trigger used only to validate the second researched batch.
+# Temporary push trigger used only to validate the researched batches.
 on:
   workflow_dispatch:
   push:
@@ -28,8 +28,10 @@ jobs:
         run: test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
       - name: Refresh editorial clusters
         run: npm run editorial:prepare
-      - name: Apply researched verification decisions
+      - name: Apply primary researched verification batch
         run: npm run editorial:verify
+      - name: Apply additional researched verification batch
+        run: EDITORIAL_VERIFICATION_FILE=data/editorial-verifications-batch-2.json npm run editorial:verify
       - name: Generate refreshed editorial report
         run: npm run editorial:report
       - name: Upload editorial review artifact
