@@ -17,14 +17,9 @@ export default async function InitiativesPage({ params }: { params: Promise<{ lo
           ? "Projetos, políticas e mecanismos reais criados para responder aos impactos sociais, políticos e ambientais da IA. Cada registro publicado possui revisão editorial e fontes verificadas."
           : "Real projects, policies and mechanisms created to respond to the social, political and environmental impacts of AI. Every published record has editorial review and verified sources."}
       </p>
-      <div className="tracker-toolbar">
-        <p className="tracker-count">
-          {initiatives.length} {pt ? "registros publicados" : "published records"}
-        </p>
-        <Link className="radar-entry-link" href={`/${locale}/radar`}>
-          {pt ? "Explorar no Global Radar" : "Explore in Global Radar"} →
-        </Link>
-      </div>
+      <p className="tracker-count">
+        {initiatives.length} {pt ? "registros publicados" : "published records"} · <Link className="text-link" href={`/${locale}/radar`}>{pt ? "Explorar no Global Radar" : "Explore in Global Radar"} →</Link>
+      </p>
 
       <div className="initiative-list light">
         {initiatives.map((item, i) => (
