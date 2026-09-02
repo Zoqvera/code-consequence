@@ -147,6 +147,7 @@ const initiativeRows = await sql`
     i.slug,
     i.status::text AS status,
     i.region,
+    i.last_verified_at,
     i.metadata,
     o.name AS organization,
     it.locale,
@@ -192,12 +193,13 @@ for (const row of initiativeTopicRows) {
 
 const initiativeSources = new Map();
 for (const row of initiativeSourceRows) {
-  if (initiativeSources.has(row.initiative_id)) continue;
-  initiativeSources.set(row.initiative_id, {
+  const entry = initiativeSources.get(row.initiative_id) || [];
+  entry.push({
     name: sourceName(row),
     url: row.url,
     tier: row.reliability,
   });
+  initiativeSources.set(row.initiative_id, entry);
 }
 
 const initiativeGroups = new Map();
@@ -213,7 +215,8 @@ for (const [initiativeId, group] of initiativeGroups) {
   const en = group.translations.en;
   const pt = group.translations["pt-BR"];
   const topics = initiativeTopics.get(initiativeId) || {};
-  const source = initiativeSources.get(initiativeId);
+  const sources = initiativeSources.get(initiativeId) || [];
+  const source = sources[0];
   const organization = String(group.base.organization || "").trim();
   const preparation = group.base.metadata?.editorial_preparation || {};
   const regionEn = String(preparation.region_en || group.base.region || "").trim();
@@ -247,6 +250,10 @@ for (const [initiativeId, group] of initiativeGroups) {
     title: { en: en.title, "pt-BR": pt.title },
     summary: { en: en.summary, "pt-BR": pt.summary },
     source,
+    sources,
+    lastVerifiedAt: group.base.last_verified_at
+      ? new Date(group.base.last_verified_at).toISOString()
+      : null,
   });
 }
 
