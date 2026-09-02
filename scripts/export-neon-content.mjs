@@ -34,11 +34,11 @@ function splitParagraphs(value) {
 function buildLocalizedParagraphs(enBody, ptBody) {
   const en = splitParagraphs(enBody);
   const pt = splitParagraphs(ptBody);
-  const length = Math.max(en.length, pt.length);
-  return Array.from({ length }, (_, index) => ({
-    en: en[index] || "",
-    "pt-BR": pt[index] || "",
-  })).filter((paragraph) => paragraph.en && paragraph["pt-BR"]);
+  if (en.length === 0 || en.length !== pt.length) return null;
+  return en.map((paragraph, index) => ({
+    en: paragraph,
+    "pt-BR": pt[index],
+  }));
 }
 
 function sourceName(row) {
@@ -95,11 +95,7 @@ for (const row of articleTopicRows) {
 const articleSources = new Map();
 for (const row of articleSourceRows) {
   const entry = articleSources.get(row.article_id) || [];
-  entry.push({
-    name: sourceName(row),
-    url: row.url,
-    tier: row.reliability,
-  });
+  entry.push({ name: sourceName(row), url: row.url, tier: row.reliability });
   articleSources.set(row.article_id, entry);
 }
 
@@ -111,23 +107,36 @@ for (const row of articleRows) {
 }
 
 const articles = [];
+const skippedArticles = [];
 for (const [articleId, group] of articleGroups) {
   const en = group.translations.en;
   const pt = group.translations["pt-BR"];
   const topics = articleTopics.get(articleId) || {};
   const sources = articleSources.get(articleId) || [];
-  if (!en || !pt || !topics.en || !topics["pt-BR"] || sources.length === 0) continue;
+  const body = en && pt ? buildLocalizedParagraphs(en.body_md, pt.body_md) : null;
+  const complete = Boolean(
+    en &&
+      pt &&
+      topics.en &&
+      topics["pt-BR"] &&
+      sources.length > 0 &&
+      group.base.published_at &&
+      body,
+  );
+
+  if (!complete) {
+    skippedArticles.push(group.base.slug);
+    continue;
+  }
 
   articles.push({
     slug: group.base.slug,
     type: articleTypeMap[group.base.type] || "Analysis",
     topic: { en: topics.en, "pt-BR": topics["pt-BR"] },
-    publishedAt: group.base.published_at
-      ? new Date(group.base.published_at).toISOString().slice(0, 10)
-      : "",
+    publishedAt: new Date(group.base.published_at).toISOString().slice(0, 10),
     title: { en: en.title, "pt-BR": pt.title },
     dek: { en: en.dek || "", "pt-BR": pt.dek || "" },
-    body: buildLocalizedParagraphs(en.body_md, pt.body_md),
+    body,
     sources,
   });
 }
@@ -138,7 +147,6 @@ const initiativeRows = await sql`
     i.slug,
     i.status::text AS status,
     i.region,
-    i.metadata,
     o.name AS organization,
     it.locale,
     it.title,
@@ -199,21 +207,20 @@ for (const row of initiativeRows) {
 }
 
 const initiatives = [];
+const skippedInitiatives = [];
 for (const [initiativeId, group] of initiativeGroups) {
   const en = group.translations.en;
   const pt = group.translations["pt-BR"];
   const topics = initiativeTopics.get(initiativeId) || {};
   const source = initiativeSources.get(initiativeId);
-  if (!en || !pt || !topics.en || !topics["pt-BR"] || !source) continue;
+  const organization = String(group.base.organization || "").trim();
+  const region = String(group.base.region || "").trim();
+  const complete = Boolean(en && pt && topics.en && topics["pt-BR"] && source && organization && region);
 
-  const metadataOrganizations = Array.isArray(group.base.metadata?.organizations)
-    ? group.base.metadata.organizations
-    : [];
-  const metadataCountries = Array.isArray(group.base.metadata?.countries)
-    ? group.base.metadata.countries
-    : [];
-  const organization = group.base.organization || metadataOrganizations[0] || "Independent initiative";
-  const region = group.base.region || metadataCountries.join(", ") || "Global";
+  if (!complete) {
+    skippedInitiatives.push(group.base.slug);
+    continue;
+  }
 
   initiatives.push({
     slug: group.base.slug,
@@ -229,7 +236,8 @@ for (const [initiativeId, group] of initiativeGroups) {
 
 const snapshot = {
   generatedAt: new Date().toISOString(),
-  publicationRule: "Only bilingual records explicitly marked PUBLISHED in Neon are exported.",
+  publicationRule:
+    "Only complete bilingual records explicitly marked PUBLISHED in Neon are exported; published initiatives also require reviewed organization, region, topic and source fields.",
   articles,
   initiatives,
 };
@@ -237,8 +245,16 @@ const snapshot = {
 await mkdir(dirname(outputPath), { recursive: true });
 await writeFile(outputPath, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
 
-console.log(JSON.stringify({
-  outputPath,
-  publishedArticles: articles.length,
-  publishedInitiatives: initiatives.length,
-}, null, 2));
+console.log(
+  JSON.stringify(
+    {
+      outputPath,
+      publishedArticles: articles.length,
+      publishedInitiatives: initiatives.length,
+      skippedIncompleteArticles: skippedArticles,
+      skippedIncompleteInitiatives: skippedInitiatives,
+    },
+    null,
+    2,
+  ),
+);
