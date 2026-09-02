@@ -1,7 +1,12 @@
 name: Apply editorial verifications
 
+# Temporary push trigger used only to validate the second researched batch.
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/editorial-verify.yml"
 
 permissions:
   contents: read
