@@ -23,19 +23,36 @@ let updatedItems = 0;
 const applied = [];
 
 for (const record of payload.records) {
-  if (!record.cluster_id) throw new Error("Verification record is missing cluster_id");
+  if (!record.match_url) throw new Error("Verification record is missing match_url");
   if (!validDecisions.has(record.decision)) {
-    throw new Error(`Unsupported editorial decision for ${record.cluster_id}: ${record.decision}`);
+    throw new Error(`Unsupported editorial decision for ${record.match_url}: ${record.decision}`);
+  }
+
+  const anchorRows = await sql`
+    SELECT id, canonical_url, classification
+    FROM ingestion_items
+    WHERE canonical_url = ${record.match_url}
+    LIMIT 1
+  `;
+
+  if (!anchorRows.length) {
+    throw new Error(`No ingestion item found for verification anchor ${record.match_url}`);
+  }
+
+  const anchor = anchorRows[0];
+  const resolvedClusterId = anchor.classification?.editorial_candidate?.cluster_id;
+  if (!resolvedClusterId) {
+    throw new Error(`Verification anchor has no editorial cluster: ${record.match_url}`);
   }
 
   const rows = await sql`
-    SELECT id, classification
+    SELECT id, canonical_url, classification
     FROM ingestion_items
-    WHERE classification -> 'editorial_candidate' ->> 'cluster_id' = ${record.cluster_id}
+    WHERE classification -> 'editorial_candidate' ->> 'cluster_id' = ${resolvedClusterId}
   `;
 
   if (!rows.length) {
-    throw new Error(`No ingestion items found for editorial cluster ${record.cluster_id}`);
+    throw new Error(`No ingestion items found for resolved editorial cluster ${resolvedClusterId}`);
   }
 
   const verification = {
@@ -47,6 +64,9 @@ for (const record of payload.records) {
     editorial_notes: record.editorial_notes || null,
     evidence_sources: record.evidence_sources || [],
     split_targets: record.split_targets || [],
+    match_url: record.match_url,
+    previous_cluster_id: record.previous_cluster_id || null,
+    resolved_cluster_id: resolvedClusterId,
   };
 
   for (const row of rows) {
@@ -62,7 +82,9 @@ for (const record of payload.records) {
   }
 
   applied.push({
-    clusterId: record.cluster_id,
+    matchUrl: record.match_url,
+    previousClusterId: record.previous_cluster_id || null,
+    resolvedClusterId,
     decision: record.decision,
     verificationLevel: verification.verification_level,
     itemsUpdated: rows.length,
