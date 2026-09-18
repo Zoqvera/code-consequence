@@ -155,5 +155,7 @@ export function getFaultlinesIssue(id: string) {
 }
 
 export function getLatestFaultlinesIssue() {
-  return faultlinesIssues[0];
+  const issue = faultlinesIssues[0];
+  if (!issue) throw new Error("Faultlines Weekly could not build a current issue");
+  return issue;
 }
