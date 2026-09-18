@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ContextualRelations } from "@/components/contextual-relations";
+import { DossierSections } from "@/components/dossier-sections";
 import { articles, getArticle } from "@/lib/content";
 import { isLocale, locales } from "@/lib/i18n";
 import { buildMetadata } from "@/lib/seo";
@@ -57,12 +58,12 @@ export default async function ArticlePage({
     ? `/${locale}/news`
     : article.type === "Analysis"
       ? `/${locale}/analysis`
-      : `/${locale}`;
+      : `/${locale}/dossiers`;
   const collectionLabel = article.type === "News"
     ? (pt ? "Notícias" : "News")
     : article.type === "Analysis"
       ? (pt ? "Análises" : "Analysis")
-      : (pt ? "Início" : "Home");
+      : (pt ? "Dossiês" : "Dossiers");
 
   return (
     <article className="shell article-page page-pad">
@@ -84,6 +85,10 @@ export default async function ArticlePage({
 
       <h1>{article.title[locale]}</h1>
       <p className="lead">{article.dek[locale]}</p>
+
+      {article.type === "Dossier" && article.dossier ? (
+        <DossierSections dossier={article.dossier} locale={locale} />
+      ) : null}
 
       <div className="article-body">
         {article.body.map((paragraph, index) => (
