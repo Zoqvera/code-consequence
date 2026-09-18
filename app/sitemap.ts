@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { articles, topics } from "@/lib/content";
 import { events } from "@/lib/events";
+import { faultlinesIssues } from "@/lib/faultlines";
 import { initiatives } from "@/lib/initiatives";
 import { locales, type Locale } from "@/lib/i18n";
 import { organizations } from "@/lib/organizations";
@@ -30,6 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "", changeFrequency: "daily" as const, priority: 1 },
     { path: "/news", changeFrequency: "daily" as const, priority: 0.9 },
     { path: "/analysis", changeFrequency: "weekly" as const, priority: 0.9 },
+    { path: "/weekly", changeFrequency: "weekly" as const, priority: 0.8 },
     { path: "/dossiers", changeFrequency: "weekly" as const, priority: 0.8 },
     { path: "/initiatives", changeFrequency: "daily" as const, priority: 0.9 },
     { path: "/organizations", changeFrequency: "weekly" as const, priority: 0.7 },
@@ -44,6 +46,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const localizedStaticRoutes = locales.flatMap((locale) =>
     staticRoutes.map((route) => entry(locale, route.path, route)),
+  );
+
+  const weeklyRoutes = faultlinesIssues.flatMap((issue) =>
+    locales.map((locale) =>
+      entry(locale, `/weekly/${issue.id}`, {
+        lastModified: issue.endDate,
+        changeFrequency: "monthly",
+        priority: 0.7,
+      }),
+    ),
   );
 
   const sourceRoutes = sourceRegistry.flatMap((source) =>
@@ -102,5 +114,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ),
   );
 
-  return [...localizedStaticRoutes, ...sourceRoutes, ...organizationRoutes, ...topicRoutes, ...articleRoutes, ...initiativeRoutes, ...eventRoutes];
+  return [...localizedStaticRoutes, ...weeklyRoutes, ...sourceRoutes, ...organizationRoutes, ...topicRoutes, ...articleRoutes, ...initiativeRoutes, ...eventRoutes];
 }
