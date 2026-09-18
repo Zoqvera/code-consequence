@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArticleIndex } from "@/components/article-index";
 import { isLocale } from "@/lib/i18n";
@@ -32,6 +33,11 @@ export default async function AnalysisPage({ params }: { params: Promise<{ local
         {pt
           ? "Leituras explicativas que conectam evidências, iniciativas verificadas e mudanças institucionais para mostrar por que um desenvolvimento em IA importa."
           : "Explanatory reporting that connects evidence, verified initiatives and institutional change to show why an AI development matters."}
+      </p>
+      <p className="tracker-count">
+        <Link className="text-link" href={`/${locale}/dossiers`}>
+          {pt ? "Explorar dossiês persistentes" : "Explore persistent dossiers"} →
+        </Link>
       </p>
       <ArticleIndex locale={locale} type="Analysis" />
     </div>
