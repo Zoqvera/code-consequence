@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { articles } from "@/lib/content";
+import { articles, topics } from "@/lib/content";
 import { events } from "@/lib/events";
 import { initiatives } from "@/lib/initiatives";
 import { locales, type Locale } from "@/lib/i18n";
@@ -40,6 +40,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     staticRoutes.map((route) => entry(locale, route.path, route)),
   );
 
+  const topicRoutes = topics.flatMap((topic) =>
+    locales.map((locale) =>
+      entry(locale, `/topics/${topic.slug}`, {
+        changeFrequency: "weekly",
+        priority: 0.8,
+      }),
+    ),
+  );
+
   const articleRoutes = articles.flatMap((article) =>
     locales.map((locale) =>
       entry(locale, `/articles/${article.slug}`, {
@@ -69,5 +78,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ),
   );
 
-  return [...localizedStaticRoutes, ...articleRoutes, ...initiativeRoutes, ...eventRoutes];
+  return [...localizedStaticRoutes, ...topicRoutes, ...articleRoutes, ...initiativeRoutes, ...eventRoutes];
 }
