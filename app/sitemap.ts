@@ -26,10 +26,13 @@ function entry(locale: Locale, path: string, options: SitemapOptions): MetadataR
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
     { path: "", changeFrequency: "daily" as const, priority: 1 },
+    { path: "/news", changeFrequency: "daily" as const, priority: 0.9 },
+    { path: "/analysis", changeFrequency: "weekly" as const, priority: 0.9 },
     { path: "/initiatives", changeFrequency: "daily" as const, priority: 0.9 },
+    { path: "/topics", changeFrequency: "monthly" as const, priority: 0.7 },
     { path: "/radar", changeFrequency: "daily" as const, priority: 0.9 },
+    { path: "/data", changeFrequency: "daily" as const, priority: 0.8 },
     { path: "/events", changeFrequency: "daily" as const, priority: 0.8 },
-    { path: "/topics", changeFrequency: "monthly" as const, priority: 0.6 },
     { path: "/about", changeFrequency: "monthly" as const, priority: 0.5 },
   ];
 
