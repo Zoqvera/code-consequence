@@ -103,6 +103,7 @@ function getOutputText(payload) {
 async function classifyItem(item, page) {
   const input = [
     `Source publisher: ${item.publisher}`,
+    `Source language: ${item.language}`,
     `Discovery title: ${item.title}`,
     `Canonical URL: ${item.canonical_url}`,
     `Source format: ${page.sourceFormat}`,
@@ -129,6 +130,7 @@ async function classifyItem(item, page) {
       instructions: [
         "You are the evidence-constrained editorial classification engine for Code & Consequence, a bilingual observatory of the sociopolitical and environmental consequences of artificial intelligence and real initiatives responding to them.",
         "Analyze ONLY the supplied source material. Do not use outside knowledge and do not fill gaps by inference.",
+        "The source may be written in English, Portuguese, Spanish or French. Read it in its original language, but always return synopsis_en in English and synopsis_pt_br in Brazilian Portuguese.",
         "A page is relevant when AI substantively intersects with power, democracy, work, economy, rights, society, governance, regulation, infrastructure, energy, water, climate, minerals, public institutions, education, or another consequential social/environmental domain.",
         "Set initiative_detected=true only for a concrete law, regulation, public programme, research project, civil-society action, toolkit, standard, governance process, or other identifiable response to a problem. Mere commentary is not an initiative.",
         "Countries and organizations must be explicitly supported by the supplied source. A country merely mentioned as an example, comparison, venue, or destination must not be treated as the initiative's jurisdiction unless the source explicitly establishes that relationship.",
@@ -171,6 +173,7 @@ async function classifyItem(item, page) {
     total_tokens: payload.usage?.total_tokens ?? null,
     fetched_chars: page.body.length,
     source_format: page.sourceFormat,
+    source_language: item.language,
     priority_original: originalPriority,
     priority_adjusted: originalPriority !== classification.editorial_priority,
     classified_at: new Date().toISOString(),
@@ -186,7 +189,7 @@ function mapRelevance(classification) {
 }
 
 const items = await sql`
-  SELECT i.id, i.canonical_url, i.title, i.relevance_score, f.publisher
+  SELECT i.id, i.canonical_url, i.title, i.relevance_score, f.publisher, f.language
   FROM ingestion_items i
   JOIN source_feeds f ON f.id = i.feed_id
   WHERE i.processing_status = 'NEW'
@@ -232,6 +235,7 @@ for (const item of items) {
       kind: classification.content_kind,
       initiative: classification.initiative_detected,
       sourceFormat: page.sourceFormat,
+      sourceLanguage: item.language,
       usage: {
         inputTokens: classification._meta.input_tokens,
         outputTokens: classification._meta.output_tokens,
