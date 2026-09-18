@@ -8,6 +8,7 @@ import { events } from "@/lib/events";
 import { initiatives } from "@/lib/initiatives";
 import { isLocale, locales } from "@/lib/i18n";
 import { buildMetadata } from "@/lib/seo";
+import { topicDescriptions } from "@/lib/topic-hubs";
 
 export const dynamicParams = false;
 
@@ -31,6 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function LocaleLayout({ children, params }: { children: React.ReactNode; params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+
   const pt = locale === "pt-BR";
 
   const searchItems: SearchItem[] = [
@@ -46,7 +48,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
       type: "article" as const,
       title: item.title[locale],
       description: item.dek[locale],
-      meta: item.topic[locale],
+      meta: `${item.type} · ${item.topic[locale]}`,
     })),
     ...events.map((item) => ({
       href: `/${locale}/events/${item.externalKey}`,
@@ -56,12 +58,10 @@ export default async function LocaleLayout({ children, params }: { children: Rea
       meta: `${item.organizer} · ${item.startDate}`,
     })),
     ...topics.map((item) => ({
-      href: `/${locale}/topics#${item.slug}`,
+      href: `/${locale}/topics/${item.slug}`,
       type: "topic" as const,
       title: item[locale],
-      description: pt
-        ? "Explore iniciativas e análises relacionadas a este tema."
-        : "Explore initiatives and analysis related to this topic.",
+      description: topicDescriptions[item.slug][locale],
       meta: pt ? "Tema" : "Topic",
     })),
   ];
