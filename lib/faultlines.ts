@@ -66,13 +66,15 @@ function initiativeSort(a: InitiativeDetail, b: InitiativeDetail) {
 
 function collectIssueStarts(referenceDate: Date) {
   const starts = new Map<string, Date>();
+  const latestCompletedWeekStart = addDays(startOfIsoWeek(referenceDate), -7);
 
   const add = (value: string | Date) => {
     const start = startOfIsoWeek(value);
+    if (start > latestCompletedWeekStart) return;
     starts.set(isoWeekId(start), start);
   };
 
-  add(referenceDate);
+  add(latestCompletedWeekStart);
 
   for (const article of articles) {
     add(article.publishedAt);
@@ -89,7 +91,7 @@ function collectIssueStarts(referenceDate: Date) {
 }
 
 export function buildFaultlinesIssues(referenceDate = new Date()): FaultlinesIssue[] {
-  const currentWeekStart = startOfIsoWeek(referenceDate);
+  const latestCompletedWeekStart = addDays(startOfIsoWeek(referenceDate), -7);
 
   return collectIssueStarts(referenceDate).map((start) => {
     const nextWeek = addDays(start, 7);
@@ -124,7 +126,7 @@ export function buildFaultlinesIssues(referenceDate = new Date()): FaultlinesIss
       .filter((initiative) => updatedInitiativeSlugs.has(initiative.slug))
       .sort(initiativeSort);
 
-    const isCurrentIssue = start.getTime() === currentWeekStart.getTime();
+    const isCurrentIssue = start.getTime() === latestCompletedWeekStart.getTime();
     const watchlist = isCurrentIssue
       ? initiatives
           .filter(
