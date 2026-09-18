@@ -249,7 +249,13 @@ for (const item of items) {
       SET processing_status = 'ERROR', last_error = ${message.slice(0, 1000)}, updated_at = now()
       WHERE id = ${item.id}
     `;
-    results.push({ id: item.id, title: item.title, status: "ERROR", error: message });
+    results.push({
+      id: item.id,
+      title: item.title,
+      status: "ERROR",
+      sourceLanguage: item.language,
+      error: message,
+    });
   }
 }
 
@@ -271,5 +277,25 @@ const summary = results.reduce(
   { processed: 0, relevant: 0, review: 0, irrelevant: 0, errors: 0, pdfs: 0, inputTokens: 0, outputTokens: 0, totalTokens: 0 },
 );
 
-console.log(JSON.stringify({ model, batchSize, summary, results }, null, 2));
+const byLanguage = {};
+for (const result of results) {
+  const language = result.sourceLanguage || "unknown";
+  const stats = byLanguage[language] || {
+    processed: 0,
+    relevant: 0,
+    review: 0,
+    irrelevant: 0,
+    errors: 0,
+  };
+
+  stats.processed += 1;
+  if (result.status === "RELEVANT") stats.relevant += 1;
+  else if (result.status === "REVIEW") stats.review += 1;
+  else if (result.status === "IRRELEVANT") stats.irrelevant += 1;
+  else if (result.status === "ERROR") stats.errors += 1;
+
+  byLanguage[language] = stats;
+}
+
+console.log(JSON.stringify({ model, batchSize, summary, byLanguage, results }, null, 2));
 if (summary.processed > 0 && summary.errors === summary.processed) process.exitCode = 1;
