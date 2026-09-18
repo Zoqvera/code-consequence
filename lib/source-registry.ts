@@ -23,11 +23,12 @@ function canonicalizeSourceUrl(value: string) {
   url.hash = "";
 
   for (const key of [...url.searchParams.keys()]) {
-    if (key.startsWith("utm_") || ["fbclid", "gclid"].includes(key)) {
+    if (key.startsWith("utm_") || key.startsWith("mc_") || ["fbclid", "gclid"].includes(key)) {
       url.searchParams.delete(key);
     }
   }
 
+  url.pathname = url.pathname.replace(/\/{2,}/g, "/").replace(/\/$/, "") || "/";
   return url.toString();
 }
 
