@@ -1,18 +1,31 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ContextualRelations } from "@/components/contextual-relations";
 import { articles, getArticle } from "@/lib/content";
 import { isLocale, locales } from "@/lib/i18n";
 import { buildMetadata } from "@/lib/seo";
+import {
+  getRelatedInitiativesForArticle,
+  getTopicForArticle,
+} from "@/lib/topic-hubs";
 
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return articles.flatMap((article) => locales.map((locale) => ({ locale, slug: article.slug })));
+  return articles.flatMap((article) =>
+    locales.map((locale) => ({ locale, slug: article.slug })),
+  );
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
   const { locale, slug } = await params;
   if (!isLocale(locale)) return {};
+
   const article = getArticle(slug);
   if (!article) return {};
 
@@ -26,10 +39,75 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   });
 }
 
-export default async function ArticlePage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+export default async function ArticlePage({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}) {
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
+
   const article = getArticle(slug);
   if (!article) notFound();
-  return <article className="shell article-page page-pad"><div className="card-meta"><span>{article.type}</span><span>{article.topic[locale]}</span><time>{article.publishedAt}</time></div><h1>{article.title[locale]}</h1><p className="lead">{article.dek[locale]}</p><div className="article-body">{article.body.map((p, i) => <p key={i}>{p[locale]}</p>)}</div><aside className="sources"><p className="eyebrow">{locale === "en" ? "Sources" : "Fontes"}</p>{article.sources.map((source) => <a href={source.url} target="_blank" rel="noreferrer" key={source.url}><span className="source-tier">Tier {source.tier}</span>{source.name} ↗</a>)}</aside></article>;
+
+  const pt = locale === "pt-BR";
+  const topic = getTopicForArticle(slug);
+  const relatedInitiatives = getRelatedInitiativesForArticle(slug);
+  const collectionHref = article.type === "News"
+    ? `/${locale}/news`
+    : article.type === "Analysis"
+      ? `/${locale}/analysis`
+      : `/${locale}`;
+  const collectionLabel = article.type === "News"
+    ? (pt ? "Notícias" : "News")
+    : article.type === "Analysis"
+      ? (pt ? "Análises" : "Analysis")
+      : (pt ? "Início" : "Home");
+
+  return (
+    <article className="shell article-page page-pad">
+      <Link className="back-link" href={collectionHref}>
+        ← {collectionLabel}
+      </Link>
+
+      <div className="card-meta">
+        <span>{article.type}</span>
+        {topic ? (
+          <Link href={`/${locale}/topics/${topic.slug}`}>
+            {article.topic[locale]}
+          </Link>
+        ) : (
+          <span>{article.topic[locale]}</span>
+        )}
+        <time dateTime={article.publishedAt}>{article.publishedAt}</time>
+      </div>
+
+      <h1>{article.title[locale]}</h1>
+      <p className="lead">{article.dek[locale]}</p>
+
+      <div className="article-body">
+        {article.body.map((paragraph, index) => (
+          <p key={index}>{paragraph[locale]}</p>
+        ))}
+      </div>
+
+      <aside className="sources">
+        <p className="eyebrow">{pt ? "Fontes" : "Sources"}</p>
+        {article.sources.map((source) => (
+          <a href={source.url} target="_blank" rel="noreferrer" key={source.url}>
+            <span className="source-tier">Tier {source.tier}</span>
+            {source.name} ↗
+          </a>
+        ))}
+      </aside>
+
+      {topic ? (
+        <ContextualRelations
+          locale={locale}
+          topic={topic}
+          initiatives={relatedInitiatives}
+        />
+      ) : null}
+    </article>
+  );
 }
