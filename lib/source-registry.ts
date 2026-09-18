@@ -34,7 +34,7 @@ function canonicalizeSourceUrl(value: string) {
 function slugify(value: string) {
   return value
     .normalize("NFD")
-    .replace(/[\\u0300-\\u036f]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .replace(/&/g, " and ")
     .replace(/[^a-z0-9]+/g, "-")
@@ -55,7 +55,7 @@ function stableHash(value: string) {
 
 function sourceSlug(source: Source) {
   const canonicalUrl = canonicalizeSourceUrl(source.url);
-  const host = new URL(canonicalUrl).hostname.replace(/^www\\./, "");
+  const host = new URL(canonicalUrl).hostname.replace(/^www\./, "");
   return `${slugify(`${source.name}-${host}`)}-${stableHash(canonicalUrl)}`;
 }
 
@@ -150,7 +150,7 @@ function buildSourceRegistry() {
       slug: sourceSlug({ ...source, url: canonicalUrl }),
       name: source.name,
       url: canonicalUrl,
-      host: new URL(canonicalUrl).hostname.replace(/^www\\./, ""),
+      host: new URL(canonicalUrl).hostname.replace(/^www\./, ""),
       tier: source.tier,
       references: uniqueReferences(references).sort((a, b) =>
         a.title.en.localeCompare(b.title.en),
