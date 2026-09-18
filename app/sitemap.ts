@@ -5,6 +5,8 @@ import { initiatives } from "@/lib/initiatives";
 import { locales, type Locale } from "@/lib/i18n";
 import { absoluteUrl, languageAlternates, localizedPath } from "@/lib/seo";
 
+export const dynamic = "force-static";
+
 type SitemapOptions = {
   lastModified?: string;
   changeFrequency: NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>;
