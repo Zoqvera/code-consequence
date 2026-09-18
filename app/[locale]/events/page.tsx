@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getUpcomingEvents } from "@/lib/events";
 import { isLocale } from "@/lib/i18n";
+import { buildMetadata } from "@/lib/seo";
 import { EventList } from "./event-list";
 import styles from "./events.module.css";
 
@@ -9,12 +10,15 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const pt = locale === "pt-BR";
-  return {
+
+  return buildMetadata({
+    locale,
     title: pt ? "Eventos de inteligência artificial" : "Artificial intelligence events",
     description: pt
       ? "Agenda verificada de conferências, webinars, workshops e encontros sobre inteligência artificial, atualizada automaticamente a partir de fontes oficiais."
       : "A verified calendar of artificial intelligence conferences, webinars, workshops and meetings, automatically refreshed from official sources.",
-  };
+    path: "/events",
+  });
 }
 
 export default async function EventsPage({ params }: { params: Promise<{ locale: string }> }) {
