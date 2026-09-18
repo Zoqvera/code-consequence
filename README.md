@@ -10,12 +10,21 @@ Code & Consequence is a bilingual (`en` / `pt-BR`) editorial observatory coverin
 
 The public website is fully static. Neon credentials and ingestion credentials are used only inside trusted GitHub Actions workflows and are never shipped to the browser.
 
+## Public information architecture
+
+`News → Analysis → Initiatives → Topics → Global Radar → Data`
+
+Events and methodology pages complement the main editorial path. News and Analysis use the published editorial corpus, while Data derives its indicators directly from the public verified records already used by the site.
+
 ## MVP foundation
 - Next.js 16 App Router + TypeScript
 - React 19
 - static export for GitHub Pages
 - bilingual routing under `/en` and `/pt-BR`
-- editorial homepage, article pages, topics and initiative tracker
+- editorial homepage plus dedicated News and Analysis collections
+- initiative tracker, detail pages, topics and Global Radar
+- corpus-derived Data dashboard
+- verified AI events calendar
 - source reliability tiers
 - Neon-ready PostgreSQL schema
 - database migration and verification scripts
