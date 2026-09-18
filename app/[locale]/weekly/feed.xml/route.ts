@@ -1,4 +1,4 @@
-import { faultlinesIssues } from "@/lib/faultlines";
+import { faultlinesIssues, getLatestFaultlinesIssue } from "@/lib/faultlines";
 import { isLocale, locales } from "@/lib/i18n";
 import { absoluteUrl, localizedPath } from "@/lib/seo";
 
@@ -39,7 +39,7 @@ export async function GET(
 
   const pt = locale === "pt-BR";
   const channelUrl = absoluteUrl(localizedPath(locale, "/weekly"));
-  const latest = faultlinesIssues[0];
+  const latest = getLatestFaultlinesIssue();
   const lastBuildDate = new Date(`${latest.endDate}T12:00:00Z`).toUTCString();
 
   const items = faultlinesIssues
