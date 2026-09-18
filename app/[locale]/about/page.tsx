@@ -1,5 +1,22 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n";
+import { buildMetadata } from "@/lib/seo";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) return {};
+  const pt = locale === "pt-BR";
+
+  return buildMetadata({
+    locale,
+    title: pt ? "Sobre o Code & Consequence" : "About Code & Consequence",
+    description: pt
+      ? "Conheça o método editorial, os critérios de cobertura e o uso de automação no Code & Consequence."
+      : "Learn about the editorial method, coverage criteria and use of automation at Code & Consequence.",
+    path: "/about",
+  });
+}
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

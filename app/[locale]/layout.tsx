@@ -7,6 +7,7 @@ import { articles, topics } from "@/lib/content";
 import { events } from "@/lib/events";
 import { initiatives } from "@/lib/initiatives";
 import { isLocale, locales } from "@/lib/i18n";
+import { buildMetadata } from "@/lib/seo";
 
 export const dynamicParams = false;
 
@@ -18,13 +19,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const pt = locale === "pt-BR";
-  return {
-    title: pt ? "Code & Consequence — IA, sociedade e planeta" : "Code & Consequence — AI, society and planet",
+  return buildMetadata({
+    locale,
+    title: pt ? "IA, sociedade e planeta" : "AI, society and planet",
     description: pt
       ? "Jornalismo e análise sobre as consequências políticas, sociais e ambientais da inteligência artificial."
       : "Reporting and analysis on the political, social and environmental consequences of artificial intelligence.",
-    alternates: { languages: { en: "/en", "pt-BR": "/pt-BR" } },
-  };
+  });
 }
 
 export default async function LocaleLayout({ children, params }: { children: React.ReactNode; params: Promise<{ locale: string }> }) {

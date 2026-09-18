@@ -20,6 +20,8 @@ The public website is fully static. Neon credentials and ingestion credentials a
 - Neon-ready PostgreSQL schema
 - database migration and verification scripts
 - mobile/desktop responsive editorial design
+- global search and initiative filters
+- bilingual canonical URLs, hreflang metadata, Open Graph/Twitter metadata, sitemap and robots metadata routes
 - CI plus GitHub Pages deployment workflow
 
 ## Local setup
@@ -32,7 +34,14 @@ npm run dev
 Open `http://localhost:3000` and choose the English or Portuguese edition.
 
 ## GitHub Pages
-The production workflow builds the static export in `out/` and deploys it with GitHub Pages. While the project uses the repository URL, the build sets the base path to `/code-consequence`. When a custom domain is adopted, this can be changed to an empty base path.
+The production workflow builds the static export in `out/` and deploys it with GitHub Pages. The current public root is `https://zoqvera.github.io/code-consequence`, so production builds set:
+
+```text
+NEXT_PUBLIC_BASE_PATH=/code-consequence
+NEXT_PUBLIC_SITE_URL=https://zoqvera.github.io/code-consequence
+```
+
+When a custom domain is adopted, update both values so routes and public metadata remain aligned.
 
 In GitHub repository settings, Pages must use **GitHub Actions** as the deployment source.
 
