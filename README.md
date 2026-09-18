@@ -31,6 +31,7 @@ Persistent Dossiers track an issue over time. A published dossier requires a bil
 - initiative tracker, detail pages, topics and Global Radar
 - corpus-derived Data dashboard
 - verified AI events calendar
+- public methodology and source-reliability transparency
 - source reliability tiers
 - Neon-ready PostgreSQL schema
 - database migration and verification scripts
