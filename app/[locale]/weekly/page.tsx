@@ -59,9 +59,9 @@ export default async function WeeklyPage({
       </p>
 
       <div className={styles.actions}>
-        <a className="button" href={`/${locale}/weekly/feed.xml`}>
+        <Link className="button" href={`/${locale}/weekly/feed.xml`}>
           RSS ↗
-        </a>
+        </Link>
         <Link className="text-link" href={`/${locale}/methodology`}>
           {pt ? "Como o boletim é gerado" : "How the digest is generated"} →
         </Link>
