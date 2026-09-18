@@ -3,17 +3,21 @@ import { notFound } from "next/navigation";
 import { GlobalRadar } from "@/components/global-radar";
 import { initiatives } from "@/lib/initiatives";
 import { isLocale } from "@/lib/i18n";
+import { buildMetadata } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   const pt = locale === "pt-BR";
-  return {
-    title: pt ? "Global Radar — Code & Consequence" : "Global Radar — Code & Consequence",
+
+  return buildMetadata({
+    locale,
+    title: "Global Radar",
     description: pt
       ? "Explore iniciativas verificadas de inteligência artificial por região, tema, status e organização."
       : "Explore verified artificial-intelligence initiatives by region, topic, status and organization.",
-  };
+    path: "/radar",
+  });
 }
 
 export default async function RadarPage({ params }: { params: Promise<{ locale: string }> }) {
