@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const pt = locale === "pt-BR";
   return buildMetadata({
     locale,
-    title: pt ? "Code & Consequence — IA, sociedade e planeta" : "Code & Consequence — AI, society and planet",
+    title: pt ? "IA, sociedade e planeta" : "AI, society and planet",
     description: pt
       ? "Jornalismo e análise sobre as consequências políticas, sociais e ambientais da inteligência artificial."
       : "Reporting and analysis on the political, social and environmental consequences of artificial intelligence.",
