@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getInitiative, initiatives } from "@/lib/initiatives";
 import { isLocale, locales } from "@/lib/i18n";
+import { buildMetadata } from "@/lib/seo";
 
 export const dynamicParams = false;
 
@@ -28,10 +29,12 @@ export async function generateMetadata({
   const initiative = getInitiative(slug);
   if (!initiative) return {};
 
-  return {
+  return buildMetadata({
+    locale,
     title: initiative.title[locale],
     description: initiative.summary[locale],
-  };
+    path: `/initiatives/${slug}`,
+  });
 }
 
 function formatVerifiedAt(value: string | null, locale: "en" | "pt-BR") {
