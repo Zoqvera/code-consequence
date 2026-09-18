@@ -60,38 +60,6 @@
   color: var(--muted);
 }
 
-.rows {
-  border-top: 1px solid var(--line);
-}
-
-.row {
-  min-height: 58px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 20px;
-  align-items: center;
-  border-bottom: 1px solid var(--line);
-}
-
-.row span,
-.row a {
-  color: var(--ink-soft);
-}
-
-.row a {
-  text-decoration: underline;
-  text-decoration-color: transparent;
-  text-underline-offset: 5px;
-}
-
-.row strong {
-  min-width: 48px;
-  text-align: right;
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: 1.5rem;
-  font-weight: 500;
-}
-
 .note {
   max-width: 760px;
   margin-top: 48px;
@@ -132,10 +100,6 @@
 
 
 @media (hover: hover) and (pointer: fine) {
-  .row a:hover {
-    text-decoration-color: currentColor;
-  }
-
   .metrics a.metric:hover {
     background: rgba(21, 24, 21, .04);
     transform: translateY(-2px);
