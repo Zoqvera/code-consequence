@@ -1,0 +1,187 @@
+.root {
+  margin-top: 72px;
+}
+
+.problem {
+  padding: 30px 0 36px;
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 2fr;
+  gap: 36px;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+
+.problem h2,
+.section h2 {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+.problemCopy {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  line-height: 1.55;
+}
+
+.scope {
+  margin: 16px 0 0;
+  color: var(--muted);
+}
+
+.meta {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.section {
+  margin-top: 58px;
+  padding-top: 30px;
+  border-top: 1px solid var(--ink);
+}
+
+.sectionHeader {
+  margin-bottom: 28px;
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 2fr;
+  gap: 32px;
+}
+
+.sectionHeader p {
+  max-width: 620px;
+  margin: 0;
+  color: var(--muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+.card {
+  min-height: 160px;
+  padding: 22px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.card strong {
+  display: block;
+  margin: 8px 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 1.05;
+}
+
+.card p {
+  margin: 8px 0;
+  color: var(--muted);
+}
+
+.source {
+  display: inline-flex;
+  margin-top: 10px;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.timeline {
+  border-top: 1px solid var(--line);
+}
+
+.timelineItem {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 28px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.timelineItem time {
+  color: var(--muted);
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.timelineItem h3 {
+  margin: 0 0 8px;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.timelineItem p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.initiatives {
+  border-top: 1px solid var(--line);
+}
+
+.initiative {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.initiative h3 {
+  margin: 6px 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.initiative p {
+  margin: 0;
+  color: var(--muted);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .source:hover,
+  .initiative a:hover {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+  }
+}
+
+@media (max-width: 760px) {
+  .problem,
+  .sectionHeader {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .timelineItem {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .initiative {
+    grid-template-columns: 1fr;
+  }
+}

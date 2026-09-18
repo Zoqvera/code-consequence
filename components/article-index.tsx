@@ -3,7 +3,7 @@ import { articles, type Article } from "@/lib/content";
 import type { Locale } from "@/lib/i18n";
 import styles from "./article-index.module.css";
 
-type EditorialType = Extract<Article["type"], "News" | "Analysis">;
+type EditorialType = Article["type"];
 
 function formatDate(value: string, locale: Locale) {
   const date = new Date(`${value}T12:00:00Z`);
@@ -56,7 +56,9 @@ export function ArticleIndex({
             <p>{article.dek[locale]}</p>
           </div>
           <Link className={styles.link} href={`/${locale}/articles/${article.slug}`}>
-            {pt ? "Ler matéria" : "Read story"} →
+            {article.type === "Dossier"
+              ? (pt ? "Abrir dossiê" : "Open dossier")
+              : (pt ? "Ler matéria" : "Read story")} →
           </Link>
         </article>
       ))}

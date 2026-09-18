@@ -45,6 +45,22 @@ function sourceName(row) {
   return row.publisher || row.title || "Source";
 }
 
+function toSource(row) {
+  return {
+    name: sourceName(row),
+    url: row.url,
+    tier: row.reliability,
+  };
+}
+
+function toDate(value) {
+  return value ? new Date(value).toISOString().slice(0, 10) : null;
+}
+
+function toTimestamp(value) {
+  return value ? new Date(value).toISOString() : null;
+}
+
 const articleRows = await sql`
   SELECT
     a.id,
@@ -85,6 +101,79 @@ const articleSourceRows = await sql`
   ORDER BY article_id, s.reliability, s.publisher, s.title
 `;
 
+const dossierProfileRows = await sql`
+  SELECT
+    dp.article_id,
+    dp.problem_statement_en,
+    dp.problem_statement_pt_br,
+    dp.scope_note_en,
+    dp.scope_note_pt_br,
+    dp.last_verified_at
+  FROM dossier_profiles dp
+  JOIN articles a ON a.id = dp.article_id
+  WHERE a.status = 'PUBLISHED'::publication_status
+    AND a.type = 'DOSSIER'::article_type
+`;
+
+const dossierCountryRows = await sql`
+  SELECT dc.article_id, c.code, c.name_en, c.name_pt_br
+  FROM dossier_countries dc
+  JOIN countries c ON c.code = dc.country_code
+  JOIN articles a ON a.id = dc.article_id
+  WHERE a.status = 'PUBLISHED'::publication_status
+    AND a.type = 'DOSSIER'::article_type
+  ORDER BY dc.article_id, c.name_en
+`;
+
+const dossierIndicatorRows = await sql`
+  SELECT
+    di.article_id, di.label_en, di.label_pt_br, di.value_text, di.unit, di.observed_on,
+    s.url, s.title, s.publisher, s.reliability::text AS reliability
+  FROM dossier_indicators di
+  JOIN sources s ON s.id = di.source_id
+  JOIN articles a ON a.id = di.article_id
+  WHERE a.status = 'PUBLISHED'::publication_status
+    AND a.type = 'DOSSIER'::article_type
+  ORDER BY di.article_id, di.display_order, di.observed_on NULLS LAST, di.id
+`;
+
+const dossierTimelineRows = await sql`
+  SELECT
+    dte.article_id, dte.event_date, dte.title_en, dte.title_pt_br,
+    dte.summary_en, dte.summary_pt_br,
+    s.url, s.title, s.publisher, s.reliability::text AS reliability
+  FROM dossier_timeline_events dte
+  JOIN sources s ON s.id = dte.source_id
+  JOIN articles a ON a.id = dte.article_id
+  WHERE a.status = 'PUBLISHED'::publication_status
+    AND a.type = 'DOSSIER'::article_type
+  ORDER BY dte.article_id, dte.event_date, dte.display_order, dte.id
+`;
+
+const dossierLegislationRows = await sql`
+  SELECT
+    dl.article_id, dl.jurisdiction_en, dl.jurisdiction_pt_br,
+    dl.title_en, dl.title_pt_br, dl.status_en, dl.status_pt_br, dl.enacted_on,
+    s.url, s.title, s.publisher, s.reliability::text AS reliability
+  FROM dossier_legislation dl
+  JOIN sources s ON s.id = dl.source_id
+  JOIN articles a ON a.id = dl.article_id
+  WHERE a.status = 'PUBLISHED'::publication_status
+    AND a.type = 'DOSSIER'::article_type
+  ORDER BY dl.article_id, dl.display_order, dl.enacted_on NULLS LAST, dl.id
+`;
+
+const dossierInitiativeRows = await sql`
+  SELECT ai.article_id, i.slug
+  FROM article_initiatives ai
+  JOIN articles a ON a.id = ai.article_id
+  JOIN initiatives i ON i.id = ai.initiative_id
+  WHERE a.status = 'PUBLISHED'::publication_status
+    AND a.type = 'DOSSIER'::article_type
+    AND i.publication_status = 'PUBLISHED'::publication_status
+  ORDER BY ai.article_id, i.slug
+`;
+
 const articleTopics = new Map();
 for (const row of articleTopicRows) {
   const entry = articleTopics.get(row.article_id) || {};
@@ -97,6 +186,64 @@ for (const row of articleSourceRows) {
   const entry = articleSources.get(row.article_id) || [];
   entry.push({ name: sourceName(row), url: row.url, tier: row.reliability });
   articleSources.set(row.article_id, entry);
+}
+
+const dossierProfiles = new Map(dossierProfileRows.map((row) => [row.article_id, row]));
+
+const dossierCountries = new Map();
+for (const row of dossierCountryRows) {
+  const entry = dossierCountries.get(row.article_id) || [];
+  entry.push({ en: row.name_en, "pt-BR": row.name_pt_br });
+  dossierCountries.set(row.article_id, entry);
+}
+
+const dossierIndicators = new Map();
+for (const row of dossierIndicatorRows) {
+  const entry = dossierIndicators.get(row.article_id) || [];
+  entry.push({
+    label: { en: row.label_en, "pt-BR": row.label_pt_br },
+    value: row.value_text,
+    unit: row.unit,
+    observedOn: toDate(row.observed_on),
+    source: toSource(row),
+  });
+  dossierIndicators.set(row.article_id, entry);
+}
+
+const dossierTimeline = new Map();
+for (const row of dossierTimelineRows) {
+  const entry = dossierTimeline.get(row.article_id) || [];
+  entry.push({
+    date: toDate(row.event_date),
+    title: { en: row.title_en, "pt-BR": row.title_pt_br },
+    summary: row.summary_en && row.summary_pt_br
+      ? { en: row.summary_en, "pt-BR": row.summary_pt_br }
+      : null,
+    source: toSource(row),
+  });
+  dossierTimeline.set(row.article_id, entry);
+}
+
+const dossierLegislation = new Map();
+for (const row of dossierLegislationRows) {
+  const entry = dossierLegislation.get(row.article_id) || [];
+  entry.push({
+    jurisdiction: { en: row.jurisdiction_en, "pt-BR": row.jurisdiction_pt_br },
+    title: { en: row.title_en, "pt-BR": row.title_pt_br },
+    status: row.status_en && row.status_pt_br
+      ? { en: row.status_en, "pt-BR": row.status_pt_br }
+      : null,
+    enactedOn: toDate(row.enacted_on),
+    source: toSource(row),
+  });
+  dossierLegislation.set(row.article_id, entry);
+}
+
+const dossierInitiatives = new Map();
+for (const row of dossierInitiativeRows) {
+  const entry = dossierInitiatives.get(row.article_id) || [];
+  entry.push(row.slug);
+  dossierInitiatives.set(row.article_id, entry);
 }
 
 const articleGroups = new Map();
@@ -114,6 +261,13 @@ for (const [articleId, group] of articleGroups) {
   const topics = articleTopics.get(articleId) || {};
   const sources = articleSources.get(articleId) || [];
   const body = en && pt ? buildLocalizedParagraphs(en.body_md, pt.body_md) : null;
+  const profile = dossierProfiles.get(articleId);
+  const isDossier = group.base.type === "DOSSIER";
+  const completeDossier = !isDossier || Boolean(
+    profile?.problem_statement_en &&
+      profile?.problem_statement_pt_br,
+  );
+
   const complete = Boolean(
     en &&
       pt &&
@@ -121,7 +275,8 @@ for (const [articleId, group] of articleGroups) {
       topics["pt-BR"] &&
       sources.length > 0 &&
       group.base.published_at &&
-      body,
+      body &&
+      completeDossier,
   );
 
   if (!complete) {
@@ -129,15 +284,37 @@ for (const [articleId, group] of articleGroups) {
     continue;
   }
 
+  const dossier = isDossier
+    ? {
+        problemStatement: {
+          en: profile.problem_statement_en,
+          "pt-BR": profile.problem_statement_pt_br,
+        },
+        scopeNote: profile.scope_note_en && profile.scope_note_pt_br
+          ? {
+              en: profile.scope_note_en,
+              "pt-BR": profile.scope_note_pt_br,
+            }
+          : null,
+        lastVerifiedAt: toTimestamp(profile.last_verified_at),
+        countries: dossierCountries.get(articleId) || [],
+        indicators: dossierIndicators.get(articleId) || [],
+        timeline: dossierTimeline.get(articleId) || [],
+        legislation: dossierLegislation.get(articleId) || [],
+        initiativeSlugs: dossierInitiatives.get(articleId) || [],
+      }
+    : undefined;
+
   articles.push({
     slug: group.base.slug,
     type: articleTypeMap[group.base.type] || "Analysis",
     topic: { en: topics.en, "pt-BR": topics["pt-BR"] },
-    publishedAt: new Date(group.base.published_at).toISOString().slice(0, 10),
+    publishedAt: toDate(group.base.published_at),
     title: { en: en.title, "pt-BR": pt.title },
     dek: { en: en.dek || "", "pt-BR": pt.dek || "" },
     body,
     sources,
+    ...(dossier ? { dossier } : {}),
   });
 }
 
@@ -260,7 +437,7 @@ for (const [initiativeId, group] of initiativeGroups) {
 const snapshot = {
   generatedAt: new Date().toISOString(),
   publicationRule:
-    "Only complete bilingual records explicitly marked PUBLISHED in Neon are exported; published initiatives also require evidence-backed organization, localized region, topic and source fields.",
+    "Only complete bilingual records explicitly marked PUBLISHED in Neon are exported; dossiers additionally require a bilingual problem statement, and published initiatives require evidence-backed organization, localized region, topic and source fields.",
   articles,
   initiatives,
 };
@@ -273,6 +450,7 @@ console.log(
     {
       outputPath,
       publishedArticles: articles.length,
+      publishedDossiers: articles.filter((article) => article.type === "Dossier").length,
       publishedInitiatives: initiatives.length,
       skippedIncompleteArticles: skippedArticles,
       skippedIncompleteInitiatives: skippedInitiatives,

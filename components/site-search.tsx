@@ -110,6 +110,7 @@ export function SiteSearch({
             <div>
               <Link href={`/${locale}/news`} onClick={onClose}>{pt ? "Notícias" : "News"}</Link>
               <Link href={`/${locale}/analysis`} onClick={onClose}>{pt ? "Análises" : "Analysis"}</Link>
+              <Link href={`/${locale}/dossiers`} onClick={onClose}>{pt ? "Dossiês" : "Dossiers"}</Link>
               <Link href={`/${locale}/initiatives`} onClick={onClose}>{pt ? "Explorar iniciativas" : "Explore initiatives"}</Link>
               <Link href={`/${locale}/organizations`} onClick={onClose}>{pt ? "Organizações" : "Organizations"}</Link>
               <Link href={`/${locale}/topics`} onClick={onClose}>{pt ? "Navegar por temas" : "Browse topics"}</Link>

@@ -4,6 +4,40 @@ import type { Locale } from "./i18n";
 type LocalizedText = Record<Locale, string>;
 
 export type Source = { name: string; url: string; tier: "A" | "B" | "C" | "D" };
+export type DossierIndicator = {
+  label: LocalizedText;
+  value: string;
+  unit?: string | null;
+  observedOn?: string | null;
+  source: Source;
+};
+
+export type DossierTimelineEvent = {
+  date: string;
+  title: LocalizedText;
+  summary?: LocalizedText | null;
+  source: Source;
+};
+
+export type DossierLegislation = {
+  jurisdiction: LocalizedText;
+  title: LocalizedText;
+  status?: LocalizedText | null;
+  enactedOn?: string | null;
+  source: Source;
+};
+
+export type DossierData = {
+  problemStatement: LocalizedText;
+  scopeNote?: LocalizedText | null;
+  lastVerifiedAt?: string | null;
+  countries: LocalizedText[];
+  indicators: DossierIndicator[];
+  timeline: DossierTimelineEvent[];
+  legislation: DossierLegislation[];
+  initiativeSlugs: string[];
+};
+
 export type Article = {
   slug: string;
   type: "Analysis" | "News" | "Dossier";
@@ -13,6 +47,7 @@ export type Article = {
   dek: LocalizedText;
   body: LocalizedText[];
   sources: Source[];
+  dossier?: DossierData;
 };
 export type Initiative = {
   slug: string;
