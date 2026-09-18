@@ -39,5 +39,35 @@
     "sourceType": "PRIMARY",
     "reliability": "A",
     "language": "en"
+  },
+  {
+    "slug": "portugal-national-ai-agenda",
+    "name": "Governo de Portugal — Agenda Nacional de Inteligência Artificial",
+    "publisher": "Governo de Portugal",
+    "url": "https://digital.gov.pt/pt/estrategia-digital/agenda-nacional-de-ia",
+    "kind": "HTML_INDEX",
+    "sourceType": "PRIMARY",
+    "reliability": "A",
+    "language": "pt"
+  },
+  {
+    "slug": "spain-digital-ministry-communications",
+    "name": "Gobierno de España — Transformación Digital y Función Pública",
+    "publisher": "Ministerio para la Transformación Digital y de la Función Pública",
+    "url": "https://digital.gob.es/comunicacion",
+    "kind": "HTML_INDEX",
+    "sourceType": "PRIMARY",
+    "reliability": "A",
+    "language": "es"
+  },
+  {
+    "slug": "france-national-ai-hub",
+    "name": "Gouvernement français — Intelligence artificielle",
+    "publisher": "Ministère de l'Économie, des Finances et de la Souveraineté industrielle, énergétique et numérique",
+    "url": "https://www.economie.gouv.fr/france-leader-mondial-intelligence-artificielle-IA",
+    "kind": "HTML_INDEX",
+    "sourceType": "PRIMARY",
+    "reliability": "A",
+    "language": "fr"
   }
 ]
