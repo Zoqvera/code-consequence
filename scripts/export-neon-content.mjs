@@ -437,7 +437,7 @@ for (const [initiativeId, group] of initiativeGroups) {
 const snapshot = {
   generatedAt: new Date().toISOString(),
   publicationRule:
-    "Only complete bilingual records explicitly marked PUBLISHED in Neon are exported; published initiatives also require evidence-backed organization, localized region, topic and source fields.",
+    "Only complete bilingual records explicitly marked PUBLISHED in Neon are exported; dossiers additionally require a bilingual problem statement, and published initiatives require evidence-backed organization, localized region, topic and source fields.",
   articles,
   initiatives,
 };
@@ -450,6 +450,7 @@ console.log(
     {
       outputPath,
       publishedArticles: articles.length,
+      publishedDossiers: articles.filter((article) => article.type === "Dossier").length,
       publishedInitiatives: initiatives.length,
       skippedIncompleteArticles: skippedArticles,
       skippedIncompleteInitiatives: skippedInitiatives,
