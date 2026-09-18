@@ -12,6 +12,8 @@ Code & Consequence is a public-interest editorial observatory. The default exper
 - Changing language should preserve the current content route whenever an equivalent localized route exists.
 - Provide global search from every public page.
 - Detail pages should always offer a clear path back to their parent collection.
+- Topic labels should lead to a topic hub that exposes related editorial content and verified initiatives.
+- Contextual relations should be deterministic and explainable; shared taxonomy is preferred over opaque recommendation logic.
 
 ## Calls to action
 
