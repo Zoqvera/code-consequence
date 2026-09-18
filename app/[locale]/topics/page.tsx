@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { topics } from "@/lib/content";
 import { isLocale } from "@/lib/i18n";
+import { getTopicStats, topicDescriptions } from "@/lib/topic-hubs";
 import { buildMetadata } from "@/lib/seo";
-
-const descriptions = {
-  en: ["Elections, state power, surveillance and information integrity.", "Automation, labour, productivity, ownership and inequality.", "Privacy, discrimination, education, culture and human rights.", "Laws, standards, institutions, accountability and public policy.", "Energy, water, data centers, chips, minerals, emissions and e-waste.", "Research, models, infrastructure and technical change with public consequences."],
-  "pt-BR": ["Eleições, poder estatal, vigilância e integridade da informação.", "Automação, trabalho, produtividade, propriedade e desigualdade.", "Privacidade, discriminação, educação, cultura e direitos humanos.", "Leis, padrões, instituições, responsabilização e políticas públicas.", "Energia, água, data centers, chips, minerais, emissões e lixo eletrônico.", "Pesquisa, modelos, infraestrutura e mudanças técnicas com consequências públicas."],
-};
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -27,5 +24,48 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function TopicsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  return <div className="shell page-pad"><p className="eyebrow">Taxonomy</p><h1 className="page-title">{locale === "en" ? "Topics" : "Temas"}</h1><div className="topic-detail-list">{topics.map((topic, i) => <section id={topic.slug} key={topic.slug}><span>0{i + 1}</span><div><h2>{topic[locale]}</h2><p>{descriptions[locale][i]}</p></div></section>)}</div></div>;
+
+  const pt = locale === "pt-BR";
+
+  return (
+    <div className="shell page-pad">
+      <p className="eyebrow">Taxonomy</p>
+      <h1 className="page-title">{pt ? "Temas" : "Topics"}</h1>
+      <p className="page-intro">
+        {pt
+          ? "Seis eixos conectam matérias, iniciativas verificadas e indicadores do observatório."
+          : "Six editorial axes connect reporting, verified initiatives and observatory indicators."}
+      </p>
+
+      <div className="topic-detail-list">
+        {topics.map((topic, index) => {
+          const stats = getTopicStats(topic.slug);
+          return (
+            <section key={topic.slug}>
+              <span>0{index + 1}</span>
+              <div>
+                <h2>
+                  <Link href={`/${locale}/topics/${topic.slug}`}>
+                    {topic[locale]}
+                  </Link>
+                </h2>
+                <p>{topicDescriptions[topic.slug][locale]}</p>
+                <p className="card-meta">
+                  <span>
+                    {stats.articles} {pt ? "publicações" : "publications"}
+                  </span>
+                  <span>
+                    {stats.initiatives} {pt ? "iniciativas" : "initiatives"}
+                  </span>
+                </p>
+                <Link className="text-link" href={`/${locale}/topics/${topic.slug}`}>
+                  {pt ? "Explorar tema" : "Explore topic"} →
+                </Link>
+              </div>
+            </section>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
