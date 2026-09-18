@@ -143,10 +143,17 @@ let feedsChecked = 0;
 let itemsDiscovered = 0;
 let itemsInserted = 0;
 const errors = [];
+const languageStats = Object.fromEntries(
+  Object.keys(languageProfiles).map((language) => [
+    language,
+    { feedsChecked: 0, discovered: 0, inserted: 0, errors: 0 },
+  ]),
+);
 
 for (const feed of feeds) {
   const enabled = feed.enabled !== false;
   const sourceLanguage = normalizeLanguage(feed.language);
+  const languageStat = languageStats[sourceLanguage];
   const [feedRow] = await sql`
     INSERT INTO source_feeds (slug, name, publisher, url, kind, source_type, reliability, language, is_active)
     VALUES (${feed.slug}, ${feed.name}, ${feed.publisher}, ${feed.url}, ${feed.kind}, ${feed.sourceType}, ${feed.reliability}, ${sourceLanguage}, ${enabled})
@@ -200,6 +207,7 @@ for (const feed of feeds) {
       .slice(0, 150);
 
     itemsDiscovered += selected.length;
+    languageStat.discovered += selected.length;
 
     for (const item of selected) {
       const hash = createHash("sha256").update(`${item.title}\n${item.url}`).digest("hex");
@@ -220,7 +228,10 @@ for (const feed of feeds) {
         ON CONFLICT (canonical_url) DO NOTHING
         RETURNING id
       `;
-      if (rows.length) itemsInserted += 1;
+      if (rows.length) {
+        itemsInserted += 1;
+        languageStat.inserted += 1;
+      }
     }
 
     await sql`
@@ -229,9 +240,11 @@ for (const feed of feeds) {
       WHERE id = ${feedRow.id}
     `;
     feedsChecked += 1;
+    languageStat.feedsChecked += 1;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     errors.push({ feed: feed.slug, language: sourceLanguage, message });
+    languageStat.errors += 1;
     await sql`
       UPDATE source_feeds
       SET last_checked_at = now(), updated_at = now()
@@ -254,6 +267,7 @@ console.log(
     {
       status,
       supportedLanguages: Object.keys(languageProfiles),
+      languageStats,
       feedsChecked,
       itemsDiscovered,
       itemsInserted,
