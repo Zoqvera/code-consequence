@@ -18,6 +18,8 @@ Events and methodology pages complement the main editorial path. News and Analys
 
 Topics are first-class hubs rather than static taxonomy labels. Each topic page aggregates matching editorial publications and verified initiatives, exposes corpus-derived counts, and links onward to Radar and Data. Article/initiative relationship blocks are deterministic: they use the shared canonical topic in the published corpus rather than inferred associations.
 
+Organizations are also exposed as derived public entities. Organization pages are generated only from names already attached to published initiatives and aggregate those verified records; no external organization profile data is inferred or invented.
+
 ## MVP foundation
 - Next.js 16 App Router + TypeScript
 - React 19
