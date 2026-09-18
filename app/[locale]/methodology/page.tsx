@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n";
 import { automationStages, sourceTiers } from "@/lib/methodology";
@@ -94,6 +95,12 @@ export default async function MethodologyPage({
             </article>
           ))}
         </div>
+
+        <p className={styles.note}>
+          <Link className="text-link" href={`/${locale}/sources`}>
+            {pt ? "Consultar o registro público de fontes" : "Browse the public source registry"} →
+          </Link>
+        </p>
       </section>
 
       <section className={styles.section}>

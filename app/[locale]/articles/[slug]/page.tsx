@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ContextualRelations } from "@/components/contextual-relations";
 import { DossierSections } from "@/components/dossier-sections";
+import { SourceList } from "@/components/source-list";
 import { articles, getArticle } from "@/lib/content";
 import { isLocale, locales } from "@/lib/i18n";
 import { buildMetadata } from "@/lib/seo";
@@ -98,12 +99,7 @@ export default async function ArticlePage({
 
       <aside className="sources">
         <p className="eyebrow">{pt ? "Fontes" : "Sources"}</p>
-        {article.sources.map((source) => (
-          <a href={source.url} target="_blank" rel="noreferrer" key={source.url}>
-            <span className="source-tier">Tier {source.tier}</span>
-            {source.name} ↗
-          </a>
-        ))}
+        <SourceList sources={article.sources} locale={locale} />
       </aside>
 
       {topic ? (

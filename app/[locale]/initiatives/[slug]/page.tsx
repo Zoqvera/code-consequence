@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ContextualRelations } from "@/components/contextual-relations";
+import { SourceList } from "@/components/source-list";
 import { getInitiative, initiatives } from "@/lib/initiatives";
 import { initiativeStatusLabel } from "@/lib/initiative-labels";
 import { getOrganizationForInitiative } from "@/lib/organizations";
@@ -145,20 +146,7 @@ export default async function InitiativeDetailPage({
               : "These sources support the identity, status and editorial description of this initiative. Publication requires explicit human review."}
           </p>
         </div>
-        <div className="initiative-source-list">
-          {initiative.sources.map((source, index) => (
-            <a
-              href={source.url}
-              target="_blank"
-              rel="noreferrer"
-              key={`${source.url}-${index}`}
-            >
-              <span className="source-tier">Tier {source.tier}</span>
-              <span>{source.name}</span>
-              <span aria-hidden="true">↗</span>
-            </a>
-          ))}
-        </div>
+        <SourceList sources={initiative.sources} locale={locale} />
       </section>
 
       {topic ? (

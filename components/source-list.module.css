@@ -1,0 +1,60 @@
+.list {
+  display: grid;
+  border-top: 1px solid var(--line);
+}
+
+.row {
+  min-height: 56px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.tier {
+  padding: 3px 6px;
+  background: var(--acid);
+  font-size: .63rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.record {
+  min-width: 0;
+  padding: 15px 0;
+}
+
+.record strong {
+  display: block;
+  font-weight: 700;
+}
+
+.record span {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: .68rem;
+}
+
+.external {
+  min-width: 42px;
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  font-weight: 800;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .record:hover strong {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .external:hover {
+    border-color: var(--ink);
+    background: var(--acid);
+  }
+}

@@ -9,6 +9,7 @@ import { initiatives } from "@/lib/initiatives";
 import { isLocale, locales } from "@/lib/i18n";
 import { organizations } from "@/lib/organizations";
 import { buildMetadata } from "@/lib/seo";
+import { sourceRegistry } from "@/lib/source-registry";
 import { topicDescriptions } from "@/lib/topic-hubs";
 
 export const dynamicParams = false;
@@ -37,6 +38,15 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   const pt = locale === "pt-BR";
 
   const searchItems: SearchItem[] = [
+    ...sourceRegistry.map((source) => ({
+      href: `/${locale}/sources/${source.slug}`,
+      type: "source" as const,
+      title: source.name,
+      description: pt
+        ? `Fonte Tier ${source.tier} usada em ${source.references.length} registro(s) público(s).`
+        : `Tier ${source.tier} source used in ${source.references.length} public record(s).`,
+      meta: source.host,
+    })),
     ...organizations.map((organization) => ({
       href: `/${locale}/organizations/${organization.slug}`,
       type: "organization" as const,

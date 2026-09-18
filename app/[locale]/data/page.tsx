@@ -78,8 +78,9 @@ export default async function DataPage({ params }: { params: Promise<{ locale: s
       href: `/${locale}/organizations`,
     },
     {
-      value: snapshot.totals.initiativeSourceReferences,
-      label: pt ? "referências de fontes" : "source references",
+      value: snapshot.totals.sources,
+      label: pt ? "fontes canônicas" : "canonical sources",
+      href: `/${locale}/sources`,
     },
     {
       value: snapshot.totals.news,
