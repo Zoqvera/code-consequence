@@ -3,6 +3,7 @@ import { Inter, Source_Serif_4 } from "next/font/google";
 import { siteName, siteUrl } from "@/lib/seo";
 import "./globals.css";
 import "./ux.css";
+import "./navigation-expansion.css";
 import "./mobile-overflow.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });

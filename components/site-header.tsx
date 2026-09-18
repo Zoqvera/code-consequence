@@ -18,10 +18,13 @@ function NavigationLinks({
   const d = dictionary[locale];
   const items = [
     { href: `/${locale}`, label: d.nav.home },
+    { href: `/${locale}/news`, label: d.nav.news },
+    { href: `/${locale}/analysis`, label: d.nav.analysis },
     { href: `/${locale}/initiatives`, label: d.nav.initiatives },
-    { href: `/${locale}/radar`, label: d.nav.radar },
-    { href: `/${locale}/events`, label: d.nav.events },
     { href: `/${locale}/topics`, label: d.nav.topics },
+    { href: `/${locale}/radar`, label: d.nav.radar },
+    { href: `/${locale}/data`, label: d.nav.data },
+    { href: `/${locale}/events`, label: d.nav.events },
     { href: `/${locale}/about`, label: d.nav.about },
   ];
 
