@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { DossierData } from "@/lib/content";
 import type { Locale } from "@/lib/i18n";
-import { initiatives } from "@/lib/initiatives";
+import { initiatives, type InitiativeDetail } from "@/lib/initiatives";
 import styles from "./dossier-sections.module.css";
 
 function formatDate(value: string | null | undefined, locale: Locale) {
@@ -26,7 +26,7 @@ export function DossierSections({
   const pt = locale === "pt-BR";
   const linkedInitiatives = dossier.initiativeSlugs
     .map((slug) => initiatives.find((initiative) => initiative.slug === slug))
-    .filter((initiative): initiative is NonNullable<typeof initiative> => Boolean(initiative));
+    .filter((initiative): initiative is InitiativeDetail => Boolean(initiative));
 
   return (
     <div className={styles.root}>
