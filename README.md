@@ -32,6 +32,7 @@ Persistent Dossiers track an issue over time. A published dossier requires a bil
 - corpus-derived Data dashboard
 - verified AI events calendar
 - public methodology and source-reliability transparency
+- canonical public source registry with corpus provenance
 - source reliability tiers
 - Neon-ready PostgreSQL schema
 - database migration and verification scripts
