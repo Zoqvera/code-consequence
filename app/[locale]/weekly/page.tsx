@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { FaultlinesIssueView } from "@/components/faultlines-issue";
 import { faultlinesIssues, getLatestFaultlinesIssue } from "@/lib/faultlines";
 import { isLocale } from "@/lib/i18n";
-import { buildMetadata } from "@/lib/seo";
+import { absoluteUrl, buildMetadata, localizedPath } from "@/lib/seo";
 import styles from "./weekly.module.css";
 
 function formatRange(startDate: string, endDate: string, locale: "en" | "pt-BR") {
@@ -27,7 +27,7 @@ export async function generateMetadata({
   if (!isLocale(locale)) return {};
 
   const pt = locale === "pt-BR";
-  return buildMetadata({
+  const metadata = buildMetadata({
     locale,
     title: "Faultlines Weekly",
     description: pt
@@ -35,6 +35,16 @@ export async function generateMetadata({
       : "A weekly edition derived exclusively from the published Code & Consequence corpus: editorial, initiatives, dossiers and upcoming events.",
     path: "/weekly",
   });
+
+  return {
+    ...metadata,
+    alternates: {
+      ...metadata.alternates,
+      types: {
+        "application/rss+xml": absoluteUrl(localizedPath(locale, "/weekly/feed.xml")),
+      },
+    },
+  };
 }
 
 export default async function WeeklyPage({
@@ -74,8 +84,8 @@ export default async function WeeklyPage({
           <h2>{pt ? "Arquivo" : "Archive"}</h2>
           <p>
             {pt
-              ? "As edições são reconstruídas de forma determinística a partir das datas e verificações do corpus publicado."
-              : "Issues are reconstructed deterministically from publication and verification dates in the published corpus."}
+              ? "Cada edição cobre a última semana ISO concluída e é reconstruída de forma determinística a partir das datas e verificações do corpus publicado."
+              : "Each issue covers the latest completed ISO week and is reconstructed deterministically from publication and verification dates in the published corpus."}
           </p>
         </div>
 
