@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { EventCountdown } from "@/components/event-countdown";
 import { events, getEvent, type AiEvent } from "@/lib/events";
 import { isLocale, locales, type Locale } from "@/lib/i18n";
+import { buildMetadata } from "@/lib/seo";
 import styles from "../events.module.css";
 
 export const dynamicParams = false;
@@ -17,7 +18,13 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   if (!isLocale(locale)) return {};
   const event = getEvent(externalKey);
   if (!event) return {};
-  return { title: event.title[locale], description: event.summary[locale] };
+
+  return buildMetadata({
+    locale,
+    title: event.title[locale],
+    description: event.summary[locale],
+    path: `/events/${externalKey}`,
+  });
 }
 
 function formatDate(date: string, locale: Locale) {
