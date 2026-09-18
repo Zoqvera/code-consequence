@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ContextualRelations } from "@/components/contextual-relations";
 import { getInitiative, initiatives } from "@/lib/initiatives";
+import { getOrganizationForInitiative } from "@/lib/organizations";
 import { isLocale, locales } from "@/lib/i18n";
 import { buildMetadata } from "@/lib/seo";
 import {
@@ -73,6 +74,7 @@ export default async function InitiativeDetailPage({
   const status = statusLabels[initiative.status][locale];
   const topic = getTopicForInitiative(slug);
   const relatedArticles = getRelatedArticlesForInitiative(slug);
+  const organization = getOrganizationForInitiative(slug);
 
   return (
     <article className="shell initiative-detail page-pad">
@@ -98,7 +100,15 @@ export default async function InitiativeDetailPage({
       <dl className="initiative-facts">
         <div>
           <dt>{pt ? "Organização responsável" : "Responsible organization"}</dt>
-          <dd>{initiative.organization}</dd>
+          <dd>
+            {organization ? (
+              <Link href={`/${locale}/organizations/${organization.slug}`}>
+                {initiative.organization}
+              </Link>
+            ) : (
+              initiative.organization
+            )}
+          </dd>
         </div>
         <div>
           <dt>{pt ? "Região" : "Region"}</dt>
