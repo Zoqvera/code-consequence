@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Source_Serif_4 } from "next/font/google";
+import { siteName, siteUrl } from "@/lib/seo";
 import "./globals.css";
 import "./ux.css";
 import "./mobile-overflow.css";
@@ -8,9 +9,12 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swa
 const sourceSerif = Source_Serif_4({ subsets: ["latin"], variable: "--font-serif", display: "swap" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
-  title: { default: "Code & Consequence", template: "%s | Code & Consequence" },
+  metadataBase: new URL(`${siteUrl}/`),
+  applicationName: siteName,
+  title: { default: siteName, template: `%s | ${siteName}` },
   description: "Independent reporting and analysis on the political, social and environmental consequences of artificial intelligence.",
+  creator: siteName,
+  publisher: siteName,
 };
 
 export const viewport: Viewport = {
