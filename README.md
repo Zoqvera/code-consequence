@@ -20,7 +20,7 @@ Topics are first-class hubs rather than static taxonomy labels. Each topic page 
 
 Organizations are also exposed as derived public entities. Organization pages are generated only from names already attached to published initiatives and aggregate those verified records; no external organization profile data is inferred or invented.
 
-Persistent Dossiers track an issue over time. A published dossier requires a bilingual problem statement and can accumulate countries, indicators, timeline events, legislation and formally linked published initiatives, with source-level provenance for every structured evidence item.
+Persistent Dossiers track an issue over time. A published dossier requires a bilingual problem statement and can accumulate countries, indicators, timeline events, legislation and formally linked published initiatives. Indicators, timeline events and legislation retain source-level provenance.
 
 ## MVP foundation
 - Next.js 16 App Router + TypeScript
