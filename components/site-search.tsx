@@ -68,8 +68,8 @@ export function SiteSearch({
   if (!open) return null;
 
   const labels = pt
-    ? { initiative: "Iniciativa", article: "Análise", event: "Evento", topic: "Tema" }
-    : { initiative: "Initiative", article: "Analysis", event: "Event", topic: "Topic" };
+    ? { initiative: "Iniciativa", article: "Editorial", event: "Evento", topic: "Tema" }
+    : { initiative: "Initiative", article: "Editorial", event: "Event", topic: "Topic" };
 
   return (
     <div className="search-overlay" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
@@ -108,10 +108,13 @@ export function SiteSearch({
           <div className="search-shortcuts">
             <p>{pt ? "Atalhos" : "Shortcuts"}</p>
             <div>
+              <Link href={`/${locale}/news`} onClick={onClose}>{pt ? "Notícias" : "News"}</Link>
+              <Link href={`/${locale}/analysis`} onClick={onClose}>{pt ? "Análises" : "Analysis"}</Link>
               <Link href={`/${locale}/initiatives`} onClick={onClose}>{pt ? "Explorar iniciativas" : "Explore initiatives"}</Link>
-              <Link href={`/${locale}/radar`} onClick={onClose}>Global Radar</Link>
-              <Link href={`/${locale}/events`} onClick={onClose}>{pt ? "Próximos eventos" : "Upcoming events"}</Link>
               <Link href={`/${locale}/topics`} onClick={onClose}>{pt ? "Navegar por temas" : "Browse topics"}</Link>
+              <Link href={`/${locale}/radar`} onClick={onClose}>Global Radar</Link>
+              <Link href={`/${locale}/data`} onClick={onClose}>Data</Link>
+              <Link href={`/${locale}/events`} onClick={onClose}>{pt ? "Próximos eventos" : "Upcoming events"}</Link>
             </div>
           </div>
         ) : (
