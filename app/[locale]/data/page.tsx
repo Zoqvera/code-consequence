@@ -75,6 +75,7 @@ export default async function DataPage({ params }: { params: Promise<{ locale: s
     {
       value: snapshot.totals.organizations,
       label: pt ? "organizações monitoradas" : "organizations tracked",
+      href: `/${locale}/organizations`,
     },
     {
       value: snapshot.totals.initiativeSourceReferences,
@@ -109,12 +110,24 @@ export default async function DataPage({ params }: { params: Promise<{ locale: s
       </p>
 
       <div className={styles.metrics}>
-        {metrics.map((metric) => (
-          <div className={styles.metric} key={metric.label}>
-            <strong>{metric.value}</strong>
-            <span>{metric.label}</span>
-          </div>
-        ))}
+        {metrics.map((metric) => {
+          const content = (
+            <>
+              <strong>{metric.value}</strong>
+              <span>{metric.label}</span>
+            </>
+          );
+
+          return metric.href ? (
+            <Link className={styles.metric} href={metric.href} key={metric.label}>
+              {content}
+            </Link>
+          ) : (
+            <div className={styles.metric} key={metric.label}>
+              {content}
+            </div>
+          );
+        })}
       </div>
 
       <section className={styles.section}>
