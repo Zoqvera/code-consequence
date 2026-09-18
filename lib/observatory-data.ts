@@ -1,6 +1,7 @@
 import { articles } from "./content";
 import { getUpcomingEvents } from "./events";
 import { initiatives } from "./initiatives";
+import { sourceRegistry } from "./source-registry";
 import type { Locale } from "./i18n";
 
 export type CountRow = {
@@ -24,8 +25,8 @@ function rowsFromCounts(counts: Map<string, number>): CountRow[] {
 }
 
 export function getObservatorySnapshot(locale: Locale, referenceDate = new Date()) {
-  const initiativeSourceReferences = initiatives.reduce(
-    (total, initiative) => total + initiative.sources.length,
+  const sourceReferenceCount = sourceRegistry.reduce(
+    (total, source) => total + source.references.length,
     0,
   );
 
@@ -38,7 +39,8 @@ export function getObservatorySnapshot(locale: Locale, referenceDate = new Date(
       initiatives: initiatives.length,
       activeInitiatives: initiatives.filter((initiative) => initiative.status === "Active").length,
       organizations: new Set(initiatives.map((initiative) => initiative.organization)).size,
-      initiativeSourceReferences,
+      sources: sourceRegistry.length,
+      sourceReferences: sourceReferenceCount,
       upcomingEvents: getUpcomingEvents(referenceDate).length,
     },
     initiativesByTopic: rowsFromCounts(
