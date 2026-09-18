@@ -135,4 +135,9 @@
   .row a:hover {
     text-decoration-color: currentColor;
   }
+
+  .metrics a.metric:hover {
+    background: rgba(21, 24, 21, .04);
+    transform: translateY(-2px);
+  }
 }

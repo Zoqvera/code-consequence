@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ContextualRelations } from "@/components/contextual-relations";
 import { getInitiative, initiatives } from "@/lib/initiatives";
+import { initiativeStatusLabel } from "@/lib/initiative-labels";
+import { getOrganizationForInitiative } from "@/lib/organizations";
 import { isLocale, locales } from "@/lib/i18n";
 import { buildMetadata } from "@/lib/seo";
 import {
@@ -11,14 +13,6 @@ import {
 } from "@/lib/topic-hubs";
 
 export const dynamicParams = false;
-
-const statusLabels = {
-  Active: { en: "Active", "pt-BR": "Ativa" },
-  Completed: { en: "Completed", "pt-BR": "Concluída" },
-  Announced: { en: "Announced", "pt-BR": "Anunciada" },
-  Paused: { en: "Paused", "pt-BR": "Pausada" },
-  Cancelled: { en: "Cancelled", "pt-BR": "Cancelada" },
-} as const;
 
 export function generateStaticParams() {
   return initiatives.flatMap((initiative) =>
@@ -70,9 +64,10 @@ export default async function InitiativeDetailPage({
 
   const pt = locale === "pt-BR";
   const verifiedAt = formatVerifiedAt(initiative.lastVerifiedAt, locale);
-  const status = statusLabels[initiative.status][locale];
+  const status = initiativeStatusLabel(initiative.status, locale);
   const topic = getTopicForInitiative(slug);
   const relatedArticles = getRelatedArticlesForInitiative(slug);
+  const organization = getOrganizationForInitiative(slug);
 
   return (
     <article className="shell initiative-detail page-pad">
@@ -98,7 +93,15 @@ export default async function InitiativeDetailPage({
       <dl className="initiative-facts">
         <div>
           <dt>{pt ? "Organização responsável" : "Responsible organization"}</dt>
-          <dd>{initiative.organization}</dd>
+          <dd>
+            {organization ? (
+              <Link href={`/${locale}/organizations/${organization.slug}`}>
+                {initiative.organization}
+              </Link>
+            ) : (
+              initiative.organization
+            )}
+          </dd>
         </div>
         <div>
           <dt>{pt ? "Região" : "Region"}</dt>
