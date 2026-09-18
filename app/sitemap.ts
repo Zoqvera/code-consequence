@@ -37,6 +37,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/data", changeFrequency: "daily" as const, priority: 0.8 },
     { path: "/events", changeFrequency: "daily" as const, priority: 0.8 },
     { path: "/about", changeFrequency: "monthly" as const, priority: 0.5 },
+    { path: "/methodology", changeFrequency: "monthly" as const, priority: 0.6 },
   ];
 
   const localizedStaticRoutes = locales.flatMap((locale) =>
