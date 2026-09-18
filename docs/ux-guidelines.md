@@ -15,6 +15,7 @@ Code & Consequence is a public-interest editorial observatory. The default exper
 - Topic labels should lead to a topic hub that exposes related editorial content and verified initiatives.
 - Contextual relations should be deterministic and explainable; shared taxonomy is preferred over opaque recommendation logic.
 - Named organizations attached to published initiatives should link to a public organization hub rather than remain dead-end metadata.
+- Published evidence should expose both the original external document and an internal provenance record showing where the source is used in the public corpus.
 
 ## Calls to action
 
