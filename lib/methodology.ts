@@ -75,8 +75,8 @@ export const automationStages = [
     key: "discover",
     title: { en: "Discover", "pt-BR": "Descobrir" },
     description: {
-      en: "Scheduled collectors scan configured primary-source feeds and identify candidate pages.",
-      "pt-BR": "Coletores agendados examinam fontes primárias configuradas e identificam páginas candidatas.",
+      en: "Scheduled collectors scan configured primary-source feeds in English, Portuguese, Spanish and French and identify candidate pages.",
+      "pt-BR": "Coletores agendados examinam fontes primárias configuradas em inglês, português, espanhol e francês e identificam páginas candidatas.",
     },
   },
   {

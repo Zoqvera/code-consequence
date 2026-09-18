@@ -11,14 +11,76 @@ const feeds = JSON.parse(
   await readFile(new URL("../config/discovery-sources.json", import.meta.url), "utf8"),
 );
 
-const impactTerms = [
-  "governance", "regulation", "policy", "ethics", "rights", "democracy", "election",
-  "labour", "labor", "employment", "work", "inequality", "education", "privacy",
-  "surveillance", "transparency", "accountability", "copyright", "environment",
-  "climate", "energy", "water", "emissions", "data center", "data centre", "mineral",
-  "public sector", "government", "initiative", "programme", "program", "roadmap",
-  "framework", "toolkit", "standard", "law", "act", "guideline",
-];
+const languageProfiles = {
+  en: {
+    aiTerms: ["artificial intelligence", "machine learning", "generative ai"],
+    impactTerms: [
+      "governance", "regulation", "policy", "ethics", "rights", "democracy", "election",
+      "labour", "labor", "employment", "work", "inequality", "education", "privacy",
+      "surveillance", "transparency", "accountability", "copyright", "environment",
+      "climate", "energy", "water", "emissions", "data center", "data centre", "mineral",
+      "public sector", "government", "initiative", "programme", "program", "roadmap",
+      "framework", "toolkit", "standard", "law", "act", "guideline",
+    ],
+    navigationLabels: ["home", "read more", "learn more", "more", "next", "previous"],
+  },
+  pt: {
+    aiTerms: ["inteligencia artificial", "aprendizado de maquina", "ia generativa"],
+    impactTerms: [
+      "governanca", "regulacao", "politica", "etica", "direitos", "democracia", "eleicao",
+      "trabalho", "emprego", "desigualdade", "educacao", "privacidade", "vigilancia",
+      "transparencia", "responsabilizacao", "direitos autorais", "ambiente", "clima",
+      "energia", "agua", "emissoes", "centro de dados", "setor publico", "governo",
+      "iniciativa", "programa", "roteiro", "marco", "ferramenta", "norma", "lei", "diretriz",
+    ],
+    navigationLabels: ["inicio", "ler mais", "saiba mais", "mais", "proximo", "anterior"],
+  },
+  es: {
+    aiTerms: ["inteligencia artificial", "aprendizaje automatico", "ia generativa"],
+    impactTerms: [
+      "gobernanza", "regulacion", "politica", "etica", "derechos", "democracia", "eleccion",
+      "trabajo", "empleo", "desigualdad", "educacion", "privacidad", "vigilancia",
+      "transparencia", "rendicion de cuentas", "derechos de autor", "medio ambiente", "clima",
+      "energia", "agua", "emisiones", "centro de datos", "sector publico", "gobierno",
+      "iniciativa", "programa", "hoja de ruta", "marco", "herramienta", "norma", "ley", "directriz",
+    ],
+    navigationLabels: ["inicio", "leer mas", "saber mas", "mas", "siguiente", "anterior"],
+  },
+  fr: {
+    aiTerms: ["intelligence artificielle", "apprentissage automatique", "ia generative"],
+    impactTerms: [
+      "gouvernance", "reglementation", "regulation", "politique", "ethique", "droits",
+      "democratie", "election", "travail", "emploi", "inegalite", "education", "vie privee",
+      "surveillance", "transparence", "responsabilite", "droit d'auteur", "environnement",
+      "climat", "energie", "eau", "emissions", "centre de donnees", "secteur public",
+      "gouvernement", "initiative", "programme", "feuille de route", "cadre", "outil",
+      "norme", "loi", "directive",
+    ],
+    navigationLabels: ["accueil", "lire la suite", "en savoir plus", "plus", "suivant", "precedent"],
+  },
+};
+
+function normalizeLanguage(value) {
+  return String(value || "").trim().toLowerCase().split("-")[0];
+}
+
+function normalizeForMatch(value = "") {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+function getLanguageProfile(language) {
+  const key = normalizeLanguage(language);
+  const profile = languageProfiles[key];
+  if (!profile) throw new Error(`Unsupported discovery language: ${language}`);
+  return profile;
+}
+
+for (const feed of feeds) {
+  getLanguageProfile(feed.language);
+}
 
 function cleanText(value = "") {
   return value.replace(/\s+/g, " ").trim();
@@ -30,7 +92,9 @@ function canonicalize(value, base) {
     if (!["http:", "https:"].includes(url.protocol)) return null;
     url.hash = "";
     for (const key of [...url.searchParams.keys()]) {
-      if (key.startsWith("utm_") || ["fbclid", "gclid"].includes(key)) url.searchParams.delete(key);
+      if (key.startsWith("utm_") || key.startsWith("mc_") || ["fbclid", "gclid"].includes(key)) {
+        url.searchParams.delete(key);
+      }
     }
     return url.toString();
   } catch {
@@ -38,23 +102,35 @@ function canonicalize(value, base) {
   }
 }
 
-function relevanceScore(text) {
-  const haystack = text.toLowerCase();
-  let score = 2;
-  for (const term of impactTerms) {
+function relevanceScore(text, language) {
+  const haystack = normalizeForMatch(text);
+  const profile = getLanguageProfile(language);
+  let score = 1;
+
+  for (const term of profile.aiTerms) {
+    if (haystack.includes(term)) score += 3;
+  }
+
+  for (const term of profile.impactTerms) {
     if (haystack.includes(term)) score += 1;
   }
+
   return Math.min(score, 10);
 }
 
-function looksLikeContent(url, title, sourceUrl) {
+function looksLikeContent(url, title, sourceUrl, language) {
   if (title.length < 12) return false;
+
   const candidate = new URL(url);
   const source = new URL(sourceUrl);
   if (candidate.hostname !== source.hostname) return false;
   if (candidate.toString() === source.toString()) return false;
   if (/\/(tags?|topics?|search|about|contact)(\/|$)/i.test(candidate.pathname)) return false;
-  if (/^(home|read more|learn more|more|next|previous)$/i.test(title)) return false;
+
+  const normalizedTitle = normalizeForMatch(title);
+  const navigationLabels = getLanguageProfile(language).navigationLabels;
+  if (navigationLabels.includes(normalizedTitle)) return false;
+
   return true;
 }
 
@@ -67,12 +143,20 @@ let feedsChecked = 0;
 let itemsDiscovered = 0;
 let itemsInserted = 0;
 const errors = [];
+const languageStats = Object.fromEntries(
+  Object.keys(languageProfiles).map((language) => [
+    language,
+    { feedsChecked: 0, discovered: 0, inserted: 0, errors: 0 },
+  ]),
+);
 
 for (const feed of feeds) {
   const enabled = feed.enabled !== false;
+  const sourceLanguage = normalizeLanguage(feed.language);
+  const languageStat = languageStats[sourceLanguage];
   const [feedRow] = await sql`
     INSERT INTO source_feeds (slug, name, publisher, url, kind, source_type, reliability, language, is_active)
-    VALUES (${feed.slug}, ${feed.name}, ${feed.publisher}, ${feed.url}, ${feed.kind}, ${feed.sourceType}, ${feed.reliability}, ${feed.language}, ${enabled})
+    VALUES (${feed.slug}, ${feed.name}, ${feed.publisher}, ${feed.url}, ${feed.kind}, ${feed.sourceType}, ${feed.reliability}, ${sourceLanguage}, ${enabled})
     ON CONFLICT (slug) DO UPDATE SET
       name = EXCLUDED.name,
       publisher = EXCLUDED.publisher,
@@ -93,6 +177,7 @@ for (const feed of feeds) {
       headers: {
         "user-agent": "Code & Consequence/0.1 (+https://github.com/Zoqvera/code-consequence)",
         accept: "text/html,application/xhtml+xml",
+        "accept-language": `${sourceLanguage},en;q=0.7`,
       },
       signal: AbortSignal.timeout(30000),
     });
@@ -106,20 +191,31 @@ for (const feed of feeds) {
     $("a[href]").each((_, element) => {
       const title = cleanText($(element).text());
       const url = canonicalize($(element).attr("href"), feed.url);
-      if (!url || !looksLikeContent(url, title, feed.url)) return;
-      if (!candidates.has(url) || title.length > candidates.get(url).length) candidates.set(url, title);
+      if (!url || !looksLikeContent(url, title, feed.url, sourceLanguage)) return;
+      if (!candidates.has(url) || title.length > candidates.get(url).length) {
+        candidates.set(url, title);
+      }
     });
 
     const selected = [...candidates.entries()]
-      .map(([url, title]) => ({ url, title, score: relevanceScore(`${title} ${url}`) }))
-      .sort((a, b) => b.score - a.score)
+      .map(([url, title]) => ({
+        url,
+        title,
+        score: relevanceScore(`${title} ${url}`, sourceLanguage),
+      }))
+      .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title))
       .slice(0, 150);
 
     itemsDiscovered += selected.length;
+    languageStat.discovered += selected.length;
 
     for (const item of selected) {
       const hash = createHash("sha256").update(`${item.title}\n${item.url}`).digest("hex");
-      const rawPayload = JSON.stringify({ anchorText: item.title, sourcePage: feed.url });
+      const rawPayload = JSON.stringify({
+        anchorText: item.title,
+        sourcePage: feed.url,
+        sourceLanguage,
+      });
       const rows = await sql`
         INSERT INTO ingestion_items (
           feed_id, run_id, canonical_url, title, content_hash, relevance_score,
@@ -132,7 +228,10 @@ for (const feed of feeds) {
         ON CONFLICT (canonical_url) DO NOTHING
         RETURNING id
       `;
-      if (rows.length) itemsInserted += 1;
+      if (rows.length) {
+        itemsInserted += 1;
+        languageStat.inserted += 1;
+      }
     }
 
     await sql`
@@ -141,9 +240,11 @@ for (const feed of feeds) {
       WHERE id = ${feedRow.id}
     `;
     feedsChecked += 1;
+    languageStat.feedsChecked += 1;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    errors.push({ feed: feed.slug, message });
+    errors.push({ feed: feed.slug, language: sourceLanguage, message });
+    languageStat.errors += 1;
     await sql`
       UPDATE source_feeds
       SET last_checked_at = now(), updated_at = now()
@@ -161,5 +262,19 @@ await sql`
   WHERE id = ${run.id}
 `;
 
-console.log(JSON.stringify({ status, feedsChecked, itemsDiscovered, itemsInserted, errors }, null, 2));
+console.log(
+  JSON.stringify(
+    {
+      status,
+      supportedLanguages: Object.keys(languageProfiles),
+      languageStats,
+      feedsChecked,
+      itemsDiscovered,
+      itemsInserted,
+      errors,
+    },
+    null,
+    2,
+  ),
+);
 if (status === "FAILED") process.exitCode = 1;
