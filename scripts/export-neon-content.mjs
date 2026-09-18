@@ -85,7 +85,7 @@ const articleSourceRows = await sql`
   ORDER BY article_id, s.reliability, s.publisher, s.title
 `;
 
-const dossierProfileRows = await sql\`
+const dossierProfileRows = await sql`
   SELECT
     dp.article_id,
     dp.problem_statement_en,
@@ -97,9 +97,9 @@ const dossierProfileRows = await sql\`
   JOIN articles a ON a.id = dp.article_id
   WHERE a.status = 'PUBLISHED'::publication_status
     AND a.type = 'DOSSIER'::article_type
-\`;
+`;
 
-const dossierCountryRows = await sql\`
+const dossierCountryRows = await sql`
   SELECT dc.article_id, c.code, c.name_en, c.name_pt_br
   FROM dossier_countries dc
   JOIN countries c ON c.code = dc.country_code
@@ -107,9 +107,9 @@ const dossierCountryRows = await sql\`
   WHERE a.status = 'PUBLISHED'::publication_status
     AND a.type = 'DOSSIER'::article_type
   ORDER BY dc.article_id, c.name_en
-\`;
+`;
 
-const dossierIndicatorRows = await sql\`
+const dossierIndicatorRows = await sql`
   SELECT
     di.article_id, di.label_en, di.label_pt_br, di.value_text, di.unit, di.observed_on,
     s.url, s.title, s.publisher, s.reliability::text AS reliability
@@ -119,9 +119,9 @@ const dossierIndicatorRows = await sql\`
   WHERE a.status = 'PUBLISHED'::publication_status
     AND a.type = 'DOSSIER'::article_type
   ORDER BY di.article_id, di.display_order, di.observed_on NULLS LAST, di.id
-\`;
+`;
 
-const dossierTimelineRows = await sql\`
+const dossierTimelineRows = await sql`
   SELECT
     dte.article_id, dte.event_date, dte.title_en, dte.title_pt_br,
     dte.summary_en, dte.summary_pt_br,
@@ -132,9 +132,9 @@ const dossierTimelineRows = await sql\`
   WHERE a.status = 'PUBLISHED'::publication_status
     AND a.type = 'DOSSIER'::article_type
   ORDER BY dte.article_id, dte.event_date, dte.display_order, dte.id
-\`;
+`;
 
-const dossierLegislationRows = await sql\`
+const dossierLegislationRows = await sql`
   SELECT
     dl.article_id, dl.jurisdiction_en, dl.jurisdiction_pt_br,
     dl.title_en, dl.title_pt_br, dl.status_en, dl.status_pt_br, dl.enacted_on,
@@ -145,9 +145,9 @@ const dossierLegislationRows = await sql\`
   WHERE a.status = 'PUBLISHED'::publication_status
     AND a.type = 'DOSSIER'::article_type
   ORDER BY dl.article_id, dl.display_order, dl.enacted_on NULLS LAST, dl.id
-\`;
+`;
 
-const dossierInitiativeRows = await sql\`
+const dossierInitiativeRows = await sql`
   SELECT ai.article_id, i.slug
   FROM article_initiatives ai
   JOIN articles a ON a.id = ai.article_id
@@ -156,7 +156,7 @@ const dossierInitiativeRows = await sql\`
     AND a.type = 'DOSSIER'::article_type
     AND i.publication_status = 'PUBLISHED'::publication_status
   ORDER BY ai.article_id, i.slug
-\`;
+`;
 
 const articleTopics = new Map();
 for (const row of articleTopicRows) {
