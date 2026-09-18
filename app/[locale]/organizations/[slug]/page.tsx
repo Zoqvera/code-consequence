@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale, locales } from "@/lib/i18n";
+import { initiativeStatusLabel } from "@/lib/initiative-labels";
 import { getOrganization, organizations } from "@/lib/organizations";
 import { buildMetadata } from "@/lib/seo";
 import { getTopicForInitiative } from "@/lib/topic-hubs";
@@ -123,7 +124,7 @@ export default async function OrganizationPage({
                     {" · "}
                     {initiative.region[locale]}
                     {" · "}
-                    {initiative.status}
+                    {initiativeStatusLabel(initiative.status, locale)}
                   </p>
                   <h3>
                     <Link href={`/${locale}/initiatives/${initiative.slug}`}>
