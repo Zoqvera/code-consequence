@@ -1,0 +1,144 @@
+.summary {
+  margin: 50px 0 70px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--ink);
+  border-left: 1px solid var(--line);
+}
+
+.metric {
+  min-height: 130px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.metric strong {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 500;
+  line-height: .9;
+}
+
+.metric span {
+  max-width: 170px;
+  color: var(--muted);
+  font-size: .66rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.section {
+  padding-top: 46px;
+  margin-top: 54px;
+  border-top: 1px solid var(--ink);
+}
+
+.sectionHeader {
+  margin-bottom: 28px;
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 2fr;
+  gap: 30px;
+}
+
+.sectionHeader h2 {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(2.2rem, 4vw, 3.7rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+.sectionHeader p {
+  max-width: 620px;
+  margin: 0;
+  color: var(--muted);
+}
+
+.list {
+  border-top: 1px solid var(--line);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  padding: 26px 0;
+  align-items: start;
+  border-bottom: 1px solid var(--line);
+}
+
+.row h3 {
+  max-width: 820px;
+  margin: 10px 0 10px;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.8rem, 3.5vw, 3rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -.03em;
+}
+
+.row p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+}
+
+.rowLink {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.empty {
+  margin: 0;
+  padding: 22px 0;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .row h3 a:hover,
+  .rowLink:hover {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+  }
+}
+
+@media (max-width: 800px) {
+  .summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sectionHeader {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .rowLink {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 430px) {
+  .summary {
+    grid-template-columns: 1fr;
+  }
+}

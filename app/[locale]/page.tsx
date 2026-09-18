@@ -214,7 +214,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
       <section className="section shell">
         <div className="section-heading"><p className="eyebrow">06 / Taxonomy</p><h2>{d.topics}</h2></div>
-        <div className="topic-grid">{topics.map((topic, i) => <Link key={topic.slug} href={`/${locale}/topics#${topic.slug}`}><span>0{i + 1}</span>{topic[locale]}</Link>)}</div>
+        <div className="topic-grid">{topics.map((topic, i) => <Link key={topic.slug} href={`/${locale}/topics/${topic.slug}`}><span>0{i + 1}</span>{topic[locale]}</Link>)}</div>
       </section>
     </>
   );

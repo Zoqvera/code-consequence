@@ -16,6 +16,8 @@ The public website is fully static. Neon credentials and ingestion credentials a
 
 Events and methodology pages complement the main editorial path. News and Analysis use the published editorial corpus, while Data derives its indicators directly from the public verified records already used by the site.
 
+Topics are first-class hubs rather than static taxonomy labels. Each topic page aggregates matching editorial publications and verified initiatives, exposes corpus-derived counts, and links onward to Radar and Data. Article/initiative relationship blocks are deterministic: they use the shared canonical topic in the published corpus rather than inferred associations.
+
 ## MVP foundation
 - Next.js 16 App Router + TypeScript
 - React 19
