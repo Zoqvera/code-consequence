@@ -261,6 +261,13 @@ for (const [articleId, group] of articleGroups) {
   const topics = articleTopics.get(articleId) || {};
   const sources = articleSources.get(articleId) || [];
   const body = en && pt ? buildLocalizedParagraphs(en.body_md, pt.body_md) : null;
+  const profile = dossierProfiles.get(articleId);
+  const isDossier = group.base.type === "DOSSIER";
+  const completeDossier = !isDossier || Boolean(
+    profile?.problem_statement_en &&
+      profile?.problem_statement_pt_br,
+  );
+
   const complete = Boolean(
     en &&
       pt &&
@@ -268,7 +275,8 @@ for (const [articleId, group] of articleGroups) {
       topics["pt-BR"] &&
       sources.length > 0 &&
       group.base.published_at &&
-      body,
+      body &&
+      completeDossier,
   );
 
   if (!complete) {
@@ -276,15 +284,37 @@ for (const [articleId, group] of articleGroups) {
     continue;
   }
 
+  const dossier = isDossier
+    ? {
+        problemStatement: {
+          en: profile.problem_statement_en,
+          "pt-BR": profile.problem_statement_pt_br,
+        },
+        scopeNote: profile.scope_note_en && profile.scope_note_pt_br
+          ? {
+              en: profile.scope_note_en,
+              "pt-BR": profile.scope_note_pt_br,
+            }
+          : null,
+        lastVerifiedAt: toTimestamp(profile.last_verified_at),
+        countries: dossierCountries.get(articleId) || [],
+        indicators: dossierIndicators.get(articleId) || [],
+        timeline: dossierTimeline.get(articleId) || [],
+        legislation: dossierLegislation.get(articleId) || [],
+        initiativeSlugs: dossierInitiatives.get(articleId) || [],
+      }
+    : undefined;
+
   articles.push({
     slug: group.base.slug,
     type: articleTypeMap[group.base.type] || "Analysis",
     topic: { en: topics.en, "pt-BR": topics["pt-BR"] },
-    publishedAt: new Date(group.base.published_at).toISOString().slice(0, 10),
+    publishedAt: toDate(group.base.published_at),
     title: { en: en.title, "pt-BR": pt.title },
     dek: { en: en.dek || "", "pt-BR": pt.dek || "" },
     body,
     sources,
+    ...(dossier ? { dossier } : {}),
   });
 }
 
