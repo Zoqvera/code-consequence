@@ -51,6 +51,26 @@ export function buildMetadata({
   const openGraphLocale = locale === "pt-BR" ? "pt_BR" : "en_US";
   const alternateLocale = locale === "pt-BR" ? ["en_US"] : ["pt_BR"];
 
+  const sharedOpenGraph = {
+    siteName,
+    title,
+    description,
+    url: canonical,
+    locale: openGraphLocale,
+    alternateLocale,
+  };
+
+  const openGraph: Metadata["openGraph"] = kind === "article"
+    ? {
+        ...sharedOpenGraph,
+        type: "article",
+        ...(publishedTime ? { publishedTime } : {}),
+      }
+    : {
+        ...sharedOpenGraph,
+        type: "website",
+      };
+
   return {
     title,
     description,
@@ -58,16 +78,7 @@ export function buildMetadata({
       canonical,
       languages: languageAlternates(path),
     },
-    openGraph: {
-      type: kind,
-      siteName,
-      title,
-      description,
-      url: canonical,
-      locale: openGraphLocale,
-      alternateLocale,
-      ...(kind === "article" && publishedTime ? { publishedTime } : {}),
-    },
+    openGraph,
     twitter: {
       card: "summary",
       title,
