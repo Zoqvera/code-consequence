@@ -14,6 +14,8 @@ export function SiteFooter({ locale }: { locale: Locale }) {
           {" · "}
           <Link href={`/${locale}/methodology`}>{pt ? "Metodologia" : "Methodology"}</Link>
           {" · "}
+          <Link href={`/${locale}/sources`}>{pt ? "Fontes" : "Sources"}</Link>
+          {" · "}
           <Link href={`/${locale}/dossiers`}>{pt ? "Dossiês" : "Dossiers"}</Link>
         </p>
       </div>
