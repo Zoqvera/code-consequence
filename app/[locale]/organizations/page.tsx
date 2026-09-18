@@ -62,7 +62,9 @@ export default async function OrganizationsPage({ params }: { params: Promise<{ 
                 </Link>
               </h2>
               <p>
-                {organization.regions.join(" · ")}
+                {[...new Set(
+                  organization.initiatives.map((initiative) => initiative.region[locale]),
+                )].join(" · ")}
               </p>
             </div>
             <Link className={styles.link} href={`/${locale}/organizations/${organization.slug}`}>
