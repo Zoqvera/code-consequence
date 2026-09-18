@@ -1,0 +1,124 @@
+.metrics {
+  margin: 54px 0 76px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--ink);
+  border-left: 1px solid var(--line);
+}
+
+.metric {
+  min-height: 150px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.metric strong {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(2.6rem, 5vw, 4.8rem);
+  font-weight: 500;
+  line-height: .9;
+  letter-spacing: -.04em;
+}
+
+.metric span {
+  max-width: 170px;
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.section {
+  padding: 46px 0;
+  border-top: 1px solid var(--ink);
+}
+
+.sectionHeading {
+  margin-bottom: 28px;
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 2fr;
+  gap: 32px;
+}
+
+.sectionHeading h2 {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+.sectionHeading p {
+  max-width: 620px;
+  margin: 0;
+  color: var(--muted);
+}
+
+.rows {
+  border-top: 1px solid var(--line);
+}
+
+.row {
+  min-height: 58px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.row span {
+  color: var(--ink-soft);
+}
+
+.row strong {
+  min-width: 48px;
+  text-align: right;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.note {
+  max-width: 760px;
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+@media (max-width: 900px) {
+  .metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .metrics {
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 58px;
+  }
+
+  .metric {
+    min-height: 128px;
+    padding: 18px;
+  }
+
+  .sectionHeading {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 430px) {
+  .metrics {
+    grid-template-columns: 1fr;
+  }
+}
