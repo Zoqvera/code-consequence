@@ -29,3 +29,9 @@ Structured dossier modules are additive and evidence-bound:
 - linked initiatives must already be published and are connected through the article_initiatives relation.
 
 A dossier may remain published while these modules grow over time, but no empty or speculative structured item should be created merely to fill a section.
+
+
+## Derived distribution standard
+Faultlines Weekly may automatically assemble a recurring edition only from records that are already public. It may reuse published titles, summaries, statuses, verification dates and event metadata, but it must not create new factual claims, inferred rankings or unpublished conclusions.
+
+The latest edition covers the most recently completed ISO week. Historical editions must not project current initiative status or watchlist selections backward in time. Distribution automation does not change the publication status of any underlying editorial record.
