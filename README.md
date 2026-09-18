@@ -33,6 +33,7 @@ Persistent Dossiers track an issue over time. A published dossier requires a bil
 - verified AI events calendar
 - public methodology and source-reliability transparency
 - canonical public source registry with corpus provenance
+- multilingual source discovery in English, Portuguese, Spanish and French
 - source reliability tiers
 - Neon-ready PostgreSQL schema
 - database migration and verification scripts
@@ -84,4 +85,4 @@ See `docs/editorial-policy.md`.
 ## Planned ingestion pipeline
 `source discovery → extraction → deduplication → relevance classification → entity extraction → source verification → Neon → static build → publication`
 
-The ingestion layer treats social/search sources as discovery inputs and prioritizes primary sources for factual substantiation.
+The ingestion layer treats social/search sources as discovery inputs and prioritizes primary sources for factual substantiation. Discovery can ingest English, Portuguese, Spanish and French sources; the public editorial product remains bilingual in English and Brazilian Portuguese.
