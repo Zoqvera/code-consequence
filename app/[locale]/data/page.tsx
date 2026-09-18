@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { topics } from "@/lib/content";
 import { isLocale } from "@/lib/i18n";
 import { getObservatorySnapshot, type CountRow } from "@/lib/observatory-data";
 import { buildMetadata } from "@/lib/seo";
@@ -128,14 +129,7 @@ export default async function DataPage({ params }: { params: Promise<{ locale: s
         <DataRows
           rows={snapshot.initiativesByTopic}
           hrefFor={(row) => {
-            const topic = [
-              { slug: "power-democracy", en: "Power & Democracy", "pt-BR": "Poder & Democracia" },
-              { slug: "work-economy", en: "Work & Economy", "pt-BR": "Trabalho & Economia" },
-              { slug: "rights-society", en: "Rights & Society", "pt-BR": "Direitos & Sociedade" },
-              { slug: "governance-regulation", en: "Governance & Regulation", "pt-BR": "Governança & Regulação" },
-              { slug: "infrastructure-planet", en: "Infrastructure & Planet", "pt-BR": "Infraestrutura & Planeta" },
-              { slug: "science-technology", en: "Science & Technology", "pt-BR": "Ciência & Tecnologia" },
-            ].find((item) => item[locale] === row.label);
+            const topic = topics.find((item) => item[locale] === row.label);
             return topic ? `/${locale}/topics/${topic.slug}` : undefined;
           }}
         />
