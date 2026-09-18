@@ -45,6 +45,22 @@ function sourceName(row) {
   return row.publisher || row.title || "Source";
 }
 
+function toSource(row) {
+  return {
+    name: sourceName(row),
+    url: row.url,
+    tier: row.reliability,
+  };
+}
+
+function toDate(value) {
+  return value ? new Date(value).toISOString().slice(0, 10) : null;
+}
+
+function toTimestamp(value) {
+  return value ? new Date(value).toISOString() : null;
+}
+
 const articleRows = await sql`
   SELECT
     a.id,
@@ -170,6 +186,64 @@ for (const row of articleSourceRows) {
   const entry = articleSources.get(row.article_id) || [];
   entry.push({ name: sourceName(row), url: row.url, tier: row.reliability });
   articleSources.set(row.article_id, entry);
+}
+
+const dossierProfiles = new Map(dossierProfileRows.map((row) => [row.article_id, row]));
+
+const dossierCountries = new Map();
+for (const row of dossierCountryRows) {
+  const entry = dossierCountries.get(row.article_id) || [];
+  entry.push({ en: row.name_en, "pt-BR": row.name_pt_br });
+  dossierCountries.set(row.article_id, entry);
+}
+
+const dossierIndicators = new Map();
+for (const row of dossierIndicatorRows) {
+  const entry = dossierIndicators.get(row.article_id) || [];
+  entry.push({
+    label: { en: row.label_en, "pt-BR": row.label_pt_br },
+    value: row.value_text,
+    unit: row.unit,
+    observedOn: toDate(row.observed_on),
+    source: toSource(row),
+  });
+  dossierIndicators.set(row.article_id, entry);
+}
+
+const dossierTimeline = new Map();
+for (const row of dossierTimelineRows) {
+  const entry = dossierTimeline.get(row.article_id) || [];
+  entry.push({
+    date: toDate(row.event_date),
+    title: { en: row.title_en, "pt-BR": row.title_pt_br },
+    summary: row.summary_en && row.summary_pt_br
+      ? { en: row.summary_en, "pt-BR": row.summary_pt_br }
+      : null,
+    source: toSource(row),
+  });
+  dossierTimeline.set(row.article_id, entry);
+}
+
+const dossierLegislation = new Map();
+for (const row of dossierLegislationRows) {
+  const entry = dossierLegislation.get(row.article_id) || [];
+  entry.push({
+    jurisdiction: { en: row.jurisdiction_en, "pt-BR": row.jurisdiction_pt_br },
+    title: { en: row.title_en, "pt-BR": row.title_pt_br },
+    status: row.status_en && row.status_pt_br
+      ? { en: row.status_en, "pt-BR": row.status_pt_br }
+      : null,
+    enactedOn: toDate(row.enacted_on),
+    source: toSource(row),
+  });
+  dossierLegislation.set(row.article_id, entry);
+}
+
+const dossierInitiatives = new Map();
+for (const row of dossierInitiativeRows) {
+  const entry = dossierInitiatives.get(row.article_id) || [];
+  entry.push(row.slug);
+  dossierInitiatives.set(row.article_id, entry);
 }
 
 const articleGroups = new Map();
