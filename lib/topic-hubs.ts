@@ -69,6 +69,18 @@ export function getTopicStats(slug: string) {
   };
 }
 
+export function getTopicForArticle(articleSlug: string) {
+  const article = articles.find((item) => item.slug === articleSlug);
+  if (!article) return undefined;
+  return topics.find((topic) => topic.en === article.topic.en);
+}
+
+export function getTopicForInitiative(initiativeSlug: string) {
+  const initiative = initiatives.find((item) => item.slug === initiativeSlug);
+  if (!initiative) return undefined;
+  return topics.find((topic) => topic.en === initiative.topic.en);
+}
+
 export function getRelatedInitiativesForArticle(articleSlug: string, limit = 3) {
   const article = articles.find((item) => item.slug === articleSlug);
   if (!article) return [];
