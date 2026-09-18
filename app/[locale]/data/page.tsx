@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { DataBarChart } from "@/components/data-bar-chart";
 import { topics } from "@/lib/content";
 import { isLocale } from "@/lib/i18n";
-import { getObservatorySnapshot, type CountRow } from "@/lib/observatory-data";
+import { getObservatorySnapshot } from "@/lib/observatory-data";
 import { buildMetadata } from "@/lib/seo";
 import styles from "./data.module.css";
 
@@ -14,28 +15,6 @@ const statusLabels = {
   Paused: { en: "Paused", "pt-BR": "Pausadas" },
   Cancelled: { en: "Cancelled", "pt-BR": "Canceladas" },
 } as const;
-
-function DataRows({
-  rows,
-  hrefFor,
-}: {
-  rows: CountRow[];
-  hrefFor?: (row: CountRow) => string | undefined;
-}) {
-  return (
-    <div className={styles.rows}>
-      {rows.map((row) => {
-        const href = hrefFor?.(row);
-        return (
-          <div className={styles.row} key={row.key}>
-            {href ? <Link href={href}>{row.label}</Link> : <span>{row.label}</span>}
-            <strong>{row.count}</strong>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -140,8 +119,9 @@ export default async function DataPage({ params }: { params: Promise<{ locale: s
               : "Distribution of published records across the observatory's editorial taxonomy."}
           </p>
         </div>
-        <DataRows
+        <DataBarChart
           rows={snapshot.initiativesByTopic}
+          ariaLabel={pt ? "Iniciativas por tema" : "Initiatives by topic"}
           hrefFor={(row) => {
             const topic = topics.find((item) => item[locale] === row.label);
             return topic ? `/${locale}/topics/${topic.slug}` : undefined;
@@ -158,7 +138,7 @@ export default async function DataPage({ params }: { params: Promise<{ locale: s
               : "Current state recorded for initiatives that passed the publication process."}
           </p>
         </div>
-        <DataRows rows={statusRows} />
+        <DataBarChart rows={statusRows} ariaLabel={pt ? "Iniciativas por status" : "Initiatives by status"} />
       </section>
 
       <section className={styles.section}>
@@ -170,7 +150,7 @@ export default async function DataPage({ params }: { params: Promise<{ locale: s
               : "Geographic coverage as described in the verified records."}
           </p>
         </div>
-        <DataRows rows={snapshot.initiativesByRegion} />
+        <DataBarChart rows={snapshot.initiativesByRegion} ariaLabel={pt ? "Iniciativas por região" : "Initiatives by region"} />
       </section>
 
       <p className={styles.note}>

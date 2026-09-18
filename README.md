@@ -29,7 +29,7 @@ Persistent Dossiers track an issue over time. A published dossier requires a bil
 - bilingual routing under `/en` and `/pt-BR`
 - editorial homepage plus dedicated News, Analysis and persistent Dossier collections
 - initiative tracker, detail pages, topics and Global Radar
-- corpus-derived Data dashboard
+- corpus-derived Data dashboard with accessible static comparison charts
 - verified AI events calendar
 - public methodology and source-reliability transparency
 - canonical public source registry with corpus provenance
