@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { articles, getArticle } from "@/lib/content";
 import { isLocale, locales } from "@/lib/i18n";
+import { buildMetadata } from "@/lib/seo";
 
 export const dynamicParams = false;
 
@@ -14,7 +15,15 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   if (!isLocale(locale)) return {};
   const article = getArticle(slug);
   if (!article) return {};
-  return { title: article.title[locale], description: article.dek[locale] };
+
+  return buildMetadata({
+    locale,
+    title: article.title[locale],
+    description: article.dek[locale],
+    path: `/articles/${slug}`,
+    kind: "article",
+    publishedTime: article.publishedAt,
+  });
 }
 
 export default async function ArticlePage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
