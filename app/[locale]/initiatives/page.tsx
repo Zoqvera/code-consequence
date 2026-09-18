@@ -1,8 +1,25 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { InitiativeExplorer } from "@/components/initiative-explorer";
 import { initiatives } from "@/lib/initiatives";
 import { isLocale } from "@/lib/i18n";
+import { buildMetadata } from "@/lib/seo";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) return {};
+  const pt = locale === "pt-BR";
+
+  return buildMetadata({
+    locale,
+    title: pt ? "Iniciativas de IA" : "AI initiatives",
+    description: pt
+      ? "Explore projetos, políticas e mecanismos verificados que respondem aos impactos sociais, políticos e ambientais da inteligência artificial."
+      : "Explore verified projects, policies and mechanisms responding to the social, political and environmental impacts of artificial intelligence.",
+    path: "/initiatives",
+  });
+}
 
 export default async function InitiativesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
