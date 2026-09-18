@@ -6,7 +6,7 @@ import type { Locale } from "@/lib/i18n";
 
 export type SearchItem = {
   href: string;
-  type: "initiative" | "article" | "event" | "topic" | "organization";
+  type: "initiative" | "article" | "event" | "topic" | "organization" | "source";
   title: string;
   description: string;
   meta?: string;
@@ -68,8 +68,8 @@ export function SiteSearch({
   if (!open) return null;
 
   const labels = pt
-    ? { initiative: "Iniciativa", article: "Editorial", event: "Evento", topic: "Tema", organization: "Organização" }
-    : { initiative: "Initiative", article: "Editorial", event: "Event", topic: "Topic", organization: "Organization" };
+    ? { initiative: "Iniciativa", article: "Editorial", event: "Evento", topic: "Tema", organization: "Organização", source: "Fonte" }
+    : { initiative: "Initiative", article: "Editorial", event: "Event", topic: "Topic", organization: "Organization", source: "Source" };
 
   return (
     <div className="search-overlay" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
@@ -113,6 +113,7 @@ export function SiteSearch({
               <Link href={`/${locale}/dossiers`} onClick={onClose}>{pt ? "Dossiês" : "Dossiers"}</Link>
               <Link href={`/${locale}/initiatives`} onClick={onClose}>{pt ? "Explorar iniciativas" : "Explore initiatives"}</Link>
               <Link href={`/${locale}/organizations`} onClick={onClose}>{pt ? "Organizações" : "Organizations"}</Link>
+              <Link href={`/${locale}/sources`} onClick={onClose}>{pt ? "Fontes" : "Sources"}</Link>
               <Link href={`/${locale}/topics`} onClick={onClose}>{pt ? "Navegar por temas" : "Browse topics"}</Link>
               <Link href={`/${locale}/radar`} onClick={onClose}>Global Radar</Link>
               <Link href={`/${locale}/data`} onClick={onClose}>Data</Link>
