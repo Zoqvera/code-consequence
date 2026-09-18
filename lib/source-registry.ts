@@ -57,7 +57,7 @@ function stableHash(value: string) {
 function sourceSlug(source: Source) {
   const canonicalUrl = canonicalizeSourceUrl(source.url);
   const host = new URL(canonicalUrl).hostname.replace(/^www\./, "");
-  return `${slugify(`${source.name}-${host}`)}-${stableHash(canonicalUrl)}`;
+  return `${slugify(host)}-${stableHash(canonicalUrl)}`;
 }
 
 function uniqueReferences(references: SourceReference[]) {
