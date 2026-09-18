@@ -16,3 +16,16 @@ Automation may discover, extract, translate, classify, cluster and draft. It mus
 
 ## Initiative standard
 An initiative record requires a real named actor, a concrete action or program, a source that confirms its existence, and a status that can be updated over time.
+
+
+## Persistent dossier standard
+A dossier is a longitudinal editorial record of a clearly defined AI-related public problem. Publication requires a bilingual problem statement, a published dossier article, at least one traceable source, and an explicit topic assignment.
+
+Structured dossier modules are additive and evidence-bound:
+- countries must come from the canonical countries table;
+- indicators require a value, label, observation date when available, and a supporting source;
+- timeline events require a dated documented event and supporting source;
+- legislation requires jurisdiction, title, status when known, and supporting source;
+- linked initiatives must already be published and are connected through the article_initiatives relation.
+
+A dossier may remain published while these modules grow over time, but no empty or speculative structured item should be created merely to fill a section.
