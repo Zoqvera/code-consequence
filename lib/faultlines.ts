@@ -89,6 +89,8 @@ function collectIssueStarts(referenceDate: Date) {
 }
 
 export function buildFaultlinesIssues(referenceDate = new Date()): FaultlinesIssue[] {
+  const currentWeekStart = startOfIsoWeek(referenceDate);
+
   return collectIssueStarts(referenceDate).map((start) => {
     const nextWeek = addDays(start, 7);
     const eventWindowEnd = addDays(start, 14);
@@ -122,13 +124,16 @@ export function buildFaultlinesIssues(referenceDate = new Date()): FaultlinesIss
       .filter((initiative) => updatedInitiativeSlugs.has(initiative.slug))
       .sort(initiativeSort);
 
-    const watchlist = initiatives
-      .filter(
-        (initiative) =>
-          initiative.status === "Active" && !updatedInitiativeSlugs.has(initiative.slug),
-      )
-      .sort(initiativeSort)
-      .slice(0, 4);
+    const isCurrentIssue = start.getTime() === currentWeekStart.getTime();
+    const watchlist = isCurrentIssue
+      ? initiatives
+          .filter(
+            (initiative) =>
+              initiative.status === "Active" && !updatedInitiativeSlugs.has(initiative.slug),
+          )
+          .sort(initiativeSort)
+          .slice(0, 4)
+      : [];
 
     const upcomingEvents = events
       .filter((event) => inWindow(event.startDate, start, eventWindowEnd))
