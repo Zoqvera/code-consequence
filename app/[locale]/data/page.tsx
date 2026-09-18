@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n";
 import { getObservatorySnapshot, type CountRow } from "@/lib/observatory-data";
@@ -13,15 +14,24 @@ const statusLabels = {
   Cancelled: { en: "Cancelled", "pt-BR": "Canceladas" },
 } as const;
 
-function DataRows({ rows }: { rows: CountRow[] }) {
+function DataRows({
+  rows,
+  hrefFor,
+}: {
+  rows: CountRow[];
+  hrefFor?: (row: CountRow) => string | undefined;
+}) {
   return (
     <div className={styles.rows}>
-      {rows.map((row) => (
-        <div className={styles.row} key={row.key}>
-          <span>{row.label}</span>
-          <strong>{row.count}</strong>
-        </div>
-      ))}
+      {rows.map((row) => {
+        const href = hrefFor?.(row);
+        return (
+          <div className={styles.row} key={row.key}>
+            {href ? <Link href={href}>{row.label}</Link> : <span>{row.label}</span>}
+            <strong>{row.count}</strong>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -115,7 +125,20 @@ export default async function DataPage({ params }: { params: Promise<{ locale: s
               : "Distribution of published records across the observatory's editorial taxonomy."}
           </p>
         </div>
-        <DataRows rows={snapshot.initiativesByTopic} />
+        <DataRows
+          rows={snapshot.initiativesByTopic}
+          hrefFor={(row) => {
+            const topic = [
+              { slug: "power-democracy", en: "Power & Democracy", "pt-BR": "Poder & Democracia" },
+              { slug: "work-economy", en: "Work & Economy", "pt-BR": "Trabalho & Economia" },
+              { slug: "rights-society", en: "Rights & Society", "pt-BR": "Direitos & Sociedade" },
+              { slug: "governance-regulation", en: "Governance & Regulation", "pt-BR": "Governança & Regulação" },
+              { slug: "infrastructure-planet", en: "Infrastructure & Planet", "pt-BR": "Infraestrutura & Planeta" },
+              { slug: "science-technology", en: "Science & Technology", "pt-BR": "Ciência & Tecnologia" },
+            ].find((item) => item[locale] === row.label);
+            return topic ? `/${locale}/topics/${topic.slug}` : undefined;
+          }}
+        />
       </section>
 
       <section className={styles.section}>
