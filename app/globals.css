@@ -645,7 +645,7 @@ svg {
   border-top: 1px solid var(--ink);
 }
 
-.sources a {
+.sources > a {
   padding: 14px 0;
   border-bottom: 1px solid var(--line);
 }
