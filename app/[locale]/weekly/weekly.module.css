@@ -1,0 +1,82 @@
+.actions {
+  margin: 30px 0 54px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.archive {
+  margin-top: 72px;
+  padding-top: 30px;
+  border-top: 1px solid var(--ink);
+}
+
+.archiveHeader {
+  margin-bottom: 26px;
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 2fr;
+  gap: 32px;
+}
+
+.archiveHeader h2 {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(2.2rem, 4vw, 3.6rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+.archiveHeader p {
+  max-width: 620px;
+  margin: 0;
+  color: var(--muted);
+}
+
+.archiveList {
+  border-top: 1px solid var(--line);
+}
+
+.archiveRow {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr) auto;
+  gap: 24px;
+  padding: 22px 0;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.archiveRow h3 {
+  margin: 0 0 6px;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.65rem;
+  font-weight: 500;
+}
+
+.archiveRow p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.archiveId {
+  color: var(--muted);
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .archiveRow h3 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+  }
+}
+
+@media (max-width: 760px) {
+  .archiveHeader,
+  .archiveRow {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
