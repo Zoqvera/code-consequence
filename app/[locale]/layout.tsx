@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/site-header";
 import type { SearchItem } from "@/components/site-search";
 import { articles, topics } from "@/lib/content";
 import { events } from "@/lib/events";
+import { faultlinesIssues } from "@/lib/faultlines";
 import { initiatives } from "@/lib/initiatives";
 import { isLocale, locales } from "@/lib/i18n";
 import { organizations } from "@/lib/organizations";
@@ -38,6 +39,15 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   const pt = locale === "pt-BR";
 
   const searchItems: SearchItem[] = [
+    ...faultlinesIssues.map((issue) => ({
+      href: `/${locale}/weekly/${issue.id}`,
+      type: "weekly" as const,
+      title: `Faultlines Weekly · ${issue.id}`,
+      description: pt
+        ? `${issue.articles.length} publicação(ões), ${issue.updatedInitiatives.length} iniciativa(s) atualizada(s) e ${issue.upcomingEvents.length} evento(s).`
+        : `${issue.articles.length} publication(s), ${issue.updatedInitiatives.length} initiative update(s), and ${issue.upcomingEvents.length} event(s).`,
+      meta: `${issue.startDate} — ${issue.endDate}`,
+    })),
     ...sourceRegistry.map((source) => ({
       href: `/${locale}/sources/${source.slug}`,
       type: "source" as const,
