@@ -3,6 +3,7 @@ import { articles, topics } from "@/lib/content";
 import { events } from "@/lib/events";
 import { initiatives } from "@/lib/initiatives";
 import { locales, type Locale } from "@/lib/i18n";
+import { organizations } from "@/lib/organizations";
 import { absoluteUrl, languageAlternates, localizedPath } from "@/lib/seo";
 
 export const dynamic = "force-static";
@@ -29,6 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/news", changeFrequency: "daily" as const, priority: 0.9 },
     { path: "/analysis", changeFrequency: "weekly" as const, priority: 0.9 },
     { path: "/initiatives", changeFrequency: "daily" as const, priority: 0.9 },
+    { path: "/organizations", changeFrequency: "weekly" as const, priority: 0.7 },
     { path: "/topics", changeFrequency: "monthly" as const, priority: 0.7 },
     { path: "/radar", changeFrequency: "daily" as const, priority: 0.9 },
     { path: "/data", changeFrequency: "daily" as const, priority: 0.8 },
@@ -38,6 +40,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const localizedStaticRoutes = locales.flatMap((locale) =>
     staticRoutes.map((route) => entry(locale, route.path, route)),
+  );
+
+  const organizationRoutes = organizations.flatMap((organization) =>
+    locales.map((locale) =>
+      entry(locale, `/organizations/${organization.slug}`, {
+        changeFrequency: "weekly",
+        priority: 0.7,
+      }),
+    ),
   );
 
   const topicRoutes = topics.flatMap((topic) =>
@@ -78,5 +89,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ),
   );
 
-  return [...localizedStaticRoutes, ...topicRoutes, ...articleRoutes, ...initiativeRoutes, ...eventRoutes];
+  return [...localizedStaticRoutes, ...organizationRoutes, ...topicRoutes, ...articleRoutes, ...initiativeRoutes, ...eventRoutes];
 }
