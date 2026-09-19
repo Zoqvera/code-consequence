@@ -4,8 +4,10 @@ import { notFound } from "next/navigation";
 import { ContextualRelations } from "@/components/contextual-relations";
 import { DossierSections } from "@/components/dossier-sections";
 import { SourceList } from "@/components/source-list";
+import { StructuredData } from "@/components/structured-data";
 import { articles, getArticle } from "@/lib/content";
 import { isLocale, locales } from "@/lib/i18n";
+import { buildArticleSchema, buildBreadcrumbSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/seo";
 import {
   getRelatedInitiativesForArticle,
@@ -66,8 +68,18 @@ export default async function ArticlePage({
       ? (pt ? "Análises" : "Analysis")
       : (pt ? "Dossiês" : "Dossiers");
 
+  const structuredData = [
+    buildArticleSchema(article, locale),
+    buildBreadcrumbSchema(locale, [
+      { name: pt ? "Início" : "Home", path: "" },
+      { name: collectionLabel, path: collectionHref.replace(`/${locale}`, "") },
+      { name: article.title[locale], path: `/articles/${article.slug}` },
+    ]),
+  ];
+
   return (
     <article className="shell article-page page-pad">
+      <StructuredData data={structuredData} />
       <Link className="back-link" href={collectionHref}>
         ← {collectionLabel}
       </Link>

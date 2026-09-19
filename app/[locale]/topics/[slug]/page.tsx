@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { StructuredData } from "@/components/structured-data";
 import { topics } from "@/lib/content";
 import { isLocale, locales } from "@/lib/i18n";
 import {
@@ -10,6 +11,7 @@ import {
   getTopicStats,
   topicDescriptions,
 } from "@/lib/topic-hubs";
+import { buildBreadcrumbSchema, buildCollectionPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/seo";
 import styles from "./topic.module.css";
 
@@ -65,6 +67,31 @@ export default async function TopicPage({
   const topicInitiatives = getTopicInitiatives(slug);
   const stats = getTopicStats(slug);
 
+  const structuredItems = [
+    ...topicArticles.map((article) => ({
+      name: article.title[locale],
+      path: `/articles/${article.slug}`,
+    })),
+    ...topicInitiatives.map((initiative) => ({
+      name: initiative.title[locale],
+      path: `/initiatives/${initiative.slug}`,
+    })),
+  ];
+  const structuredData = [
+    buildCollectionPageSchema({
+      locale,
+      path: `/topics/${topic.slug}`,
+      name: topic[locale],
+      description: topicDescriptions[topic.slug][locale],
+      items: structuredItems,
+    }),
+    buildBreadcrumbSchema(locale, [
+      { name: pt ? "Início" : "Home", path: "" },
+      { name: pt ? "Temas" : "Topics", path: "/topics" },
+      { name: topic[locale], path: `/topics/${topic.slug}` },
+    ]),
+  ];
+
   const metrics = [
     { value: stats.articles, label: pt ? "publicações editoriais" : "editorial publications" },
     { value: stats.initiatives, label: pt ? "iniciativas verificadas" : "verified initiatives" },
@@ -74,6 +101,7 @@ export default async function TopicPage({
 
   return (
     <div className="shell page-pad">
+      <StructuredData data={structuredData} />
       <Link className="back-link" href={`/${locale}/topics`}>
         ← {pt ? "Todos os temas" : "All topics"}
       </Link>

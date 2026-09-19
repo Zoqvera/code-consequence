@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { StructuredData } from "@/components/structured-data";
 import { isLocale, locales } from "@/lib/i18n";
 import { initiativeStatusLabel } from "@/lib/initiative-labels";
 import { getOrganization, organizations } from "@/lib/organizations";
+import { buildBreadcrumbSchema, buildCollectionPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/seo";
 import { getTopicForInitiative } from "@/lib/topic-hubs";
 import styles from "../organizations.module.css";
@@ -57,6 +59,27 @@ export default async function OrganizationPage({
     organization.initiatives.map((initiative) => initiative.region[locale]),
   )];
 
+  const description = pt
+    ? `Iniciativas verificadas associadas a ${organization.name} no corpus público do Code & Consequence.`
+    : `Verified initiatives associated with ${organization.name} in the public Code & Consequence corpus.`;
+  const structuredData = [
+    buildCollectionPageSchema({
+      locale,
+      path: `/organizations/${organization.slug}`,
+      name: organization.name,
+      description,
+      items: organization.initiatives.map((initiative) => ({
+        name: initiative.title[locale],
+        path: `/initiatives/${initiative.slug}`,
+      })),
+    }),
+    buildBreadcrumbSchema(locale, [
+      { name: pt ? "Início" : "Home", path: "" },
+      { name: pt ? "Organizações" : "Organizations", path: "/organizations" },
+      { name: organization.name, path: `/organizations/${organization.slug}` },
+    ]),
+  ];
+
   const metrics = [
     {
       value: organization.initiatives.length,
@@ -78,6 +101,7 @@ export default async function OrganizationPage({
 
   return (
     <div className="shell page-pad">
+      <StructuredData data={structuredData} />
       <Link className="back-link" href={`/${locale}/organizations`}>
         ← {pt ? "Todas as organizações" : "All organizations"}
       </Link>

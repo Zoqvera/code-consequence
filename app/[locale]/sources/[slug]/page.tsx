@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { StructuredData } from "@/components/structured-data";
 import { isLocale, locales } from "@/lib/i18n";
 import { sourceTiers } from "@/lib/methodology";
 import { getSourceRecord, sourceRegistry } from "@/lib/source-registry";
+import { buildBreadcrumbSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/seo";
 import styles from "../sources.module.css";
 
@@ -50,9 +52,15 @@ export default async function SourceDetailPage({
 
   const pt = locale === "pt-BR";
   const tier = sourceTiers.find((item) => item.tier === source.tier);
+  const structuredData = buildBreadcrumbSchema(locale, [
+    { name: pt ? "Início" : "Home", path: "" },
+    { name: pt ? "Fontes" : "Sources", path: "/sources" },
+    { name: source.name, path: `/sources/${source.slug}` },
+  ]);
 
   return (
     <article className="shell page-pad">
+      <StructuredData data={structuredData} />
       <Link className="back-link" href={`/${locale}/sources`}>
         ← {pt ? "Todas as fontes" : "All sources"}
       </Link>
