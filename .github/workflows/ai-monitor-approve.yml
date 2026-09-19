@@ -1,0 +1,71 @@
+name: AI Monitor — Approve assessment
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "Type APPLY to publish the fresh surveillance recommendation"
+        required: true
+        type: string
+      reason:
+        description: "Editorial reason for approving this assessment"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  approve:
+    if: github.event.inputs.confirmation == 'APPLY'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ai-monitor-publication
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm install
+
+      - name: Generate fresh recommendation
+        run: npm run ai-monitor:surveil
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.6-luna' }}
+
+      - name: Apply human-approved recommendation
+        run: npm run ai-monitor:apply -- --proposal artifacts/ai-monitor-surveillance/report.json --reason "${{ github.event.inputs.reason }}"
+        env:
+          AI_MONITOR_APPROVAL: APPLY
+
+      - name: Validate application
+        run: |
+          npm run typecheck
+          npm run lint
+          npm run build
+
+      - name: Publish assessment to main
+        run: |
+          git config user.name "C&C AI Monitor"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/ai-monitor-assessments.json
+          git commit -m "C&C AI Monitor: publish approved assessment"
+          git push origin HEAD:main
+
+      - name: Close review issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ISSUE_NUMBER="$(gh issue list --state open --label ai-monitor-review --json number --jq '.[0].number // empty')"
+          if [ -n "$ISSUE_NUMBER" ]; then
+            gh issue close "$ISSUE_NUMBER" --comment "Fresh surveillance recommendation approved and published through the human editorial gate."
+          fi

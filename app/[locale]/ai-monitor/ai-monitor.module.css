@@ -409,3 +409,147 @@
     gap: 8px;
   }
 }
+
+.surveillance {
+  margin: 0 0 82px;
+  padding: 34px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: white;
+}
+
+.surveillanceIntro {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.2fr) minmax(0, 1fr);
+  gap: 50px;
+  align-items: end;
+}
+
+.surveillanceIntro :global(.eyebrow) {
+  color: var(--acid);
+}
+
+.surveillanceIntro h2 {
+  max-width: 760px;
+  margin: 12px 0 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(2.4rem, 4.6vw, 4.7rem);
+  line-height: .94;
+  font-weight: 500;
+  letter-spacing: -.045em;
+}
+
+.surveillanceIntro > p {
+  margin: 0;
+  color: #c8cbc4;
+  font-size: .92rem;
+}
+
+.surveillanceMetrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 34px;
+  border-top: 1px solid #555a54;
+  border-left: 1px solid #555a54;
+}
+
+.surveillanceMetrics div {
+  min-height: 126px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid #555a54;
+  border-bottom: 1px solid #555a54;
+}
+
+.surveillanceMetrics strong {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 2.8rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.surveillanceMetrics span {
+  max-width: 150px;
+  font-size: .63rem;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  font-weight: 800;
+  color: #adb2aa;
+}
+
+.watchList {
+  margin-top: 28px;
+  border-top: 1px solid #555a54;
+}
+
+.watchList a {
+  min-height: 66px;
+  padding: 14px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid #555a54;
+}
+
+.watchList a:hover strong {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.watchList div {
+  display: grid;
+  gap: 3px;
+}
+
+.watchList strong {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.watchList span,
+.watchList small {
+  color: #adb2aa;
+  font-size: .7rem;
+}
+
+.watchList small {
+  text-align: right;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-weight: 800;
+}
+
+@media (max-width: 800px) {
+  .surveillanceIntro {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .surveillanceMetrics {
+    grid-template-columns: 1fr;
+  }
+
+  .surveillanceMetrics div {
+    min-height: 96px;
+  }
+}
+
+@media (max-width: 620px) {
+  .surveillance {
+    padding: 24px 20px;
+  }
+
+  .watchList a {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .watchList small {
+    text-align: left;
+  }
+}

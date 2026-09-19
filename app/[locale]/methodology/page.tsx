@@ -128,6 +128,44 @@ export default async function MethodologyPage({
 
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
+          <h2>{pt ? "Vigilância do C&C AI Monitor" : "C&C AI Monitor surveillance"}</h2>
+          <p>
+            {pt
+              ? "O Monitor executa uma varredura recorrente de fontes institucionais e produz recomendações estruturadas sem autoridade para alterar o status público sozinho."
+              : "The Monitor runs recurring scans of institutional sources and produces structured recommendations without authority to change the public status on its own."}
+          </p>
+        </div>
+
+        <div className={styles.gates}>
+          <article className={styles.gate}>
+            <strong>{pt ? "1. Coleta" : "1. Collection"}</strong>
+            <p>
+              {pt
+                ? "A cada seis horas, fontes configuradas são consultadas e o texto público relevante é preparado para análise."
+                : "Every six hours, configured sources are checked and relevant public text is prepared for analysis."}
+            </p>
+          </article>
+          <article className={styles.gate}>
+            <strong>{pt ? "2. Recomendação" : "2. Recommendation"}</strong>
+            <p>
+              {pt
+                ? "O sistema compara as novas evidências com a avaliação publicada e recomenda deltas limitados para as cinco dimensões de risco."
+                : "The system compares new evidence with the published assessment and recommends bounded deltas across the five risk dimensions."}
+            </p>
+          </article>
+          <article className={styles.gate}>
+            <strong>{pt ? "3. Gate humano" : "3. Human gate"}</strong>
+            <p>
+              {pt
+                ? "Mudanças materiais entram em fila de revisão. Uma nova pontuação só é publicada após aprovação humana explícita e fica registrada no histórico."
+                : "Material changes enter a review queue. A new score is published only after explicit human approval and remains recorded in the history."}
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
           <h2>{pt ? "Barreiras de publicação" : "Publication gates"}</h2>
           <p>
             {pt
