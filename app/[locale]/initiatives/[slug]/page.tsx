@@ -3,10 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ContextualRelations } from "@/components/contextual-relations";
 import { SourceList } from "@/components/source-list";
+import { StructuredData } from "@/components/structured-data";
 import { getInitiative, initiatives } from "@/lib/initiatives";
 import { initiativeStatusLabel } from "@/lib/initiative-labels";
 import { getOrganizationForInitiative } from "@/lib/organizations";
 import { isLocale, locales } from "@/lib/i18n";
+import { buildBreadcrumbSchema, buildInitiativePageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/seo";
 import {
   getRelatedArticlesForInitiative,
@@ -69,9 +71,18 @@ export default async function InitiativeDetailPage({
   const topic = getTopicForInitiative(slug);
   const relatedArticles = getRelatedArticlesForInitiative(slug);
   const organization = getOrganizationForInitiative(slug);
+  const structuredData = [
+    buildInitiativePageSchema(initiative, locale),
+    buildBreadcrumbSchema(locale, [
+      { name: pt ? "Início" : "Home", path: "" },
+      { name: pt ? "Iniciativas" : "Initiatives", path: "/initiatives" },
+      { name: initiative.title[locale], path: `/initiatives/${initiative.slug}` },
+    ]),
+  ];
 
   return (
     <article className="shell initiative-detail page-pad">
+      <StructuredData data={structuredData} />
       <Link className="back-link" href={`/${locale}/initiatives`}>
         ← {pt ? "Todas as iniciativas" : "All initiatives"}
       </Link>
