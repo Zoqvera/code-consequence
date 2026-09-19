@@ -84,5 +84,19 @@ export function buildMetadata({
       title,
       description,
     },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+    other: {
+      "content-language": locale,
+    },
   };
 }
