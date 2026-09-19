@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { StructuredData } from "@/components/structured-data";
 import { topics } from "@/lib/content";
 import { isLocale } from "@/lib/i18n";
-import { getTopicStats, topicDescriptions } from "@/lib/topic-hubs";
+import { getTopicStats } from "@/lib/topic-hubs";
 import { buildCollectionPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/seo";
 import { getTopicSearchContent } from "@/lib/topic-search-content";
