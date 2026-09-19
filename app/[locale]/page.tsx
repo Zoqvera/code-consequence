@@ -59,6 +59,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <>
+      <div className={`shell ${styles.monitorLead}`}>
+        <AiMonitorTeaser locale={locale} />
+      </div>
+
       <section className={`hero shell ${styles.hero}`}>
         <p className="eyebrow">{d.heroEyebrow}</p>
         <h1>{d.heroTitle}</h1>
@@ -70,10 +74,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </Link>
         </div>
       </section>
-
-      <div className="shell">
-        <AiMonitorTeaser locale={locale} />
-      </div>
 
       <section className={`${styles.pulse} shell`} aria-labelledby="observatory-pulse-title">
         <div className={styles.pulseHeading}>
