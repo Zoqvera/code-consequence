@@ -10,10 +10,26 @@ import {
   type AiMonitorStatus,
 } from "@/lib/ai-monitor";
 import { isLocale } from "@/lib/i18n";
+import surveillanceSourcesData from "@/config/ai-monitor-sources.json";
 import { buildMetadata } from "@/lib/seo";
 import styles from "./ai-monitor.module.css";
 
 const statusOrder: AiMonitorStatus[] = ["green", "yellow", "red"];
+
+type SurveillanceSource = {
+  id: string;
+  name: string;
+  publisher: string;
+  jurisdiction: string;
+  url: string;
+  dimensions: string[];
+  tier: number;
+  enabled: boolean;
+};
+
+const surveillanceSources = (surveillanceSourcesData as SurveillanceSource[]).filter(
+  (source) => source.enabled,
+);
 
 function formatDate(value: string, locale: "en" | "pt-BR") {
   const date = new Date(`${value}T12:00:00Z`);
@@ -115,6 +131,40 @@ export default async function AiMonitorPage({
         </div>
       </section>
 
+      <section className={styles.surveillance} aria-labelledby="surveillance-title">
+        <div className={styles.surveillanceIntro}>
+          <div>
+            <p className="eyebrow">{pt ? "Vigilância contínua" : "Continuous surveillance"}</p>
+            <h2 id="surveillance-title">
+              {pt ? "O Monitor verifica novas evidências a cada seis horas." : "The Monitor checks for new evidence every six hours."}
+            </h2>
+          </div>
+          <p>
+            {pt
+              ? "Fontes institucionais são coletadas automaticamente e analisadas contra a avaliação pública vigente. Mudanças materiais geram uma fila de revisão; nenhuma recomendação altera a cor pública sem aprovação editorial humana."
+              : "Institutional sources are collected automatically and analysed against the current public assessment. Material changes create an editorial review queue; no recommendation changes the public color without human approval."}
+          </p>
+        </div>
+
+        <div className={styles.surveillanceMetrics}>
+          <div><strong>6h</strong><span>{pt ? "cadência de varredura" : "scan cadence"}</span></div>
+          <div><strong>{surveillanceSources.length}</strong><span>{pt ? "fontes institucionais" : "institutional sources"}</span></div>
+          <div><strong>1</strong><span>{pt ? "gate humano obrigatório" : "mandatory human gate"}</span></div>
+        </div>
+
+        <div className={styles.watchList}>
+          {surveillanceSources.map((source) => (
+            <a href={source.url} target="_blank" rel="noreferrer" key={source.id}>
+              <div>
+                <strong>{source.publisher}</strong>
+                <span>{source.name}</span>
+              </div>
+              <small>{source.jurisdiction} · Tier {source.tier} ↗</small>
+            </a>
+          ))}
+        </div>
+      </section>
+
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2>{pt ? "Dimensões do indicador" : "Indicator dimensions"}</h2>
@@ -141,7 +191,7 @@ export default async function AiMonitorPage({
               <div
                 className={styles.track}
                 role="img"
-                aria-label={`${dimension.title[locale]}: ${dimension.score} de 100`}
+                aria-label={`${dimension.title[locale]}: ${dimension.score} ${pt ? "de" : "of"} 100`}
               >
                 <span style={{ width: `${dimension.score}%` }} />
               </div>
@@ -227,8 +277,8 @@ export default async function AiMonitorPage({
 
         <p className={styles.methodologyNote}>
           {pt
-            ? "O C&C AI Monitor é um indicador editorial, não uma previsão probabilística de catástrofe nem uma medida de uma única tecnologia. A metodologia deve permanecer revisável à medida que novas evidências e melhores métricas se tornem disponíveis."
-            : "C&C AI Monitor is an editorial indicator, not a probabilistic catastrophe forecast or a measure of any single technology. The methodology should remain revisable as new evidence and better metrics become available."}
+            ? "O C&C AI Monitor é um indicador editorial, não uma previsão probabilística de catástrofe nem uma medida de uma única tecnologia. A vigilância automática apenas recomenda alterações; a publicação de uma nova avaliação exige aprovação humana explícita e fica preservada no histórico."
+            : "C&C AI Monitor is an editorial indicator, not a probabilistic catastrophe forecast or a measure of any single technology. Automated surveillance only recommends changes; publishing a new assessment requires explicit human approval and remains preserved in the history."}
           {" "}
           <Link className="text-link" href={`/${locale}/methodology`}>
             {pt ? "Ver metodologia editorial" : "View editorial methodology"} →
