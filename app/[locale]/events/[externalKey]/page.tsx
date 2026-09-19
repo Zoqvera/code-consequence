@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { EventCountdown } from "@/components/event-countdown";
+import { StructuredData } from "@/components/structured-data";
 import { events, getEvent, type AiEvent } from "@/lib/events";
 import { isLocale, locales, type Locale } from "@/lib/i18n";
+import { buildBreadcrumbSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/seo";
 import styles from "../events.module.css";
 
@@ -144,11 +146,18 @@ export default async function EventDetailPage({ params }: { params: Promise<{ lo
     ? (pt ? "Fazer inscrição ↗" : "Register ↗")
     : (pt ? "Ver como participar ↗" : "See how to participate ↗");
   const preciseStart = formatStartTime(event.startsAt, locale);
-  const jsonLd = JSON.stringify(structuredData(event, locale)).replace(/</g, "\\u003c");
+  const jsonLd = [
+    structuredData(event, locale),
+    buildBreadcrumbSchema(locale, [
+      { name: pt ? "Início" : "Home", path: "" },
+      { name: pt ? "Eventos" : "Events", path: "/events" },
+      { name: event.title[locale], path: `/events/${event.externalKey}` },
+    ]),
+  ];
 
   return (
     <article className={`shell page-pad ${styles.detailPage}`}>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+      <StructuredData data={jsonLd} />
       <Link className={styles.backLink} href={`/${locale}/events`}>← {pt ? "Todos os eventos" : "All events"}</Link>
 
       <p className="eyebrow">{formatLabel(event.format, locale)} · {event.organizer}</p>
