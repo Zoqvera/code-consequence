@@ -13,6 +13,7 @@ import {
 } from "@/lib/topic-hubs";
 import { buildBreadcrumbSchema, buildCollectionPageSchema } from "@/lib/schema";
 import { buildMetadata } from "@/lib/seo";
+import { getTopicSearchContent } from "@/lib/topic-search-content";
 import styles from "./topic.module.css";
 
 export const dynamicParams = false;
@@ -34,10 +35,12 @@ export async function generateMetadata({
   const topic = getTopicBySlug(slug);
   if (!topic) return {};
 
+  const searchContent = getTopicSearchContent(topic.slug);
+
   return buildMetadata({
     locale,
-    title: topic[locale],
-    description: topicDescriptions[topic.slug][locale],
+    title: searchContent.metaTitle[locale],
+    description: searchContent.metaDescription[locale],
     path: `/topics/${topic.slug}`,
   });
 }
@@ -66,6 +69,10 @@ export default async function TopicPage({
   const topicArticles = getTopicArticles(slug);
   const topicInitiatives = getTopicInitiatives(slug);
   const stats = getTopicStats(slug);
+  const searchContent = getTopicSearchContent(topic.slug);
+  const relatedTopics = searchContent.relatedTopics
+    .map((relatedSlug) => topics.find((item) => item.slug === relatedSlug))
+    .filter((item): item is (typeof topics)[number] => Boolean(item));
 
   const structuredItems = [
     ...topicArticles.map((article) => ({
@@ -82,7 +89,7 @@ export default async function TopicPage({
       locale,
       path: `/topics/${topic.slug}`,
       name: topic[locale],
-      description: topicDescriptions[topic.slug][locale],
+      description: searchContent.metaDescription[locale],
       items: structuredItems,
     }),
     buildBreadcrumbSchema(locale, [
@@ -110,6 +117,21 @@ export default async function TopicPage({
       <h1 className="page-title">{topic[locale]}</h1>
       <p className="page-intro">{topicDescriptions[topic.slug][locale]}</p>
 
+      <section className={styles.pillarIntro} aria-labelledby="topic-overview-title">
+        <p className="eyebrow">{pt ? "Guia do tema" : "Topic guide"}</p>
+        <h2 id="topic-overview-title">{searchContent.overviewTitle[locale]}</h2>
+        <div className={styles.pillarCopy}>
+          {searchContent.overview[locale].map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
+        <div className={styles.concepts} aria-label={pt ? "Conceitos relacionados" : "Related concepts"}>
+          {searchContent.concepts[locale].map((concept) => (
+            <span key={concept}>{concept}</span>
+          ))}
+        </div>
+      </section>
+
       <div className={styles.summary}>
         {metrics.map((metric) => (
           <div className={styles.metric} key={metric.label}>
@@ -118,6 +140,25 @@ export default async function TopicPage({
           </div>
         ))}
       </div>
+
+      <section className={styles.section} aria-labelledby="topic-questions-title">
+        <div className={styles.sectionHeader}>
+          <h2 id="topic-questions-title">{pt ? "Perguntas centrais" : "Key questions"}</h2>
+          <p>
+            {pt
+              ? "Respostas diretas para situar o tema antes de explorar as evidências e os registros do observatório."
+              : "Direct answers that establish the topic before you explore the observatory's evidence and records."}
+          </p>
+        </div>
+        <div className={styles.questions}>
+          {searchContent.questions.map((item) => (
+            <article className={styles.question} key={item.question.en}>
+              <h3>{item.question[locale]}</h3>
+              <p>{item.answer[locale]}</p>
+            </article>
+          ))}
+        </div>
+      </section>
 
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
@@ -200,6 +241,25 @@ export default async function TopicPage({
               : "No verified initiatives are available for this topic yet."}
           </p>
         )}
+      </section>
+
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2>{pt ? "Temas relacionados" : "Related topics"}</h2>
+          <p>
+            {pt
+              ? "Continue a leitura por eixos que compartilham instituições, riscos ou respostas com este tema."
+              : "Continue through editorial axes that share institutions, risks or responses with this topic."}
+          </p>
+        </div>
+        <div className={styles.relatedTopics}>
+          {relatedTopics.map((relatedTopic) => (
+            <Link key={relatedTopic.slug} href={`/${locale}/topics/${relatedTopic.slug}`}>
+              <span>{relatedTopic[locale]}</span>
+              <small>{topicDescriptions[relatedTopic.slug][locale]}</small>
+            </Link>
+          ))}
+        </div>
       </section>
 
       <section className={styles.section}>
