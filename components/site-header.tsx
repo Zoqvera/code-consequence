@@ -20,6 +20,7 @@ function NavigationLinks({
     { href: `/${locale}`, label: d.nav.home },
     { href: `/${locale}/news`, label: d.nav.news },
     { href: `/${locale}/analysis`, label: d.nav.analysis },
+    { href: `/${locale}/ai-monitor`, label: d.nav.monitor },
     { href: `/${locale}/initiatives`, label: d.nav.initiatives },
     { href: `/${locale}/topics`, label: d.nav.topics },
     { href: `/${locale}/radar`, label: d.nav.radar },
