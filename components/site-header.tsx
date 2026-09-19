@@ -84,7 +84,7 @@ export function SiteHeader({ locale, searchItems }: { locale: Locale; searchItem
             className="monitor-status-link"
             href={`/${locale}/ai-monitor`}
             data-status={monitorStatus}
-            aria-label={`${pt ? "C&C AI Monitor" : "C&C AI Monitor"}: ${monitorLabel}, ${currentAiMonitorAssessment.score} de 100`}
+            aria-label={`C&C AI Monitor: ${monitorLabel}, ${currentAiMonitorAssessment.score} ${pt ? "de" : "of"} 100`}
             onClick={closeMobileMenu}
           >
             <span className="monitor-status-dot" aria-hidden="true" />
