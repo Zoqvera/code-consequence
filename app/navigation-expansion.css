@@ -12,3 +12,52 @@
     display: block;
   }
 }
+
+.monitor-status-link {
+  min-height: 44px;
+  padding: 8px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--ink);
+  font-size: .66rem;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.monitor-status-link[data-status="green"] { background: #d8eed4; }
+.monitor-status-link[data-status="yellow"] { background: #f6e9a8; }
+.monitor-status-link[data-status="red"] { background: #f3c0b8; }
+
+.monitor-status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid var(--ink);
+}
+
+.monitor-status-link[data-status="green"] .monitor-status-dot { background: #3e9b54; }
+.monitor-status-link[data-status="yellow"] .monitor-status-dot { background: #e0ab16; }
+.monitor-status-link[data-status="red"] .monitor-status-dot { background: #ce3c35; }
+
+.monitor-status-link strong {
+  font-size: .72rem;
+}
+
+@media (max-width: 650px) {
+  .monitor-status-copy {
+    display: none;
+  }
+
+  .monitor-status-link {
+    padding-inline: 9px;
+  }
+}
+
+@media (max-width: 430px) {
+  .search-label {
+    display: none;
+  }
+}
