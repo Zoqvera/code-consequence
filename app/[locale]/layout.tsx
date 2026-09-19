@@ -25,10 +25,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const pt = locale === "pt-BR";
   return buildMetadata({
     locale,
-    title: pt ? "IA, sociedade e planeta" : "AI, society and planet",
+    title: pt
+      ? "Impactos da IA, governança e respostas globais"
+      : "AI impacts, governance and global responses",
     description: pt
-      ? "Jornalismo e análise sobre as consequências políticas, sociais e ambientais da inteligência artificial."
-      : "Reporting and analysis on the political, social and environmental consequences of artificial intelligence.",
+      ? "Observatório independente sobre impactos da inteligência artificial em governança, democracia, trabalho, direitos e meio ambiente, com iniciativas e fontes verificadas."
+      : "Independent observatory on artificial intelligence impacts across governance, democracy, work, rights and the environment, with verified initiatives and sources.",
   });
 }
 
@@ -100,7 +102,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
     <>
       <a className="skip-link" href="#main-content">{pt ? "Pular para o conteúdo" : "Skip to content"}</a>
       <SiteHeader locale={locale} searchItems={searchItems} />
-      <main id="main-content" tabIndex={-1}>{children}</main>
+      <main id="main-content" lang={locale} tabIndex={-1}>{children}</main>
       <SiteFooter locale={locale} />
     </>
   );
