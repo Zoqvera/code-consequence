@@ -31,6 +31,7 @@ Persistent Dossiers track an issue over time. A published dossier requires a bil
 - initiative tracker, detail pages, topics and Global Radar
 - corpus-derived Data dashboard with accessible static comparison charts
 - verified AI events calendar
+- Faultlines Weekly recurring web digest and bilingual RSS
 - public methodology and source-reliability transparency
 - canonical public source registry with corpus provenance
 - multilingual source discovery in English, Portuguese, Spanish and French
@@ -86,3 +87,8 @@ See `docs/editorial-policy.md`.
 `source discovery → extraction → deduplication → relevance classification → entity extraction → source verification → Neon → static build → publication`
 
 The ingestion layer treats social/search sources as discovery inputs and prioritizes primary sources for factual substantiation. Discovery can ingest English, Portuguese, Spanish and French sources; the public editorial product remains bilingual in English and Brazilian Portuguese.
+
+## Faultlines Weekly
+Faultlines Weekly is a derived distribution layer, not a separate factual-authoring pipeline. Each edition covers the latest completed ISO week and reuses only already published articles, verified dossier updates, published initiative records and verified events. Historical issues do not project the current initiative watchlist backward in time.
+
+GitHub Pages is rebuilt every Monday at 06:17 UTC so the completed weekly window advances even when there is no code change. Bilingual RSS is available under `/{locale}/weekly/feed.xml`.
