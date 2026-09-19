@@ -1,0 +1,54 @@
+name: C&C AI Monitor Surveillance
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  surveil:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm install
+
+      - id: monitor
+        name: Run C&C AI Monitor surveillance
+        run: npm run ai-monitor:surveil
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-5.6-luna' }}
+
+      - name: Upload surveillance report
+        uses: actions/upload-artifact@v4
+        with:
+          name: cc-ai-monitor-surveillance-${{ steps.monitor.outputs.generated_date }}
+          path: artifacts/ai-monitor-surveillance/
+          retention-days: 30
+
+      - name: Open or refresh editorial review
+        if: steps.monitor.outputs.requires_review == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RECOMMENDED_STATUS: ${{ steps.monitor.outputs.recommended_status }}
+          RECOMMENDED_SCORE: ${{ steps.monitor.outputs.recommended_score }}
+          GENERATED_DATE: ${{ steps.monitor.outputs.generated_date }}
+        run: |
+          gh label create ai-monitor-review --color D4A017 --description "C&C AI Monitor surveillance awaiting human editorial review" --force
+          ISSUE_NUMBER="$(gh issue list --state open --label ai-monitor-review --json number --jq '.[0].number // empty')"
+          TITLE="C&C AI Monitor review · ${GENERATED_DATE} · ${RECOMMENDED_STATUS^^} ${RECOMMENDED_SCORE}/100"
+          if [ -n "$ISSUE_NUMBER" ]; then
+            gh issue edit "$ISSUE_NUMBER" --title "$TITLE" --body-file artifacts/ai-monitor-surveillance/review.md
+          else
+            gh issue create --title "$TITLE" --label ai-monitor-review --body-file artifacts/ai-monitor-surveillance/review.md
+          fi
