@@ -182,3 +182,24 @@ export function buildCollectionPageSchema({
     },
   };
 }
+
+
+export function buildAboutPageSchema(
+  locale: Locale,
+  description: string,
+): StructuredDataObject {
+  const url = absoluteUrl(localizedPath(locale, "/about"));
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "@id": `${url}#about`,
+    url,
+    name: locale === "pt-BR" ? "Sobre o Code & Consequence" : "About Code & Consequence",
+    description,
+    inLanguage: locale,
+    isPartOf: { "@id": websiteId },
+    publisher: { "@id": organizationId },
+    mainEntity: { "@id": organizationId },
+  };
+}
