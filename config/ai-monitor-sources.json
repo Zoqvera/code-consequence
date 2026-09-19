@@ -1,0 +1,86 @@
+[
+  {
+    "id": "oecd-ai-incidents",
+    "name": "OECD AI risks and incidents",
+    "publisher": "OECD",
+    "jurisdiction": "Global",
+    "url": "https://www.oecd.org/en/topics/ai-risks-and-incidents.html",
+    "dimensions": [
+      "incidents",
+      "institutional",
+      "governance"
+    ],
+    "tier": 1,
+    "enabled": true
+  },
+  {
+    "id": "nist-caisi",
+    "name": "Center for AI Standards and Innovation",
+    "publisher": "NIST / CAISI",
+    "jurisdiction": "United States",
+    "url": "https://www.nist.gov/caisi",
+    "dimensions": [
+      "capabilities",
+      "control",
+      "incidents",
+      "institutional"
+    ],
+    "tier": 1,
+    "enabled": true
+  },
+  {
+    "id": "uk-aisi-research",
+    "name": "AI Security Institute research",
+    "publisher": "UK AI Security Institute",
+    "jurisdiction": "United Kingdom",
+    "url": "https://www.aisi.gov.uk/research",
+    "dimensions": [
+      "capabilities",
+      "control",
+      "institutional"
+    ],
+    "tier": 1,
+    "enabled": true
+  },
+  {
+    "id": "eu-ai-office",
+    "name": "European AI Office",
+    "publisher": "European Commission",
+    "jurisdiction": "European Union",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/ai-office",
+    "dimensions": [
+      "governance",
+      "institutional",
+      "control"
+    ],
+    "tier": 1,
+    "enabled": true
+  },
+  {
+    "id": "eu-gpai-guidelines",
+    "name": "Guidelines for providers of general-purpose AI models",
+    "publisher": "European Commission",
+    "jurisdiction": "European Union",
+    "url": "https://digital-strategy.ec.europa.eu/en/policies/guidelines-gpai-providers",
+    "dimensions": [
+      "governance",
+      "institutional",
+      "control"
+    ],
+    "tier": 1,
+    "enabled": true
+  },
+  {
+    "id": "brazil-pl2338",
+    "name": "PL 2338/2023 — AI regulatory framework",
+    "publisher": "Câmara dos Deputados",
+    "jurisdiction": "Brazil",
+    "url": "https://www.camara.leg.br/proposicoesWeb/fichadetramitacao/?idProposicao=2487262",
+    "dimensions": [
+      "governance",
+      "institutional"
+    ],
+    "tier": 1,
+    "enabled": true
+  }
+]
