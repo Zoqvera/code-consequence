@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
 import { SiteSearch, type SearchItem } from "@/components/site-search";
+import { currentAiMonitorAssessment, getAiMonitorStatusLabel } from "@/lib/ai-monitor";
 import { dictionary, otherLocale, type Locale } from "@/lib/i18n";
 
 function NavigationLinks({
@@ -54,6 +55,8 @@ export function SiteHeader({ locale, searchItems }: { locale: Locale; searchItem
   const [searchOpen, setSearchOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDetailsElement>(null);
   const pt = locale === "pt-BR";
+  const monitorStatus = currentAiMonitorAssessment.status;
+  const monitorLabel = getAiMonitorStatusLabel(monitorStatus, locale);
   const alternateHref = pathname.replace(/^\/(en|pt-BR)(?=\/|$)/, `/${alternate}`) || `/${alternate}`;
   const closeSearch = useCallback(() => setSearchOpen(false), []);
   const closeMobileMenu = useCallback(() => {
@@ -77,6 +80,18 @@ export function SiteHeader({ locale, searchItems }: { locale: Locale; searchItem
         </nav>
 
         <div className="header-actions">
+          <Link
+            className="monitor-status-link"
+            href={`/${locale}/ai-monitor`}
+            data-status={monitorStatus}
+            aria-label={`${pt ? "C&C AI Monitor" : "C&C AI Monitor"}: ${monitorLabel}, ${currentAiMonitorAssessment.score} de 100`}
+            onClick={closeMobileMenu}
+          >
+            <span className="monitor-status-dot" aria-hidden="true" />
+            <span className="monitor-status-copy">AI {monitorLabel}</span>
+            <strong>{currentAiMonitorAssessment.score}</strong>
+          </Link>
+
           <button
             className="search-toggle"
             type="button"
