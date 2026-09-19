@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AiMonitorTeaser } from "@/components/ai-monitor-teaser";
 import { EventCountdown } from "@/components/event-countdown";
 import { articles, topics } from "@/lib/content";
 import { getUpcomingEvents, type AiEvent } from "@/lib/events";
@@ -69,6 +70,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </Link>
         </div>
       </section>
+
+      <div className="shell">
+        <AiMonitorTeaser locale={locale} />
+      </div>
 
       <section className={`${styles.pulse} shell`} aria-labelledby="observatory-pulse-title">
         <div className={styles.pulseHeading}>
