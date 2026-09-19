@@ -1,3 +1,108 @@
+.pillarIntro {
+  margin: 42px 0 54px;
+  padding: 34px 0 38px;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+
+.pillarIntro h2 {
+  max-width: 900px;
+  margin: 10px 0 22px;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(2.25rem, 5vw, 4.5rem);
+  font-weight: 500;
+  line-height: .98;
+  letter-spacing: -.04em;
+}
+
+.pillarCopy {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  max-width: 1040px;
+}
+
+.pillarCopy p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.72;
+}
+
+.concepts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.concepts span {
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+
+.questions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+.question {
+  min-height: 250px;
+  padding: 24px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.question h3 {
+  margin: 0 0 18px;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.45rem, 2.3vw, 2.1rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -.025em;
+}
+
+.question p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.relatedTopics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+.relatedTopics a {
+  min-height: 150px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.relatedTopics span {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.5rem;
+  line-height: 1.05;
+}
+
+.relatedTopics small {
+  color: var(--muted);
+  font-size: .75rem;
+  line-height: 1.45;
+}
+
 .summary {
   margin: 50px 0 70px;
   display: grid;
@@ -117,6 +222,12 @@
 }
 
 @media (max-width: 800px) {
+  .pillarCopy,
+  .questions,
+  .relatedTopics {
+    grid-template-columns: 1fr;
+  }
+
   .summary {
     grid-template-columns: repeat(2, 1fr);
   }
