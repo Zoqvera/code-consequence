@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Source_Serif_4 } from "next/font/google";
+import { StructuredData } from "@/components/structured-data";
+import { buildSiteSchemas } from "@/lib/schema";
 import { siteName, siteUrl } from "@/lib/seo";
 import "./globals.css";
 import "./ux.css";
@@ -26,7 +28,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.variable} ${sourceSerif.variable}`}>
-      <body>{children}</body>
+      <body>
+        <StructuredData data={buildSiteSchemas()} />
+        {children}
+      </body>
     </html>
   );
 }
