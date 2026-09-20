@@ -1,4 +1,33 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { absoluteUrl, siteName } from "@/lib/seo";
+
+const description =
+  "Independent reporting and analysis on the political, social and environmental consequences of artificial intelligence.";
+
+export const metadata: Metadata = {
+  title: siteName,
+  description,
+  alternates: {
+    canonical: absoluteUrl("/"),
+    languages: {
+      en: absoluteUrl("/en"),
+      "pt-BR": absoluteUrl("/pt-BR"),
+      "x-default": absoluteUrl("/"),
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+};
 
 export default function RootPage() {
   return (
