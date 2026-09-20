@@ -41,7 +41,7 @@ jobs:
         env:
           NEXT_PUBLIC_BASE_PATH: /code-consequence
           NEXT_PUBLIC_SITE_URL: https://zoqvera.github.io/code-consequence
-          GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID }}
+          GA_MEASUREMENT_ID: G-GGLQCS9NJV
           GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
       - uses: actions/upload-pages-artifact@v4
         with:

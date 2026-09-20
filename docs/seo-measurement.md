@@ -4,16 +4,13 @@ This document defines how Code & Consequence measures organic search and generat
 
 ## Current measurement state
 
-The analytics integration is optional. No Google Analytics script is rendered unless `GA_MEASUREMENT_ID` is present at build time.
+The production site is connected to Google Analytics 4 with Measurement ID `G-GGLQCS9NJV`. The analytics integration remains build-time configurable, and no Google Analytics script is rendered in environments where `GA_MEASUREMENT_ID` is absent.
 
 Google Search Console verification is also optional. A verification meta tag is rendered only when `GOOGLE_SITE_VERIFICATION` is present at build time.
 
-The GitHub Pages workflow reads both values from GitHub Actions repository variables:
+The GitHub Pages workflow currently sets `GA_MEASUREMENT_ID` to the public production Measurement ID `G-GGLQCS9NJV`. Search Console verification continues to read `GOOGLE_SITE_VERIFICATION` from a GitHub Actions repository variable.
 
-- `GA_MEASUREMENT_ID`
-- `GOOGLE_SITE_VERIFICATION`
-
-An unset variable leaves the corresponding integration disabled and does not break the build.
+An unset Search Console variable leaves verification disabled and does not break the build.
 
 ## Google Analytics 4
 
