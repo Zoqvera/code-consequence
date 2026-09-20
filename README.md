@@ -64,6 +64,12 @@ When a custom domain is adopted, update both values so routes and public metadat
 
 In GitHub repository settings, Pages must use **GitHub Actions** as the deployment source.
 
+## SEO measurement
+
+SEO/GEO observability is build-time configurable. The site can emit GA4 page views, topic-pillar events and ChatGPT-attributed landing events when the repository variable `GA_MEASUREMENT_ID` is configured. Search Console HTML-tag verification is enabled by the repository variable `GOOGLE_SITE_VERIFICATION`.
+
+Both integrations remain disabled when their variables are unset. See `docs/seo-measurement.md` for the event taxonomy, Search Console setup, measurement cadence and the custom-domain requirement for Google's Preferred Sources feature.
+
 ## Neon database
 The dedicated Neon project is **Code & Consequence**. Save its connection string in the GitHub repository secret `DATABASE_URL`; never commit the connection string to the repository.
 
