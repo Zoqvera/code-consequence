@@ -16,9 +16,10 @@ The workflow `.github/workflows/editorial-continuous.yml` executes:
 8. validate and apply evidence-backed promotion into reviewed drafts;
 9. enforce independent-publisher corroboration;
 10. validate and apply the DRAFT → REVIEW gate;
-11. generate the human approval queue artifact.
+11. generate the human approval queue artifact;
+12. generate a cycle-health artifact with the latest ingestion result, queue counts, source errors and stale NEW items.
 
-The workflow stops when a mandatory stage fails. It no longer ignores a total classification failure and does not continue into downstream stages with a stale or invalid classification state.
+The workflow stops when a mandatory stage fails. It no longer ignores a total classification failure and does not continue into downstream stages with a stale or invalid classification state. A final health-report step runs with `if: always()` so operators still receive a diagnostic artifact when an earlier stage fails.
 
 ## Publication barrier
 
