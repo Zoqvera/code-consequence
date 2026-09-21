@@ -29,6 +29,7 @@ jobs:
       RECOVER_SOURCE_MAX_ATTEMPTS: 3
       INGESTION_USER_AGENT: CodeAndConsequenceBot/0.1
       EDITORIAL_QUEUE_REPORT_PATH: artifacts/editorial-queue/review-queue.json
+      EDITORIAL_CYCLE_REPORT_PATH: artifacts/editorial-cycle/cycle-health.json
     steps:
       - uses: actions/checkout@v4
 
@@ -91,4 +92,18 @@ jobs:
           name: editorial-human-approval-queue
           path: artifacts/editorial-queue
           if-no-files-found: error
+          retention-days: 14
+
+      - name: Build editorial cycle health report
+        if: always()
+        continue-on-error: true
+        run: npm run editorial:cycle-report
+
+      - name: Upload editorial cycle health artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-cycle-health
+          path: artifacts/editorial-cycle
+          if-no-files-found: warn
           retention-days: 14
