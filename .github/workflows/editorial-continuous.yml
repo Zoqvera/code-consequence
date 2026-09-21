@@ -25,10 +25,15 @@ jobs:
       EDITORIAL_RESEARCH_BATCH_SIZE: 4
       EDITORIAL_RESEARCH_RETRY_HOLD_DAYS: 7
       EDITORIAL_ADVANCE_BATCH_SIZE: 10
+      EDITORIAL_ARTICLE_RESEARCH_MODEL: gpt-5.6-luna
+      EDITORIAL_ARTICLE_RESEARCH_BATCH_SIZE: 3
+      EDITORIAL_ARTICLE_RETRY_HOLD_DAYS: 7
+      EDITORIAL_ARTICLE_ADVANCE_BATCH_SIZE: 6
       RECOVER_SOURCE_LIMIT: 20
       RECOVER_SOURCE_MAX_ATTEMPTS: 3
       INGESTION_USER_AGENT: CodeAndConsequenceBot/0.1
       EDITORIAL_QUEUE_REPORT_PATH: artifacts/editorial-queue/review-queue.json
+      EDITORIAL_ARTICLE_QUEUE_REPORT_PATH: artifacts/editorial-articles/review-queue.json
       EDITORIAL_CYCLE_REPORT_PATH: artifacts/editorial-cycle/cycle-health.json
     steps:
       - uses: actions/checkout@v4
