@@ -43,6 +43,14 @@ function bodyComplete(en, pt) {
     && pt.every(filled);
 }
 
+function sourceIdentity(source) {
+  try {
+    return new URL(source.url).hostname.toLowerCase().replace(/^www\./, "");
+  } catch {
+    return String(source.publisher || "").trim().toLowerCase();
+  }
+}
+
 function normalizeSource(source) {
   const sourceType = ["PRIMARY", "SCIENTIFIC", "JOURNALISTIC", "INSTITUTIONAL", "DISCOVERY"]
     .includes(source?.source_type)
@@ -127,7 +135,7 @@ for (const row of grouped.values()) {
     (source) => ["PRIMARY", "SCIENTIFIC"].includes(source.sourceType) && source.reliability === "A",
   );
   const distinctReliablePublishers = new Set(
-    reliableSources.map((source) => String(source.publisher || new URL(source.url).hostname).trim().toLowerCase()),
+    reliableSources.map(sourceIdentity).filter(Boolean),
   );
 
   const copyComplete = [
