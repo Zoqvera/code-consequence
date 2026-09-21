@@ -89,10 +89,12 @@ The current UI uses verified seed content in `lib/content.ts` until the Neon ing
 ## Editorial model
 See `docs/editorial-policy.md`.
 
-## Planned ingestion pipeline
-`source discovery → extraction → deduplication → relevance classification → entity extraction → source verification → Neon → static build → publication`
+## Continuous editorial pipeline
+`source discovery → extraction → deduplication → relevance classification → entity extraction → source verification → Neon → human review → publication`
 
-The ingestion layer treats social/search sources as discovery inputs and prioritizes primary sources for factual substantiation. Discovery can ingest English, Portuguese, Spanish and French sources; the public editorial product remains bilingual in English and Brazilian Portuguese.
+A single scheduled workflow runs discovery and downstream editorial processing sequentially every six hours. This removes the stale-state race that existed when collection and editorial processing used independent schedules. Automation may advance evidence-backed records to `REVIEW`, but publication remains behind the explicit human approval gate.
+
+The ingestion layer treats social/search sources as discovery inputs and prioritizes primary sources for factual substantiation. Discovery can ingest English, Portuguese, Spanish and French sources; the public editorial product remains bilingual in English and Brazilian Portuguese. See `docs/editorial-operations.md` for sequencing, retry policy and cycle-health observability.
 
 ## Faultlines Weekly
 Faultlines Weekly is a derived distribution layer, not a separate factual-authoring pipeline. Each edition covers the latest completed ISO week and reuses only already published articles, verified dossier updates, published initiative records and verified events. Historical issues do not project the current initiative watchlist backward in time.
