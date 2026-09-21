@@ -1,9 +1,7 @@
-name: Collect primary sources
+name: Collect primary sources (manual)
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "17 */6 * * *"
 
 permissions:
   contents: read
@@ -15,13 +13,21 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - run: npm install
+
       - name: Require DATABASE_URL
         run: test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
+
+      - name: Validate discovery configuration
+        run: npm run discovery:validate
+
       - name: Ensure database schema
         run: npm run db:migrate
+
       - name: Discover source items
         run: npm run ingest:collect

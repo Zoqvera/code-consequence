@@ -32,7 +32,8 @@
     "events:export": "node scripts/export-events.mjs",
     "discovery:validate": "node scripts/validate-discovery-config.mjs",
     "ai-monitor:surveil": "node scripts/ai-monitor-surveil.mjs",
-    "ai-monitor:apply": "node scripts/ai-monitor-apply.mjs"
+    "ai-monitor:apply": "node scripts/ai-monitor-apply.mjs",
+    "editorial:cycle-report": "node scripts/editorial-cycle-report.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
