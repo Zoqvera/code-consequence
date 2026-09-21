@@ -1,10 +1,17 @@
-name: Publish reviewed initiative
+name: Publish reviewed editorial record
 
 on:
   workflow_dispatch:
     inputs:
+      kind:
+        description: Editorial record type
+        required: true
+        type: choice
+        options:
+          - initiative
+          - article
       slug:
-        description: Exact initiative slug currently in REVIEW
+        description: Exact slug currently in REVIEW
         required: true
         type: string
       reviewer:
@@ -36,19 +43,30 @@ jobs:
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       EDITORIAL_PUBLISH_SLUG: ${{ inputs.slug }}
+      EDITORIAL_ARTICLE_PUBLISH_SLUG: ${{ inputs.slug }}
       EDITORIAL_HUMAN_REVIEWER: ${{ inputs.reviewer }}
       EDITORIAL_APPROVAL_PHRASE: ${{ inputs.approval_phrase }}
       EDITORIAL_PUBLISH_APPLY: ${{ inputs.apply && '1' || '0' }}
+      EDITORIAL_ARTICLE_PUBLISH_APPLY: ${{ inputs.apply && '1' || '0' }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - run: npm install
+
       - name: Require database secret
         run: test -n "$DATABASE_URL" || (echo "DATABASE_URL repository secret is missing" && exit 1)
+
       - name: Validate or publish one reviewed initiative
+        if: ${{ inputs.kind == 'initiative' }}
         run: npm run editorial:publish
+
+      - name: Validate or publish one reviewed article
+        if: ${{ inputs.kind == 'article' }}
+        run: npm run editorial:article-publish
 
   build:
     if: ${{ inputs.apply }}
@@ -56,21 +74,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - uses: actions/configure-pages@v5
+
       - run: npm install
+      - run: npm run scripts:check
       - run: npm run typecheck
       - run: npm run lint
+
       - name: Export published content from Neon
         run: npm run content:export
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Export upcoming AI events from Neon
+        run: npm run events:export
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
       - name: Build static site
         run: npm run build
         env:
           NEXT_PUBLIC_BASE_PATH: /code-consequence
+          NEXT_PUBLIC_SITE_URL: https://zoqvera.github.io/code-consequence
+          GA_MEASUREMENT_ID: G-GGLQCS9NJV
+          GOOGLE_SITE_VERIFICATION: cIH1tqcOJADhqxYC7yGxFRyToyqBp0pBdZEbv_6iko4
+
       - uses: actions/upload-pages-artifact@v4
         with:
           path: ./out
