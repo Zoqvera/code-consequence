@@ -46,6 +46,13 @@ const initiativeRows = await sql`
   ORDER BY publication_status
 `;
 
+const articleRows = await sql`
+  SELECT status::text AS status, COUNT(*)::int AS count
+  FROM articles
+  GROUP BY status
+  ORDER BY status
+`;
+
 const [staleQueue] = await sql`
   SELECT COUNT(*)::int AS count
   FROM ingestion_items
@@ -72,7 +79,7 @@ function determineHealth({ latestRun, staleNewItems, errorItems }) {
 
 const processing = countMap(processingRows, "processing_status");
 const relevance = countMap(relevanceRows, "relevance_status");
-const initiatives = countMap(initiativeRows, "publication_status");
+const initiatives = countMap(initiativeRows, "publication_status");\nconst articles = countMap(articleRows, "status");
 const staleNewItems = staleQueue?.count || 0;
 const errorItems = sourceErrors?.count || 0;
 
@@ -105,7 +112,7 @@ console.log(
       latestIngestionStatus: latestIngestionRun?.status || null,
       staleNewItems,
       errorItems,
-      reviewQueue: initiatives.REVIEW || 0,
+      initiativeReviewQueue: initiatives.REVIEW || 0,\n      articleReviewQueue: articles.REVIEW || 0,
     },
     null,
     2,
