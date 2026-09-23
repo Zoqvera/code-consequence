@@ -54,6 +54,7 @@ CREATE TABLE articles (
   status publication_status NOT NULL DEFAULT 'DRAFT',
   primary_language TEXT NOT NULL DEFAULT 'en' CHECK (primary_language IN ('en','pt-BR')),
   published_at TIMESTAMPTZ,
+  metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -228,6 +229,7 @@ CREATE TABLE ingestion_items (
 );
 
 CREATE INDEX articles_published_idx ON articles (status, published_at DESC);
+CREATE INDEX articles_origin_url_idx ON articles ((metadata ->> 'source_match_url'));
 CREATE INDEX initiatives_status_idx ON initiatives (status, updated_at DESC);
 CREATE INDEX initiatives_publication_idx ON initiatives (publication_status, updated_at DESC);
 CREATE INDEX initiatives_origin_url_idx ON initiatives ((metadata ->> 'source_match_url'));

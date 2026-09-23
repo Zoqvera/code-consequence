@@ -25,10 +25,15 @@ jobs:
       EDITORIAL_RESEARCH_BATCH_SIZE: 4
       EDITORIAL_RESEARCH_RETRY_HOLD_DAYS: 7
       EDITORIAL_ADVANCE_BATCH_SIZE: 10
+      EDITORIAL_ARTICLE_RESEARCH_MODEL: gpt-5.6-luna
+      EDITORIAL_ARTICLE_RESEARCH_BATCH_SIZE: 3
+      EDITORIAL_ARTICLE_RETRY_HOLD_DAYS: 7
+      EDITORIAL_ARTICLE_ADVANCE_BATCH_SIZE: 6
       RECOVER_SOURCE_LIMIT: 20
       RECOVER_SOURCE_MAX_ATTEMPTS: 3
       INGESTION_USER_AGENT: CodeAndConsequenceBot/0.1
       EDITORIAL_QUEUE_REPORT_PATH: artifacts/editorial-queue/review-queue.json
+      EDITORIAL_ARTICLE_QUEUE_REPORT_PATH: artifacts/editorial-articles/review-queue.json
       EDITORIAL_CYCLE_REPORT_PATH: artifacts/editorial-cycle/cycle-health.json
     steps:
       - uses: actions/checkout@v4
@@ -83,14 +88,40 @@ jobs:
       - name: Move eligible reviewed drafts to REVIEW
         run: EDITORIAL_ADVANCE_APPLY=1 npm run editorial:auto-advance
 
-      - name: Build human approval queue report
+      - name: Research and verify article candidates
+        run: npm run editorial:article-research
+
+      - name: Validate researched article promotion plan
+        run: EDITORIAL_ARTICLE_PROMOTE_APPLY=0 npm run editorial:article-promote
+
+      - name: Promote verified article research into drafts
+        run: EDITORIAL_ARTICLE_PROMOTE_APPLY=1 npm run editorial:article-promote
+
+      - name: Validate automatic article DRAFT to REVIEW gate
+        run: EDITORIAL_ARTICLE_ADVANCE_APPLY=0 npm run editorial:article-auto-advance
+
+      - name: Move eligible article drafts to REVIEW
+        run: EDITORIAL_ARTICLE_ADVANCE_APPLY=1 npm run editorial:article-auto-advance
+
+      - name: Build initiative human approval queue report
         run: npm run editorial:queue-report
 
-      - name: Upload approval queue artifact
+      - name: Upload initiative approval queue artifact
         uses: actions/upload-artifact@v4
         with:
           name: editorial-human-approval-queue
           path: artifacts/editorial-queue
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Build article human approval queue report
+        run: npm run editorial:article-queue-report
+
+      - name: Upload article approval queue artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-article-human-approval-queue
+          path: artifacts/editorial-articles
           if-no-files-found: error
           retention-days: 14
 

@@ -13,21 +13,26 @@ The workflow `.github/workflows/editorial-continuous.yml` executes:
 5. classify the next source batch;
 6. rebuild editorial candidate clusters;
 7. research and verify initiative candidates;
-8. validate and apply evidence-backed promotion into reviewed drafts;
-9. enforce independent-publisher corroboration;
-10. validate and apply the DRAFT → REVIEW gate;
-11. generate the human approval queue artifact;
-12. generate a cycle-health artifact with the latest ingestion result, queue counts, source errors and stale NEW items.
+8. validate and apply evidence-backed initiative promotion into reviewed drafts;
+9. enforce independent-publisher corroboration for initiatives;
+10. validate and apply the initiative DRAFT → REVIEW gate;
+11. research and verify News/Analysis candidates with web evidence;
+12. validate and promote verified article research into DRAFT;
+13. validate and apply the article DRAFT → REVIEW gate;
+14. generate separate human approval queue artifacts for initiatives and articles;
+15. generate a cycle-health artifact with the latest ingestion result, queue counts, source errors and stale NEW items.
 
 The workflow stops when a mandatory stage fails. It no longer ignores a total classification failure and does not continue into downstream stages with a stale or invalid classification state. A final health-report step runs with `if: always()` so operators still receive a diagnostic artifact when an earlier stage fails.
 
 ## Publication barrier
 
-Automation may move an initiative as far as `REVIEW`. Publication still requires the existing explicit human gate in `scripts/publish-reviewed-initiative.mjs`.
+Automation may move an initiative or a News/Analysis article as far as `REVIEW`. Publication still requires an explicit human gate: `scripts/publish-reviewed-initiative.mjs` for initiatives and `scripts/publish-reviewed-article.mjs` for articles.
 
 The publication barrier therefore remains:
 
-`automated discovery → automated evidence processing → REVIEW → explicit human approval → PUBLISHED`
+`automated discovery → evidence research → DRAFT → REVIEW → explicit human approval → PUBLISHED`
+
+Article automation is deliberately limited to `NEWS` and `ANALYSIS`. Dossiers remain a persistent, manually curated format because their indicators, timelines and legislation require longitudinal editorial maintenance.
 
 ## Source retry policy
 

@@ -33,7 +33,13 @@
     "discovery:validate": "node scripts/validate-discovery-config.mjs",
     "ai-monitor:surveil": "node scripts/ai-monitor-surveil.mjs",
     "ai-monitor:apply": "node scripts/ai-monitor-apply.mjs",
-    "editorial:cycle-report": "node scripts/editorial-cycle-report.mjs"
+    "editorial:cycle-report": "node scripts/editorial-cycle-report.mjs",
+    "scripts:check": "find scripts -name '*.mjs' -print0 | xargs -0 -n1 node --check",
+    "editorial:article-research": "node scripts/research-editorial-articles.mjs",
+    "editorial:article-promote": "node scripts/promote-researched-articles.mjs",
+    "editorial:article-auto-advance": "node scripts/advance-reviewed-articles.mjs",
+    "editorial:article-queue-report": "node scripts/article-review-queue-report.mjs",
+    "editorial:article-publish": "node scripts/publish-reviewed-article.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
